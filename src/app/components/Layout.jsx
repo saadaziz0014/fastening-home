@@ -2,9 +2,11 @@ import Sidebar from "./Sidebar";
 
 export default function Layout({ children }) {
     return (
-        <div>
+        <div className="flex gap-3">
             <Sidebar />
-            {children}
+            <div className="max-h-screen">
+                {children}
+            </div>
         </div>
     );
 }
