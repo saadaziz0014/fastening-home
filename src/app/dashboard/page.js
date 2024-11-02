@@ -1,6 +1,8 @@
 import AttentionCard from "../components/AttentionCard";
 import OpenPriceCard from "../components/OpenPriceCard";
 import ProductFixCard from "../components/ProductFixCard";
+import ReportCard from "../components/ReportCard";
+import TempSKUCard from "../components/TempSKUCard";
 import UpcomingPriceCard from "../components/UpcomingPriceCard";
 
 export default function Dashboard() {
@@ -20,6 +22,8 @@ export default function Dashboard() {
                 </div>
                 <div className="flex gap-44">
                     <ProductFixCard />
+                    <TempSKUCard />
+                    <ReportCard />
                 </div>
             </div>
         </div>
