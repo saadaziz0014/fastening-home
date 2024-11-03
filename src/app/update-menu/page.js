@@ -1,4 +1,9 @@
+'use client'
+import ReactPaginate from "react-paginate";
+import Table from "../components/Table";
+import { useRouter } from "next/navigation";
 export default function UpdateMenu() {
+    const router = useRouter();
     return (
         <div className="bg-[#F8F9FB] h-screen">
             <div className="mt-2 mb-10">
@@ -9,7 +14,7 @@ export default function UpdateMenu() {
                     </div>
                     <div className="flex gap-2 mr-2">
                         <button className="bg-[#9843D0] text-white px-3 py-2 rounded-lg">Add New Price File</button>
-                        <button className="bg-[#9843D0] text-white px-3 py-2 rounded-lg">Create New Work File</button>
+                        <button onClick={() => { router.push('/work-file') }} className="bg-[#9843D0] text-white px-3 py-2 rounded-lg">Create New Work File</button>
                     </div>
                 </div>
                 <div className="mt-12">
@@ -23,7 +28,22 @@ export default function UpdateMenu() {
                 <div className="mt-1">
                     <hr className="border-gray-300" />
                 </div>
-                <div className="mt-3 border border-gray-300">
+                <div className="mt-3">
+                    <Table children={[]} />
+                    <ReactPaginate
+                        breakLabel="..."
+                        nextLabel="Next"
+                        onPageChange={() => { }}
+                        pageRangeDisplayed={5}
+                        pageCount={1}
+                        previousLabel="Previous"
+                        renderOnZeroPageCount={null}
+                        containerClassName="pagination"
+                        pageLinkClassName="page-num"
+                        previousLinkClassName="page-num"
+                        nextLinkClassName="page-num"
+                        activeLinkClassName="active"
+                    />
                 </div>
             </div>
         </div>
