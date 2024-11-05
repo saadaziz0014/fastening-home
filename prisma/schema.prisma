@@ -13,9 +13,8 @@ model Phocas_Prdln {
   P1DSC String?
   P1CLS String?
   P1GRP Float?
-  id    Int     @id @default(autoincrement()) @unique
+  id    Int     @id @default(autoincrement())
 }
-
 
 model Phocas_Prdmst {
   DTEPRC BigInt?
@@ -50,9 +49,8 @@ model Phocas_Prdmst {
   PMPRC1 Float?
   SEQNO  BigInt?
   PMPRC2 BigInt?
-  id     Int     @id @default(autoincrement()) @unique
+  id     Int     @id @default(autoincrement())
 }
-
 
 model Phocas_Split_Ordhst_2025_FHI {
   CUSTNO BigInt?
@@ -84,9 +82,8 @@ model Phocas_Split_Ordhst_2025_FHI {
   VELCOD String?
   PMINVC String?
   CUSPON String?
-  id     Int     @id @default(autoincrement()) @unique
+  id     Int     @id @default(autoincrement())
 }
-
 
 model Phocas_Whsprd {
   PRDLIN String?
@@ -117,14 +114,32 @@ model Phocas_Whsprd {
   PMINVC String?
   PRDCDE Float?
   PMCLAS String?
-  id     Int     @id @default(autoincrement()) @unique
+  id     Int     @id @default(autoincrement())
 }
-
 
 model Phocas_Venlin {
   VENDOR BigInt?
   VNAME  String?
   VDTYPE String?
   VMTARF String?
-  id     Int     @id @default(autoincrement()) @unique
+  id     Int     @id @default(autoincrement())
+}
+
+model Groups {
+  Group       BigInt?
+  Description String?
+  id          Int     @id @default(autoincrement())
+}
+
+model Phocas_Prdcde {
+  P1LIN String?
+  P1COD BigInt?
+  P1DSC String?
+  id    Int     @id @default(autoincrement())
+}
+
+model Phocas_Prdcls {
+  PTCLAS String?
+  PTDESC String?
+  id     Int     @id @default(autoincrement())
 }
