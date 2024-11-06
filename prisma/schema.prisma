@@ -20,7 +20,7 @@ model Phocas_Prdmst {
   DTEPRC BigInt?
   LISTPR Float?
   MNTDTE BigInt?
-  PMCLAS String?
+  PMCLAS Float?
   PMGRP  Float?
   PMINVC String?
   PMPMLT BigInt?
@@ -49,6 +49,7 @@ model Phocas_Prdmst {
   PMPRC1 Float?
   SEQNO  BigInt?
   PMPRC2 BigInt?
+  VENDNO Float?
   id     Int     @id @default(autoincrement())
 }
 

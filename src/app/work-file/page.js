@@ -2,8 +2,10 @@
 import React, { useState } from "react";
 import Dropdown from "../components/Dropdown";
 import SpreadSheetData from "../components/SpreadSheetData";
+import { useRouter } from "next/navigation";
 
 export default function WorkFile() {
+    const router = useRouter();
     const [data, setData] = useState([
         [{ value: "A1" }, { value: "B1" }],
         [{ value: "A2" }, { value: "B2" }],
@@ -54,7 +56,7 @@ export default function WorkFile() {
                 </div>
                 <div className="flex gap-3 items-center mr-2">
                     <button className="bg-[#9843D0] text-white px-3 py-2 rounded-lg">Generate File</button>
-                    <button className="bg-[#9843D0] text-white px-3 py-2 rounded-lg">Post Tab to Production</button>
+                    <button onClick={() => { router.push('/tab-production') }} className="bg-[#9843D0] text-white px-3 py-2 rounded-lg">Post Tab to Production</button>
                     <button className="bg-[#9843D0] text-white px-3 py-2 rounded-lg">Save</button>
                 </div>
             </div>

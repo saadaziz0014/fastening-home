@@ -18,10 +18,10 @@ export default function Sidebar() {
             </button> */}
       <aside
         id="sidebar-multi-level-sidebar"
-        className="w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
+        className="w-64 h-full transition-transform -translate-x-full sm:translate-x-0"
         aria-label="Sidebar"
       >
-        <div className="h-screen px-6 py-4 flex flex-col justify-between bg-[#624E89]">
+        <div className="h-full px-6 py-4 flex flex-col justify-between bg-[#624E89]">
           <Link href="/">
             <Image src={logo} width={100} height={100} />
           </Link>
