@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
+    "axios": "^1.7.7",
     "chart.js": "^4.4.6",
     "next": "14.2.15",
     "prisma": "^5.21.1",
@@ -17,7 +18,8 @@
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
     "react-paginate": "^8.2.0",
-    "react-spreadsheet": "^0.9.5"
+    "react-spreadsheet": "^0.9.5",
+    "react-toastify": "^10.0.6"
   },
   "devDependencies": {
     "eslint": "^8",
