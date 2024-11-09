@@ -23,7 +23,7 @@ export const GET = async (request) => {
         for (let i = 0; i < vlines.length; i++) {
             let keys = Object.keys(vlines[i])
             for (let j = 0; j < keys.length; j++) {
-                vlines[i][keys[j]] = vlines[i][keys[j]].toString()
+                vlines[i][keys[j]] = vlines[i][keys[j]] && vlines[i][keys[j]].toString()
             }
         }
         return NextResponse.json({ vlines, status: 200 })
