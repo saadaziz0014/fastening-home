@@ -1,6 +1,24 @@
-export default function Dropdown({ label }) {
+export default function Dropdown({
+  label,
+  data,
+  display,
+  setDisplay,
+  setFilter,
+}) {
+  const changeDisplay = () => {
+    if (display === "hidden" && data.length > 0) {
+      setDisplay("visible");
+    } else {
+      setDisplay("hidden");
+    }
+  };
   return (
-    <div className="relative" data-twe-dropdown-ref>
+    <div
+      className="relative"
+      onMouseEnter={changeDisplay}
+      onMouseLeave={changeDisplay}
+      data-twe-dropdown-ref
+    >
       <button
         className="flex items-center rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-black shadow-primary-3 transition duration-150 ease-in-out hover:bg-primary-accent-300 hover:shadow-primary-2 focus:bg-primary-accent-300 focus:shadow-primary-2 focus:outline-none focus:ring-0 active:bg-primary-600 active:shadow-primary-2 motion-reduce:transition-none"
         type="button"
@@ -26,11 +44,19 @@ export default function Dropdown({ label }) {
         </span>
       </button>
       <ul
-        className="absolute z-[1000] float-left m-0 hidden min-w-max list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-base shadow-lg data-[twe-dropdown-show]:block dark:bg-surface-dark"
+        className={`absolute right-0 h-20 bg-white border border-black overflow-y-scroll hidden-scrollbar left-6 z-[100] ${display}`}
         aria-labelledby="dropdownMenuButton1"
         data-twe-dropdown-menu-ref
       >
-        <li className="relative">All</li>
+        {data.map((item) => (
+          <li
+            key={item}
+            onClick={() => setFilter(item)}
+            className="px-2 py-1 hover:bg-gray-300 hover:cursor-pointer"
+          >
+            {item}
+          </li>
+        ))}
       </ul>
     </div>
   );

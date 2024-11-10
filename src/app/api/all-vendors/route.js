@@ -1,15 +1,21 @@
 import prisma from "@/db/prismaClient";
 import { NextResponse } from "next/server";
 
-export const GET = async () => {
+export const GET = async (request) => {
+    const { searchParams } = new URL(request.url)
+    const PRDLIN = searchParams.get("PRDLIN")
     try {
-        let vendors = await prisma.phocas_Venlin.findMany({ select: { VNAME: true } });
-        for (let i = 0; i < vendors.length; i++) {
+        let vendorsData = await prisma.phocas_Prdmst.findMany({ where: { PRDLIN: PRDLIN }, select: { VENDNO: true } });
+        let vendors = []
+        for (let i = 0; i < vendorsData.length; i++) {
             let keys = Object.keys(vendors[i])
             for (let j = 0; j < keys.length; j++) {
-                vendors[i][keys[j]] = vendors[i][keys[j]] ? vendors[i][keys[j]].toString() : null
+                vendorsData[i][keys[j]] = vendorsData[i][keys[j]] ? vendorsData[i][keys[j]].toString() : null
+                vendors.push(vendorsData[i][keys[j]])
             }
         }
+        //unique vendors
+        vendors = [...new Set(vendors)]
         return NextResponse.json({ vendors, status: 200 })
     } catch (error) {
         return NextResponse.json({ error, status: 500 })

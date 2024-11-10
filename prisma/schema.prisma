@@ -144,3 +144,10 @@ model Phocas_Prdcls {
   PTDESC String?
   id     Int     @id @default(autoincrement())
 }
+
+model WorkFile {
+  id      Int     @id @default(autoincrement())
+  prdline String?
+  vcode   BigInt?
+  vname   String?
+}

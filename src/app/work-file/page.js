@@ -12,15 +12,26 @@ export default function WorkFile() {
     const [vline, setVline] = useState("");
     const [prdline, setPrdline] = useState("");
     const [vcode, setVcode] = useState(0);
-    const [data, setData] = useState([[{ value: "Pr. Line" }, { value: "Part Number" }, { value: "Description" }, { value: "Vendor" }]]);
+    const [data, setData] = useState([[{ value: "Pr. Line" }, { value: "Part Number" }, { value: "Description" }, { value: "Vendor" }, { value: "Cost" }, { value: "New Cost" }, { value: "Variance$" }, { value: "Variance%" }]]);
+    const [dataU, setDataU] = useState([[{ value: "Pr. Line" }, { value: "Part Number" }, { value: "Description" }, { value: "Cost" }, { value: "New Cost" }, { value: "Average Cost" }, { value: "Qty OH" }]]);
+    const [dataI, setDataI] = useState([[{ value: "Pr. Line" }, { value: "Part Number" }, { value: "Description" }, { value: "ISC" }, { value: "Qty OH" }]]);
     const [plines, setPlines] = useState([]);
     const [vlines, setVlines] = useState([]);
     const [flagPrdline, setFlagPrdline] = useState(false);
     const [flagVline, setFlagVline] = useState(false);
     const [lines, setLines] = useState([]);
+    const [tab, setTab] = useState(0);
     const [vendors, setVendors] = useState([]);
+    const [measures, setMeasures] = useState(["Pr. Line", "Part Number", "Description", "Vendor", "Cost", "New Cost", "Variance$", "Variance%"]);
+    const [measuresU, setMeasuresU] = useState(["Pr. Line", "Part Number", "Description", "Cost", "New Cost", "Average Cost", "Qty OH"]);
+    const [baseMeasures, setBaseMeasures] = useState(measures);
     const [vendorsFlag, setVendorsFlag] = useState("hidden");
     const [linesFlag, setLinesFlag] = useState("hidden");
+    const [measuresFlag, setMeasuresFlag] = useState("hidden");
+    const [databaseFlag, setDatabaseFlag] = useState("hidden");
+    const [companyFlag, setCompanyFlag] = useState("hidden");
+    const [filterLine, setFilterLine] = useState("");
+    const [filterVendor, setFilterVendor] = useState("");
     const fetchPlines = async () => {
         try {
             const resp = await axios.get("/api/product-lines?txt=" + pline);
@@ -44,41 +55,47 @@ export default function WorkFile() {
     }
     const generateFile = async () => {
         try {
-            setData([[{ value: "Pr. Line" }, { value: "Part Number" }, { value: "Description" }, { value: "Vendor" }]]);
+            setData([[{ value: "Pr. Line" }, { value: "Part Number" }, { value: "Description" }, { value: "Vendor" }, { value: "Cost" }, { value: "New Cost" }, { value: "Variance$" }, { value: "Variance%" }]]);
+            setDataU([{ value: "Pr. Line" }, { value: "Part Number" }, { value: "Description" }, { value: "Cost" }, { value: "New Cost" }, { value: "Average Cost" }, { value: "Qty OH" }]);
             if (prdline.length > 0 || vcode != 0) {
                 if (prdline.length > 0) {
-                    let resp = await axios.get("/api/product-master?pline=" + prdline);
+                    let resp = await axios.get("/api/product-master?pline=" + prdline + "&vname=" + String(filterVendor));
                     if (resp.data.status === 200) {
                         let array = [];
-                        let length = resp.data.prdmaster.length > 10 ? 10 : resp.data.prdmaster.length
+                        let arrayU = [];
+                        let length = resp.data.prdmaster.length > 10 ? 10 : resp.data.prdmaster.length;
                         for (let i = 0; i < length; i++) {
-                            array.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].DTEPRC }, { value: resp.data.prdmaster[i].VENDNO }]);
+                            array.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].VRD }, { value: resp.data.prdmaster[i].VRDPER }]);
+                            arrayU.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].AVGCST }, { value: resp.data.prdmaster[i].QTYOHD }]);
                         }
-                        setData((prevData) => [...prevData, ...array]);
-                        let allVendorsResp = await axios.get("/api/all-vendors");
+                        setData([...data, ...array]);
+                        setDataU([...dataU, ...arrayU]);
+                        let allVendorsResp = await axios.get("/api/all-vendors?PRDLIN=" + prdline);
                         if (allVendorsResp.data.status === 200) {
                             setVendors(allVendorsResp.data.vendors);
                         }
-                        setLines([{ PRDLIN: prdline }]);
+                        setLines([prdline]);
                     } else {
                         toast.error("Something went wrong in generating file")
                     }
                 }
                 else if (vcode != 0) {
-                    let resp = await axios.get("/api/product-master?vendor=" + String(vcode));
-                    console.log(resp.data)
+                    let resp = await axios.get("/api/product-master?vendor=" + String(vcode) + "&line=" + String(filterLine));
                     if (resp.data.status === 200) {
                         let array = [];
-                        let length = resp.data.prdmaster.length > 10 ? 10 : resp.data.prdmaster.length
+                        let arrayU = [];
+                        let length = resp.data.prdmaster.length > 10 ? 10 : resp.data.prdmaster.length;
                         for (let i = 0; i < length; i++) {
-                            array.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].DTEPRC }, { value: resp.data.prdmaster[i].VENDNO }]);
+                            array.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].VRD }, { value: resp.data.prdmaster[i].VRDPER }]);
+                            arrayU.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].AVGCST }, { value: resp.data.prdmaster[i].QTYOHD }]);
                         }
-                        setData((prevData) => [...prevData, ...array]);
-                        let allPlinesResp = await axios.get("/api/all-productlines");
+                        setData([...data, ...array]);
+                        setDataU([...dataU, ...arrayU]);
+                        let allPlinesResp = await axios.get("/api/all-productlines?VENDNO=" + vcode);
                         if (allPlinesResp.data.status === 200) {
                             setLines(allPlinesResp.data.plines);
                         }
-                        setVendors([{ VNAME: vline }]);
+                        setVendors([vline]);
                     } else {
                         toast.error("Something went wrong in generating file")
                     }
@@ -100,7 +117,10 @@ export default function WorkFile() {
         if (!flagVline && vline.length > 2) {
             fetchVlines();
         }
-    }, [pline, vline])
+        if (prdline.length > 0 || vcode != 0) {
+            generateFile();
+        }
+    }, [pline, vline, filterLine, filterVendor]);
 
     const plineSelected = (item) => {
         setPrdline(item);
@@ -109,7 +129,6 @@ export default function WorkFile() {
         setPlines([]);
     }
     const vlineSelected = (item, item2) => {
-        console.log(item, item2)
         setVcode(item);
         setFlagVline(true);
         setVline(item2);
@@ -120,24 +139,14 @@ export default function WorkFile() {
             <div className="flex justify-between items-center">
                 <div className="flex gap-1 items-center">
                     <div>
-                        <Dropdown label="Pr. Lines" onClick={() => setLinesFlag(linesFlag === "visible" ? "hidden" : "visible")} />
-                        {linesFlag === "visible" && plines.length > 0 ? (
-                            plines.map((item) => (
-                                <option value={item.P1LIN}> {item.P1LIN} </option>
-                            ))
-                        ) : null}
+                        <Dropdown label="Pr. Lines" data={lines} display={linesFlag} setDisplay={setLinesFlag} setFilter={setFilterLine} />
                     </div>
                     <div>
-                        <Dropdown label="Vendors" onClick={() => setVendorsFlag(vendorsFlag === "visible" ? "hidden" : "visible")} />
-                        {vendorsFlag === "visible" && vendors.length > 0 ? (
-                            vendors.map((item) => (
-                                <option value={item.VNAME}> {item.VNAME} </option>
-                            ))
-                        ) : null}
+                        <Dropdown label="Vendors" data={vendors} display={vendorsFlag} setDisplay={setVendorsFlag} setFilter={setFilterVendor} />
                     </div>
-                    <Dropdown label="Measures" />
-                    <Dropdown label="Company" />
-                    <Dropdown label="Database" />
+                    <Dropdown label="Measures" data={baseMeasures} display={measuresFlag} setDisplay={setMeasuresFlag} setFilter={() => { }} />
+                    <Dropdown label="Company" data={[]} display="hidden" setDisplay={setCompanyFlag} setFilter={() => { }} />
+                    <Dropdown label="Database" data={[]} display="hidden" setDisplay={setDatabaseFlag} setFilter={() => { }} />
                     <button className="underline py-1 text-[#9843D0]">Remove Filters</button>
                 </div>
                 <div className="flex gap-1 items-center mr-2">
@@ -164,7 +173,7 @@ export default function WorkFile() {
                 <div className="flex gap-3 items-center">
                     <label className="text-gray-900 font-medium">Pr. Lines</label>
                     <div>
-                        <input id="prlines" value={pline} onChange={(e) => { setPline(e.target.value); setVline(''); setFlagPrdline(false) }} class="w-32 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" />
+                        <input id="prlines" value={pline} onChange={(e) => { setPline(e.target.value); setVline(''); setFlagPrdline(false); setFilterLine(''); setFilterVendor(''); setVcode(0); }} class="w-32 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" />
                         {plines.length > 0 && (
                             <div className="border border-black p-2 bg-gray-300 absolute mt-1 z-50">
                                 {plines.map((item) => {
@@ -177,7 +186,7 @@ export default function WorkFile() {
                     </div>
                     <label className="text-gray-900 font-medium">Vendors</label>
                     <div>
-                        <input id="vendors" value={vline} onChange={(e) => { setVline(e.target.value); setPline(''); setFlagVline(false) }} class="w-32 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" />
+                        <input id="vendors" value={vline} onChange={(e) => { setVline(e.target.value); setPline(''); setPrdline(''); setFlagVline(false); setFilterVendor(''); setFilterLine('') }} class="w-32 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" />
                         {vlines.length > 0 && (
                             <div className="border border-black p-2 bg-gray-300 absolute mt-1 z-50">
                                 {vlines.map((item) => {
@@ -192,26 +201,26 @@ export default function WorkFile() {
                     <input type="text" className="w-32 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" />
                 </div>
                 <div className="flex gap-3 items-center mr-2">
-                    <button onClick={generateFile} className="bg-[#9843D0] text-white px-3 py-2 rounded-lg">Generate File</button>
+                    <button onClick={() => { setFilterLine(''); setFilterVendor('') }} className="bg-[#9843D0] text-white px-3 py-2 rounded-lg">Generate File</button>
                     <button onClick={() => { router.push('/tab-production') }} className="bg-[#9843D0] text-white px-3 py-2 rounded-lg">Post Tab to Production</button>
                     <button className="bg-[#9843D0] text-white px-3 py-2 rounded-lg">Save</button>
                 </div>
             </div>
             <div className="mt-12">
                 <ul className="flex gap-4">
-                    <li><h1>Pricing</h1></li>
-                    <li><h1>Code/Class</h1></li>
-                    <li><h1>UOM</h1></li>
-                    <li><h1>Vendor File</h1></li>
-                    <li><h1>Discount Table</h1></li>
-                    <li><h1>ISC</h1></li>
-                    <li><h1>Database</h1></li>
-                    <li><h1>Other</h1></li>
+                    <li onClick={() => { setTab(0); setBaseMeasures(measures) }}><h1 className={`${tab == 0 && 'bg-[#9843D0] text-white rounded-lg'} px-3 py-2 cursor-pointer`}>Pricing</h1></li>
+                    <li><h1 className={`${tab == 1 && 'bg-[#9843D0] text-white rounded-lg'} px-3 py-2 cursor-pointer`}>Code/Class</h1></li>
+                    <li onClick={() => { setTab(2); setBaseMeasures(measuresU) }}><h1 className={`${tab == 2 && 'bg-[#9843D0] text-white rounded-lg'} px-3 py-2 cursor-pointer`}>UOM</h1></li>
+                    <li><h1 className={`${tab == 3 && 'bg-[#9843D0] text-white rounded-lg'} px-3 py-2 cursor-pointer`}>Vendor File</h1></li>
+                    <li><h1 className={`${tab == 4 && 'bg-[#9843D0] text-white rounded-lg'} px-3 py-2 cursor-pointer`}>Discount Table</h1></li>
+                    <li><h1 className={`${tab == 5 && 'bg-[#9843D0] text-white rounded-lg'} px-3 py-2 cursor-pointer`}>ISC</h1></li>
+                    <li><h1 className="px-3 py-2">Database</h1></li>
+                    <li><h1 className="px-3 py-2">Other</h1></li>
                 </ul>
                 <hr className="border-gray-300 mt-1" />
             </div>
-            <div className="mt-12">
-                <SpreadSheetData data={data} setData={setData} />
+            <div className="mt-10">
+                {tab == 0 ? <SpreadSheetData data={data} setData={setData} /> : tab == 2 ? <SpreadSheetData data={dataU} setData={setDataU} /> : null}
             </div>
         </div>
     )
