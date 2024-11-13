@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from "react";
-import Dropdown from "../components/Dropdown";
-import SpreadSheetData from "../components/SpreadSheetData";
+import Dropdown from "../../components/Dropdown";
+import SpreadSheetData from "../../components/SpreadSheetData";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -136,8 +136,8 @@ export default function WorkFile() {
     }
     return (
         <div>
-            <div className="flex justify-between items-center">
-                <div className="flex gap-1 items-center">
+            <div className="flex justify-between items-center font-inter mt-3">
+                <div className="flex gap-5 items-center">
                     <div>
                         <Dropdown label="Pr. Lines" data={lines} display={linesFlag} setDisplay={setLinesFlag} setFilter={setFilterLine} />
                     </div>
@@ -147,7 +147,7 @@ export default function WorkFile() {
                     <Dropdown label="Measures" data={baseMeasures} display={measuresFlag} setDisplay={setMeasuresFlag} setFilter={() => { }} />
                     <Dropdown label="Company" data={[]} display="hidden" setDisplay={setCompanyFlag} setFilter={() => { }} />
                     <Dropdown label="Database" data={[]} display="hidden" setDisplay={setDatabaseFlag} setFilter={() => { }} />
-                    <button className="underline py-1 text-[#9843D0]">Remove Filters</button>
+                    <button className="underline py-1 text-[#614d87]">Remove Filters</button>
                 </div>
                 <div className="flex gap-1 items-center mr-2">
                     <div className="relative inline-block w-11 h-5">
@@ -171,9 +171,9 @@ export default function WorkFile() {
             </div>
             <div className="flex justify-between mt-8 items-center">
                 <div className="flex gap-3 items-center">
-                    <label className="text-gray-900 font-medium">Pr. Lines</label>
+                    <label className="text-gray-900 text-sm">Pr. Lines</label>
                     <div>
-                        <input id="prlines" value={pline} onChange={(e) => { setPline(e.target.value); setVline(''); setFlagPrdline(false); setFilterLine(''); setFilterVendor(''); setVcode(0); }} class="w-32 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" />
+                        <input id="prlines" value={pline} onChange={(e) => { setPline(e.target.value); setVline(''); setFlagPrdline(false); setFilterLine(''); setFilterVendor(''); setVcode(0); }} class="w-16 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" />
                         {plines.length > 0 && (
                             <div className="border border-black p-2 bg-gray-300 absolute mt-1 z-50">
                                 {plines.map((item) => {
@@ -184,9 +184,9 @@ export default function WorkFile() {
                             </div>
                         )}
                     </div>
-                    <label className="text-gray-900 font-medium">Vendors</label>
+                    <label className="text-gray-900 text-sm">Vendors</label>
                     <div>
-                        <input id="vendors" value={vline} onChange={(e) => { setVline(e.target.value); setPline(''); setPrdline(''); setFlagVline(false); setFilterVendor(''); setFilterLine('') }} class="w-32 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" />
+                        <input id="vendors" value={vline} onChange={(e) => { setVline(e.target.value); setPline(''); setPrdline(''); setFlagVline(false); setFilterVendor(''); setFilterLine('') }} class="w-60 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" />
                         {vlines.length > 0 && (
                             <div className="border border-black p-2 bg-gray-300 absolute mt-1 z-50">
                                 {vlines.map((item) => {
@@ -197,18 +197,18 @@ export default function WorkFile() {
                             </div>
                         )}
                     </div>
-                    <label className="text-gray-900 font-medium">Purchasers</label>
-                    <input type="text" className="w-32 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" />
+                    <label className="text-gray-900 text-sm">Purchasers</label>
+                    <input type="text" className="w-16 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" />
                 </div>
                 <div className="flex gap-3 items-center mr-2">
-                    <button onClick={() => { setFilterLine(''); setFilterVendor('') }} className="bg-[#9843D0] text-white px-3 py-2 rounded-lg">Generate File</button>
-                    <button onClick={() => { router.push('/tab-production') }} className="bg-[#9843D0] text-white px-3 py-2 rounded-lg">Post Tab to Production</button>
-                    <button className="bg-[#9843D0] text-white px-3 py-2 rounded-lg">Save</button>
+                    <button onClick={() => { setFilterLine(''); setFilterVendor('') }} className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Generate File</button>
+                    <button onClick={() => { router.push('/tab-production') }} className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Post Tab to Production</button>
+                    <button className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Save</button>
                 </div>
             </div>
             <div className="mt-12">
                 <ul className="flex gap-4">
-                    <li onClick={() => { setTab(0); setBaseMeasures(measures) }}><h1 className={`${tab == 0 && 'bg-[#9843D0] text-white rounded-lg'} px-3 py-2 cursor-pointer`}>Pricing</h1></li>
+                    <li onClick={() => { setTab(0); setBaseMeasures(measures) }}><h1 className={`${tab == 0 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer`}>Pricing</h1></li>
                     <li><h1 className={`${tab == 1 && 'bg-[#9843D0] text-white rounded-lg'} px-3 py-2 cursor-pointer`}>Code/Class</h1></li>
                     <li onClick={() => { setTab(2); setBaseMeasures(measuresU) }}><h1 className={`${tab == 2 && 'bg-[#9843D0] text-white rounded-lg'} px-3 py-2 cursor-pointer`}>UOM</h1></li>
                     <li><h1 className={`${tab == 3 && 'bg-[#9843D0] text-white rounded-lg'} px-3 py-2 cursor-pointer`}>Vendor File</h1></li>
@@ -217,7 +217,7 @@ export default function WorkFile() {
                     <li><h1 className="px-3 py-2">Database</h1></li>
                     <li><h1 className="px-3 py-2">Other</h1></li>
                 </ul>
-                <hr className="border-gray-300 mt-1" />
+                <hr className="border-gray-300" />
             </div>
             <div className="mt-10">
                 {tab == 0 ? <SpreadSheetData data={data} setData={setData} /> : tab == 2 ? <SpreadSheetData data={dataU} setData={setDataU} /> : null}

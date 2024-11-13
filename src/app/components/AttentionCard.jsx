@@ -19,7 +19,7 @@ export default function AttentionCard() {
         </svg>
       ),
       title: "Orders",
-      value: "12",
+      value: "lorem ipsum dolor sit amet consectetur adipiscing elit",
     },
     {
       svg: (
@@ -40,11 +40,11 @@ export default function AttentionCard() {
         </svg>
       ),
       title: "Products",
-      value: "12",
+      value: "lorem ipsum dolor sit amet consectetur adipiscing elit",
     },
   ];
   return (
-    <div className="w-64 bg-white p-4 rounded-lg shadow-md">
+    <div className="w-[30%] bg-white p-4 rounded-lg border border-gray-900 shadow-md">
       <div className="mb-2">
         <div className="flex justify-between">
           <h1 className="text-lg font-bold">Need Attention</h1>
@@ -86,7 +86,7 @@ export default function AttentionCard() {
       </div>
       <div>
         <hr className="border-black" />
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-5 mt-5">
           {data.map((item, index) => (
             <div key={index}>
               <div className="flex gap-2 items-center">

@@ -23,8 +23,11 @@
   align-items: center;
   justify-content: space-between;
   margin: 1rem 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.25rem;
+  position: fixed;
+  width: 77%;
+  bottom: 0;
+  border: 1px solid gray;
+  border-radius: 0.5rem;
   background-color: #fff;
   padding: 0.5rem 1rem;
 }

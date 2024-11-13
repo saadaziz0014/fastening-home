@@ -46,7 +46,7 @@ export default function UpcomingPriceCard() {
     },
   ];
   return (
-    <div className="w-64 bg-white p-4 rounded-lg shadow-md">
+    <div className="w-[30%] bg-white p-4 rounded-lg border border-gray-900 shadow-md">
       <div className="mb-2">
         <div className="flex justify-between">
           <h1 className="text-lg font-bold">Upcoming Price</h1>
@@ -88,7 +88,7 @@ export default function UpcomingPriceCard() {
       </div>
       <div>
         <hr className="border-black" />
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-5 mt-5">
           {data.map((item, index) => (
             <div key={index} className="flex justify-between items-center">
               <div className="flex gap-2 items-center">

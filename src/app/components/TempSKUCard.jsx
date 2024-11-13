@@ -17,7 +17,7 @@ export default function TempSKUCard() {
     ],
   };
   return (
-    <div className="w-64 bg-white p-4 rounded-lg shadow-md">
+    <div className="w-[30%] bg-white p-4 rounded-lg border border-gray-900 shadow-md">
       <div className="mb-2">
         <div className="flex justify-between">
           <h1 className="text-lg font-bold">Temp SKU's</h1>
@@ -33,7 +33,7 @@ export default function TempSKUCard() {
       </div>
       <div>
         <hr className="border-black" />
-        <div className="flex justify-center">
+        <div className="flex justify-center mt-5">
           <Pie data={data} />
         </div>
       </div>

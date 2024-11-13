@@ -1,55 +1,55 @@
 import Link from "next/link";
 
-export default function ReportCard() {
+export default function OverideCost() {
   let data = [
     {
       svg: (
         <svg
-          width="13"
-          height="16"
-          viewBox="0 0 13 16"
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="M7.00003 1.33325H2.33336C1.97974 1.33325 1.6406 1.47373 1.39055 1.72378C1.14051 1.97382 1.00003 2.31296 1.00003 2.66659V13.3333C1.00003 13.6869 1.14051 14.026 1.39055 14.2761C1.6406 14.5261 1.97974 14.6666 2.33336 14.6666H10.3334C10.687 14.6666 11.0261 14.5261 11.2762 14.2761C11.5262 14.026 11.6667 13.6869 11.6667 13.3333V5.99992M7.00003 1.33325L11.6667 5.99992M7.00003 1.33325V5.99992H11.6667"
-            stroke="#624E88"
-            stroke-width="1.33333"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            d="M9.99996 6.66675V10.0001M9.99996 13.3334H10.0083M18.3333 10.0001C18.3333 14.6025 14.6023 18.3334 9.99996 18.3334C5.39759 18.3334 1.66663 14.6025 1.66663 10.0001C1.66663 5.39771 5.39759 1.66675 9.99996 1.66675C14.6023 1.66675 18.3333 5.39771 18.3333 10.0001Z"
+            stroke="red"
+            strokeWidth="1.67"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
       ),
-      title: "Orders",
-      value: "12",
+      title: "$800",
+      value: "lorem ipsum dolor sit amet consectetur adipiscing elit",
     },
     {
       svg: (
         <svg
-          width="13"
-          height="16"
-          viewBox="0 0 13 16"
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            d="M7.00003 1.33325H2.33336C1.97974 1.33325 1.6406 1.47373 1.39055 1.72378C1.14051 1.97382 1.00003 2.31296 1.00003 2.66659V13.3333C1.00003 13.6869 1.14051 14.026 1.39055 14.2761C1.6406 14.5261 1.97974 14.6666 2.33336 14.6666H10.3334C10.687 14.6666 11.0261 14.5261 11.2762 14.2761C11.5262 14.026 11.6667 13.6869 11.6667 13.3333V5.99992M7.00003 1.33325L11.6667 5.99992M7.00003 1.33325V5.99992H11.6667"
-            stroke="#624E88"
-            stroke-width="1.33333"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            d="M9.99996 6.66675V10.0001M9.99996 13.3334H10.0083M18.3333 10.0001C18.3333 14.6025 14.6023 18.3334 9.99996 18.3334C5.39759 18.3334 1.66663 14.6025 1.66663 10.0001C1.66663 5.39771 5.39759 1.66675 9.99996 1.66675C14.6023 1.66675 18.3333 5.39771 18.3333 10.0001Z"
+            stroke="red"
+            strokeWidth="1.67"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
       ),
-      title: "Products",
-      value: "12",
+      title: "$800",
+      value: "lorem ipsum dolor sit amet consectetur adipiscing elit",
     },
   ];
   return (
-    <div className="w-[30%] bg-white p-4 rounded-lg shadow-md border border-gray-900">
+    <div className="w-[30%] bg-white p-4 rounded-lg border border-gray-900 shadow-md">
       <div className="mb-2">
         <div className="flex justify-between">
-          <h1 className="text-lg font-bold">Reports</h1>
+          <h1 className="text-lg font-bold">Overide Cost</h1>
           <svg
             width="4"
             height="16"
@@ -90,14 +90,17 @@ export default function ReportCard() {
         <hr className="border-black" />
         <div className="flex flex-col gap-5 mt-5">
           {data.map((item, index) => (
-            <div key={index} className="flex justify-between">
+            <div key={index}>
               <div className="flex gap-2 items-center">
                 {item.svg}
-                <h1 className="text-lg">{item.title}</h1>
+                <Link
+                  href="/orders"
+                  className="text-md underline text-blue-500"
+                >
+                  <strong className="mr-1 text-black">{item.title}</strong>
+                  {item.value}
+                </Link>
               </div>
-              <Link href="#" className="text-[#9843D0] underline">
-                View Reports
-              </Link>
             </div>
           ))}
         </div>

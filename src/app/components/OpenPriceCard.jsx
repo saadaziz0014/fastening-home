@@ -1,7 +1,7 @@
 export default function OpenPriceCard({ data }) {
   console.log(data);
   return (
-    <div className="w-64 bg-white p-4 rounded-lg shadow-md">
+    <div className="w-[30%] bg-white p-4 rounded-lg border border-gray-900 shadow-md">
       <div className="mb-2">
         <div className="flex justify-between">
           <h1 className="text-lg font-bold">Open Price</h1>
@@ -43,18 +43,15 @@ export default function OpenPriceCard({ data }) {
       </div>
       <div>
         <hr className="border-black" />
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-5 mt-5">
           {data &&
             data.map((item, index) => (
-              <div key={index} className="flex justify-between items-center">
+              <div key={index} className="flex justify-between">
                 <div className="flex flex-col gap-2">
                   <h1 className="text-md font-semibold">{item.VNAME}</h1>
                   <p className="text-sm">{item.VENDOR}</p>
                 </div>
-                <span className="bg-purple-200 text-purple-700 rounded-full px-2 py-1">
-                  {item.VDTYPE}
-                </span>
-                <div className="flex items-center">
+                <div className="flex">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"

@@ -1,20 +1,20 @@
 'use client'
 import ReactPaginate from "react-paginate";
-import Table from "../components/Table";
+import Table from "../../components/Table";
 import { useRouter } from "next/navigation";
 export default function UpdateMenu() {
     const router = useRouter();
     return (
-        <div className="bg-[#F8F9FB] h-screen">
-            <div className="mt-2 mb-10">
+        <div className="bg-[#F8F9FB] font-inter">
+            <div className="mt-5 mb-10">
                 <div className="flex justify-between">
                     <div className="flex flex-col gap-2">
-                        <h1 className="text-3xl font-bold">Update Menu</h1>
-                        <p className="text-md">View your terms transaction and trades</p>
+                        <h1 className="text-3xl">Update Menu</h1>
+                        <p className="text-sm">View your terms transaction and trades</p>
                     </div>
-                    <div className="flex gap-2 mr-2">
-                        <button className="bg-[#9843D0] text-white px-3 py-2 rounded-lg">Add New Price File</button>
-                        <button onClick={() => { router.push('/work-file') }} className="bg-[#9843D0] text-white px-3 py-2 rounded-lg">Create New Work File</button>
+                    <div className="flex gap-2">
+                        <button className="bg-[#614d87] text-white px-2 py-1 rounded-lg text-xs">Add New Price File</button>
+                        <button onClick={() => { router.push('/pim/work-file') }} className="bg-[#614d87] text-white rounded-lg text-xs px-2 py-1">Create New Work File</button>
                     </div>
                 </div>
                 <div className="mt-12">
