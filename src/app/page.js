@@ -1,9 +1,14 @@
-
-
+'use client'
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 export default function Home() {
+  const router = useRouter();
+  useEffect(() => {
+    router.push("/dashboard");
+  }, []);
   return (
-   <div>
-    <h1>Fastening House</h1>
-   </div>
+    <div>
+      <h1>Fastening House</h1>
+    </div>
   );
 }

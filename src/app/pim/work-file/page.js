@@ -5,11 +5,46 @@ import SpreadSheetData from "../../components/SpreadSheetData";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import axios from "axios";
+import TableComponent from "@/app/components/TableComponent";
+import DropdownMeasure from "@/app/components/DropdownMeasure";
+
+const columns = [
+    { key: "prLine", label: "Pr. Line" },
+    { key: "partNumber", label: "Part Number" },
+    { key: "description", label: "Description" },
+    { key: "xRef", label: "X-Ref" },
+    { key: "cost", label: "Cost" },
+    { key: "newCost", label: "New Cost" },
+    { key: "dollarChange", label: "$ Change" },
+    { key: "percentChange", label: "% Change" },
+    { key: "avgCost", label: "Avg Cost" },
+    { key: "regionalPrice", label: "Regional Price" },
+    { key: "list", label: "List" },
+    { key: "dollarChangeList", label: "$ Change" },
+    { key: "percentChangeList", label: "% Change" },
+    { key: "zo9", label: "ZO9" },
+    { key: "qtyOH", label: "Qty OH" },
+    { key: "isc", label: "ISC" },
+    { key: "stockPer", label: "Stock %" },
+    { key: "purchPer", label: "Purch %" },
+    { key: "landedCost", label: "Landed Cost" },
+    { key: "pMult", label: "Purchase Multiple" },
+    { key: "sMult", label: "Sell Multiple" },
+    { key: "pToStock", label: "P to Stock" },
+    { key: "sellUnit", label: "Sell Unit" },
+    { key: "stkUnit", label: "STK Unit" },
+    { key: "purUnit", label: "Pur Unit" },
+    { key: "boxQty", label: "Box Quantity" },
+];
 
 export default function WorkFile() {
     const router = useRouter();
+    const [visibleColumns, setVisibleColumns] = useState(
+        columns.map((col) => col.key)
+    );
     const [pline, setPline] = useState("");
     const [vline, setVline] = useState("");
+    const [initialData, setInitialData] = useState([]);
     const [prdline, setPrdline] = useState("");
     const [vcode, setVcode] = useState(0);
     const [data, setData] = useState([[{ value: "Pr. Line" }, { value: "Part Number" }, { value: "Description" }, { value: "Vendor" }, { value: "Cost" }, { value: "New Cost" }, { value: "Variance$" }, { value: "Variance%" }]]);
@@ -55,21 +90,24 @@ export default function WorkFile() {
     }
     const generateFile = async () => {
         try {
+            console.log(prdline, vcode);
             setData([[{ value: "Pr. Line" }, { value: "Part Number" }, { value: "Description" }, { value: "Vendor" }, { value: "Cost" }, { value: "New Cost" }, { value: "Variance$" }, { value: "Variance%" }]]);
             setDataU([{ value: "Pr. Line" }, { value: "Part Number" }, { value: "Description" }, { value: "Cost" }, { value: "New Cost" }, { value: "Average Cost" }, { value: "Qty OH" }]);
             if (prdline.length > 0 || vcode != 0) {
                 if (prdline.length > 0) {
-                    let resp = await axios.get("/api/product-master?pline=" + prdline + "&vname=" + String(filterVendor));
+                    let resp = await axios.get("/api/product-master?pline=" + prdline);
                     if (resp.data.status === 200) {
                         let array = [];
                         let arrayU = [];
-                        let length = resp.data.prdmaster.length > 10 ? 10 : resp.data.prdmaster.length;
+                        let length = resp.data.prdmaster.length;
                         for (let i = 0; i < length; i++) {
                             array.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].VRD }, { value: resp.data.prdmaster[i].VRDPER }]);
                             arrayU.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].AVGCST }, { value: resp.data.prdmaster[i].QTYOHD }]);
                         }
-                        setData([...data, ...array]);
-                        setDataU([...dataU, ...arrayU]);
+                        if (length > 0) {
+                            setData([...data, ...array]);
+                            setDataU([...dataU, ...arrayU]);
+                        }
                         let allVendorsResp = await axios.get("/api/all-vendors?PRDLIN=" + prdline);
                         if (allVendorsResp.data.status === 200) {
                             setVendors(allVendorsResp.data.vendors);
@@ -80,17 +118,16 @@ export default function WorkFile() {
                     }
                 }
                 else if (vcode != 0) {
-                    let resp = await axios.get("/api/product-master?vendor=" + String(vcode) + "&line=" + String(filterLine));
+                    let resp = await axios.get("/api/product-master?vendor=" + String(vcode));
                     if (resp.data.status === 200) {
                         let array = [];
                         let arrayU = [];
-                        let length = resp.data.prdmaster.length > 10 ? 10 : resp.data.prdmaster.length;
+                        let length = resp.data.prdmaster.length;
                         for (let i = 0; i < length; i++) {
+                            initialData.push({ prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO });
                             array.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].VRD }, { value: resp.data.prdmaster[i].VRDPER }]);
                             arrayU.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].AVGCST }, { value: resp.data.prdmaster[i].QTYOHD }]);
                         }
-                        setData([...data, ...array]);
-                        setDataU([...dataU, ...arrayU]);
                         let allPlinesResp = await axios.get("/api/all-productlines?VENDNO=" + vcode);
                         if (allPlinesResp.data.status === 200) {
                             setLines(allPlinesResp.data.plines);
@@ -117,9 +154,9 @@ export default function WorkFile() {
         if (!flagVline && vline.length > 2) {
             fetchVlines();
         }
-        if (prdline.length > 0 || vcode != 0) {
-            generateFile();
-        }
+        // if (prdline.length > 0 || vcode != 0) {
+        //     generateFile();
+        // }
     }, [pline, vline, filterLine, filterVendor]);
 
     const plineSelected = (item) => {
@@ -137,14 +174,14 @@ export default function WorkFile() {
     return (
         <div>
             <div className="flex justify-between items-center font-inter mt-3">
-                <div className="flex gap-5 items-center">
+                <div className="flex gap-10 items-center">
                     <div>
                         <Dropdown label="Pr. Lines" data={lines} display={linesFlag} setDisplay={setLinesFlag} setFilter={setFilterLine} />
                     </div>
                     <div>
                         <Dropdown label="Vendors" data={vendors} display={vendorsFlag} setDisplay={setVendorsFlag} setFilter={setFilterVendor} />
                     </div>
-                    <Dropdown label="Measures" data={baseMeasures} display={measuresFlag} setDisplay={setMeasuresFlag} setFilter={() => { }} />
+                    <DropdownMeasure visibleColumns={visibleColumns} setVisibleColumns={setVisibleColumns} label="Measures" data={columns} display={measuresFlag} setDisplay={setMeasuresFlag} setFilter={() => { }} />
                     <Dropdown label="Company" data={[]} display="hidden" setDisplay={setCompanyFlag} setFilter={() => { }} />
                     <Dropdown label="Database" data={[]} display="hidden" setDisplay={setDatabaseFlag} setFilter={() => { }} />
                     <button className="underline py-1 text-[#614d87]">Remove Filters</button>
@@ -175,10 +212,13 @@ export default function WorkFile() {
                     <div>
                         <input id="prlines" value={pline} onChange={(e) => { setPline(e.target.value); setVline(''); setFlagPrdline(false); setFilterLine(''); setFilterVendor(''); setVcode(0); }} class="w-16 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" />
                         {plines.length > 0 && (
-                            <div className="border border-black p-2 bg-gray-300 absolute mt-1 z-50">
+                            <div className="shadow-lg p-2 bg-white text-black rounded-lg absolute mt-1 z-50">
                                 {plines.map((item) => {
                                     return (
-                                        <option value={item.id} onClick={() => { plineSelected(item.P1LIN) }} className="text-gray-900 border-b-1 border-gray-300 p-1 hover:bg-blue-900 hover:text-white">{item.P1LIN} {item.P1COD}</option>
+                                        <div>
+                                            <option value={item.id} onClick={() => { plineSelected(item.P1LIN) }} className="text-black mt-1 text-xs cursor-pointer px-2 py-1 hover:bg-gray-100">{item.P1LIN}</option>
+                                            <hr className="border-gray-300" />
+                                        </div>
                                     )
                                 })}
                             </div>
@@ -188,10 +228,13 @@ export default function WorkFile() {
                     <div>
                         <input id="vendors" value={vline} onChange={(e) => { setVline(e.target.value); setPline(''); setPrdline(''); setFlagVline(false); setFilterVendor(''); setFilterLine('') }} class="w-60 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" />
                         {vlines.length > 0 && (
-                            <div className="border border-black p-2 bg-gray-300 absolute mt-1 z-50">
+                            <div className="shadow-lg p-2 bg-white text-black rounded-lg absolute mt-1 z-50">
                                 {vlines.map((item) => {
                                     return (
-                                        <option value={item.id} onClick={() => { vlineSelected(item.VENDOR, item.VNAME) }} className="text-gray-900 border-b-1 border-gray-300 p-1 hover:bg-blue-900 hover:text-white">{item.VNAME} {item.VCODE}</option>
+                                        <div>
+                                            <option value={item.id} onClick={() => { vlineSelected(item.VENDOR, item.VNAME) }} className="text-black mt-1 text-xs cursor-pointer px-2 py-1 hover:bg-gray-100">{item.VNAME} {item.VCODE}</option>
+                                            <hr className="border-gray-300" />
+                                        </div>
                                     )
                                 })}
                             </div>
@@ -201,7 +244,7 @@ export default function WorkFile() {
                     <input type="text" className="w-16 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" />
                 </div>
                 <div className="flex gap-3 items-center mr-2">
-                    <button onClick={() => { setFilterLine(''); setFilterVendor('') }} className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Generate File</button>
+                    <button onClick={generateFile} className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Generate File</button>
                     <button onClick={() => { router.push('/tab-production') }} className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Post Tab to Production</button>
                     <button className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Save</button>
                 </div>
@@ -220,7 +263,8 @@ export default function WorkFile() {
                 <hr className="border-gray-300" />
             </div>
             <div className="mt-10">
-                {tab == 0 ? <SpreadSheetData data={data} setData={setData} /> : tab == 2 ? <SpreadSheetData data={dataU} setData={setDataU} /> : null}
+                {/* {tab == 0 ? <SpreadSheetData data={data} setData={setData} /> : tab == 2 ? <SpreadSheetData data={dataU} setData={setDataU} /> : null} */}
+                <TableComponent initialData={initialData} visibleColumns={visibleColumns} />
             </div>
         </div>
     )

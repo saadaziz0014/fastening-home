@@ -6,88 +6,41 @@ export const GET = async (request) => {
         const { searchParams } = new URL(request.url);
         const pline = searchParams.get("pline");
         const vendor = searchParams.get("vendor");
-        const line = searchParams.get("line");
-        const vname = searchParams.get("vname");
-        let vendorData = {};
-        if (vname != '') {
-            vendorData = await prisma.phocas_Venlin.findFirst({
-                where: {
-                    VNAME: vname
-                }
-            })
-        }
+        console.log(pline, vendor);
         let prdmaster = [];
         if (!pline && !vendor) {
             return NextResponse.json({ error: "Please enter a search term", status: 400 })
         } else if (pline && !vendor) {
-            if (vname != '') {
-                prdmaster = await prisma.phocas_Prdmst.findMany({
-                    where: {
-                        PRDLIN: pline,
-                        VENDNO: vendorData.VENDOR
-                    },
-                    select: {
-                        PRDLIN: true,
-                        PRODNO: true,
-                        VENDNO: true,
-                        PRDSCE: true,
-                        VEVCST: true
-                    },
-                    take: 50
-                }
-                )
+            console.log(pline);
+            prdmaster = await prisma.phocas_Prdmst.findMany({
+                where: {
+                    PRDLIN: pline,
+                },
+                select: {
+                    PRDLIN: true,
+                    PRODNO: true,
+                    VENDNO: true,
+                    PRDSCE: true,
+                    VEVCST: true
+                },
+                take: 50
             }
-            else {
-                prdmaster = await prisma.phocas_Prdmst.findMany({
-                    where: {
-                        PRDLIN: pline,
-                    },
-                    select: {
-                        PRDLIN: true,
-                        PRODNO: true,
-                        VENDNO: true,
-                        PRDSCE: true,
-                        VEVCST: true
-                    },
-                    take: 50
-                }
-                )
-            }
+            )
         } else if (!pline && vendor) {
-            if (line != '') {
-                prdmaster = await prisma.phocas_Prdmst.findMany({
-                    where: {
-                        VENDNO: Number(vendor),
-                        PRDLIN: {
-                            contains: line,
-                            mode: "insensitive"
-                        }
-                    },
-                    select: {
-                        PRDLIN: true,
-                        PRODNO: true,
-                        VENDNO: true,
-                        PRDSCE: true,
-                        VEVCST: true
-                    },
-                    take: 50
-                })
-            }
-            else {
-                prdmaster = await prisma.phocas_Prdmst.findMany({
-                    where: {
-                        VENDNO: Number(vendor),
-                    },
-                    select: {
-                        PRDLIN: true,
-                        PRODNO: true,
-                        VENDNO: true,
-                        PRDSCE: true,
-                        VEVCST: true
-                    },
-                    take: 50
-                })
-            }
+            console.log(vendor);
+            prdmaster = await prisma.phocas_Prdmst.findMany({
+                where: {
+                    VENDNO: Number(vendor),
+                },
+                select: {
+                    PRDLIN: true,
+                    PRODNO: true,
+                    VENDNO: true,
+                    PRDSCE: true,
+                    VEVCST: true
+                },
+                take: 50
+            })
         }
         for (let i = 0; i < prdmaster.length; i++) {
             let hist = await prisma.phocas_Split_Ordhst_2025_FHI.findFirst({

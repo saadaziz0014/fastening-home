@@ -6,23 +6,17 @@ export const GET = async (request) => {
     try {
         let plines = await prisma.phocas_Prdln.findMany({
             where: {
-                OR: [
-                    {
-                        P1LIN: {
-                            contains: txt,
-                            mode: "insensitive"
-                        }
-                    },
-                    {
-                        P1COD: Number(txt)
-                    }
-                ]
+                P1LIN: {
+                    startsWith: txt,
+                    mode: "insensitive"
+                }
             }
         });
+        plines = plines.sort((a, b) => a.P1LIN > b.P1LIN ? 1 : -1)
         for (let i = 0; i < plines.length; i++) {
             let keys = Object.keys(plines[i])
             for (let j = 0; j < keys.length; j++) {
-                plines[i][keys[j]] = plines[i][keys[j]].toString()
+                plines[i][keys[j]] = plines[i][keys[j]] && plines[i][keys[j]].toString()
             }
         }
         return NextResponse.json({ plines, status: 200 })

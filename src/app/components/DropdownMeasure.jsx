@@ -1,10 +1,17 @@
-export default function Dropdown({
+export default function DropdownMeasure({
   label,
   data,
   display,
   setDisplay,
   setFilter,
+  visibleColumns,
+  setVisibleColumns,
 }) {
+  const toggleColumn = (key) => {
+    setVisibleColumns((prev) =>
+      prev.includes(key) ? prev.filter((col) => col !== key) : [...prev, key]
+    );
+  };
   const changeDisplay = () => {
     if (display === "hidden" && data.length > 0) {
       setDisplay("visible");
@@ -81,15 +88,17 @@ export default function Dropdown({
               <li key={item} onClick={() => setFilter(item)}>
                 <div className="flex items-center">
                   <input
-                    id={`checkbox-${item}`}
+                    id={`checkbox-${item.key}`}
                     type="checkbox"
+                    checked={visibleColumns.includes(item.key)}
+                    onChange={() => toggleColumn(item.key)}
                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700"
                   />
                   <label
-                    htmlFor={`checkbox-${item}`}
+                    htmlFor={`checkbox-${item.label}`}
                     className="ms-2 text-xs font-inter text-gray-900"
                   >
-                    {item}
+                    {item.label}
                   </label>
                 </div>
               </li>

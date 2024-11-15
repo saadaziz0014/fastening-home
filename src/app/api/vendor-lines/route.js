@@ -12,14 +12,14 @@ export const GET = async (request) => {
                     },
                     {
                         VNAME: {
-                            contains: txt,
+                            startsWith: txt,
                             mode: "insensitive"
                         }
                     }
                 ]
             }
         });
-
+        vlines = vlines.sort((a, b) => a.VNAME > b.VNAME ? 1 : -1)
         for (let i = 0; i < vlines.length; i++) {
             let keys = Object.keys(vlines[i])
             for (let j = 0; j < keys.length; j++) {
