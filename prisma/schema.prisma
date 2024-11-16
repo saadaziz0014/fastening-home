@@ -151,3 +151,23 @@ model WorkFile {
   vcode   BigInt?
   vname   String?
 }
+
+model TabProduction {
+  id      Int     @id @default(autoincrement())
+  prdline String?
+  status  String?
+  effectivedate String?
+  promofile String?
+  quotefile String?
+  deadstock String?
+  prlinevsvendor String?
+  customervalueprice String?
+  vendornumber String?
+  specialvendor String?
+  punchcomparison String?
+  freight String?
+  searchkey String?
+  pricelistform String?
+  sabreinfo String?
+  notes String?
+}

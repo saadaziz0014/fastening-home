@@ -50,20 +50,20 @@ export default function Dropdown({
   };
   const selectAll = () => {
     setSelectedItems(data); // Set all items as selected
+    fileringOfData();
+  };
+
+  const fileringOfData = () => {
+    let dataH = [];
     if (type == "prdline") {
-      let dataH = initialData.filter((item) =>
-        updatedItems.includes(item.prLine)
-      );
+      dataH = initialData.filter((item) => data.includes(item.prLine));
       // console.log(dataH, "dataH");
-      setInitialData(dataH);
     }
     if (type == "vline") {
-      let dataH = initialData.filter((item) =>
-        updatedItems.includes(item.vname)
-      );
+      dataH = initialData.filter((item) => data.includes(item.vname));
       // console.log(dataH, "dataH");
-      setInitialData(dataH);
     }
+    setInitialData(dataH);
   };
 
   // Deselect all items
