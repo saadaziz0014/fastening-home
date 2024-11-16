@@ -18,8 +18,10 @@ const columns = [
     { key: "dollarChange", label: "$ Change" },
     { key: "percentChange", label: "% Change" },
     { key: "avgCost", label: "Avg Cost" },
+    { key: "productCode", label: "Product Code" },
     { key: "regionalPrice", label: "Regional Price" },
-    { key: "list", label: "List" },
+    { key: "list", label: "List Price" },
+    { key: "newList", label: "New List" },
     { key: "dollarChangeList", label: "$ Change" },
     { key: "percentChangeList", label: "% Change" },
     { key: "zo9", label: "ZO9" },
@@ -35,16 +37,50 @@ const columns = [
     { key: "stkUnit", label: "STK Unit" },
     { key: "purUnit", label: "Pur Unit" },
     { key: "boxQty", label: "Box Quantity" },
+    { key: "vname", label: "Vendor" },
+];
+
+const pricingColumns = [
+    { key: "prLine", label: "Pr. Line" },
+    { key: "partNumber", label: "Part Number" },
+    { key: "description", label: "Description" },
+    { key: "xRef", label: "X-Ref" },
+    { key: "cost", label: "Cost" },
+    { key: "newCost", label: "New Cost" },
+    { key: "dollarChange", label: "$ Change" },
+    { key: "percentChange", label: "% Change" },
+    { key: "avgCost", label: "Avg Cost" },
+    { key: "productCode", label: "Product Code" },
+    { key: "regionalPrice", label: "Regional Price" },
+    { key: "list", label: "List Price" },
+    { key: "newList", label: "New List" },
+    { key: "dollarChangeList", label: "$ Change" },
+    { key: "percentChangeList", label: "% Change" },
+    { key: "zo9", label: "ZO9" },
+    { key: "qtyOH", label: "Qty OH" },
+    { key: "isc", label: "ISC" },
+    { key: "stockPer", label: "Stock %" },
+    { key: "purchPer", label: "Purch %" },
+    { key: "landedCost", label: "Landed Cost" },
+    { key: "pMult", label: "Purchase Multiple" },
+    { key: "sMult", label: "Sell Multiple" },
+    { key: "pToStock", label: "P to Stock" },
+    { key: "sellUnit", label: "Sell Unit" },
+    { key: "stkUnit", label: "STK Unit" },
+    { key: "purUnit", label: "Pur Unit" },
+    { key: "boxQty", label: "Box Quantity" },
+    { key: "vname", label: "Vendor" },
 ];
 
 export default function WorkFile() {
     const router = useRouter();
     const [visibleColumns, setVisibleColumns] = useState(
-        columns.map((col) => col.key)
+        pricingColumns.map((col) => col.key)
     );
     const [pline, setPline] = useState("");
     const [vline, setVline] = useState("");
     const [initialData, setInitialData] = useState([]);
+    const [mainData, setMainData] = useState([]);
     const [prdline, setPrdline] = useState("");
     const [vcode, setVcode] = useState(0);
     const [data, setData] = useState([[{ value: "Pr. Line" }, { value: "Part Number" }, { value: "Description" }, { value: "Vendor" }, { value: "Cost" }, { value: "New Cost" }, { value: "Variance$" }, { value: "Variance%" }]]);
@@ -100,13 +136,18 @@ export default function WorkFile() {
                         let array = [];
                         let arrayU = [];
                         let length = resp.data.prdmaster.length;
+                        let data = [];
                         for (let i = 0; i < length; i++) {
+                            data.push({ prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME });
                             array.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].VRD }, { value: resp.data.prdmaster[i].VRDPER }]);
                             arrayU.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].AVGCST }, { value: resp.data.prdmaster[i].QTYOHD }]);
                         }
                         if (length > 0) {
-                            setData([...data, ...array]);
-                            setDataU([...dataU, ...arrayU]);
+                            setInitialData(data);
+                            setMainData(data);
+                        }
+                        else {
+                            setInitialData([{ prLine: "NULL", partNumber: "NULL", description: "NULL", cost: "NULL", newCost: "NULL", dollarChange: "NULL", percentChange: "NULL", avgCost: "NULL", productCode: "NULL", qtyOH: "NULL", list: "NULL", isc: "NULL", stockPer: "NULL", purchPer: "NULL", pMult: "NULL", sMult: "NULL", pToStock: "NULL", sellUnit: "NULL", stkUnit: "NULL", purUnit: "NULL", boxQty: "NULL" }]);
                         }
                         let allVendorsResp = await axios.get("/api/all-vendors?PRDLIN=" + prdline);
                         if (allVendorsResp.data.status === 200) {
@@ -125,12 +166,16 @@ export default function WorkFile() {
                         let length = resp.data.prdmaster.length;
                         let data = [];
                         for (let i = 0; i < length; i++) {
-                            data.push({ prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, qtyOH: resp.data.prdmaster[i].QTYOHD });
+                            data.push({ prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME });
                             array.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].VRD }, { value: resp.data.prdmaster[i].VRDPER }]);
                             arrayU.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].AVGCST }, { value: resp.data.prdmaster[i].QTYOHD }]);
                         }
                         if (length > 0) {
                             setInitialData(data);
+                            setMainData(data);
+                        }
+                        else {
+                            setInitialData([{ prLine: "NULL", partNumber: "NULL", description: "NULL", cost: "NULL", newCost: "NULL", dollarChange: "NULL", percentChange: "NULL", avgCost: "NULL", productCode: "NULL", qtyOH: "NULL", list: "NULL", isc: "NULL", stockPer: "NULL", purchPer: "NULL", pMult: "NULL", sMult: "NULL", pToStock: "NULL", sellUnit: "NULL", stkUnit: "NULL", purUnit: "NULL", boxQty: "NULL" }]);
                         }
                         let allPlinesResp = await axios.get("/api/all-productlines?VENDNO=" + vcode);
                         if (allPlinesResp.data.status === 200) {
@@ -180,14 +225,14 @@ export default function WorkFile() {
             <div className="flex justify-between items-center font-inter mt-3">
                 <div className="flex gap-10 items-center">
                     <div>
-                        <Dropdown label="Pr. Lines" data={lines} display={linesFlag} setDisplay={setLinesFlag} setFilter={setFilterLine} />
+                        <Dropdown label="Pr. Lines" type="prdline" initialData={mainData} setInitialData={setInitialData} data={lines} display={linesFlag} setDisplay={setLinesFlag} />
                     </div>
                     <div>
-                        <Dropdown label="Vendors" data={vendors} display={vendorsFlag} setDisplay={setVendorsFlag} setFilter={setFilterVendor} />
+                        <Dropdown label="Vendors" type="vline" initialData={mainData} setInitialData={setInitialData} data={vendors} display={vendorsFlag} setDisplay={setVendorsFlag} />
                     </div>
-                    <DropdownMeasure visibleColumns={visibleColumns} setVisibleColumns={setVisibleColumns} label="Measures" data={columns} display={measuresFlag} setDisplay={setMeasuresFlag} setFilter={() => { }} />
-                    <Dropdown label="Company" data={[]} display="hidden" setDisplay={setCompanyFlag} setFilter={() => { }} />
-                    <Dropdown label="Database" data={[]} display="hidden" setDisplay={setDatabaseFlag} setFilter={() => { }} />
+                    <DropdownMeasure visibleColumns={visibleColumns} setVisibleColumns={setVisibleColumns} label="Measures" data={columns} display={measuresFlag} setDisplay={setMeasuresFlag} />
+                    <Dropdown label="Company" type="company" data={[]} display="hidden" setDisplay={setCompanyFlag} />
+                    <Dropdown label="Database" type="database" data={[]} display="hidden" setDisplay={setDatabaseFlag} />
                     <button className="underline py-1 text-[#614d87]">Remove Filters</button>
                 </div>
                 <div className="flex gap-1 items-center mr-2">

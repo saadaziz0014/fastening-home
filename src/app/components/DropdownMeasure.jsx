@@ -3,7 +3,6 @@ export default function DropdownMeasure({
   data,
   display,
   setDisplay,
-  setFilter,
   visibleColumns,
   setVisibleColumns,
 }) {
@@ -18,6 +17,13 @@ export default function DropdownMeasure({
     } else {
       setDisplay("hidden");
     }
+  };
+  const selectAll = () => {
+    const allKeys = data.map((item) => item.key); // Extract all column keys
+    setVisibleColumns(allKeys);
+  };
+  const deselectAll = () => {
+    setVisibleColumns([]); // Deselect all items
   };
   return (
     <div
@@ -62,21 +68,21 @@ export default function DropdownMeasure({
         {display === "visible" && (
           <>
             {/* Add "All" and "None" options */}
-            <li onClick={() => setFilter("all")}>
+            <li onClick={selectAll}>
               <div className="flex items-center">
                 <label
                   htmlFor="checkbox-all"
-                  className="ms-2 text-xs font-inter text-gray-900"
+                  className="ms-2 text-xs font-inter text-gray-900 cursor-pointer"
                 >
                   All
                 </label>
               </div>
             </li>
-            <li onClick={() => setFilter("none")}>
+            <li onClick={deselectAll}>
               <div className="flex items-center">
                 <label
                   htmlFor="checkbox-none"
-                  className="ms-2 text-xs font-inter text-gray-900"
+                  className="ms-2 text-xs font-inter text-gray-900 cusror-pointer"
                 >
                   None
                 </label>
@@ -85,7 +91,7 @@ export default function DropdownMeasure({
             <hr className="border-gray-300" />
             {/* Map the rest of the items */}
             {data.map((item) => (
-              <li key={item} onClick={() => setFilter(item)}>
+              <li key={item}>
                 <div className="flex items-center">
                   <input
                     id={`checkbox-${item.key}`}

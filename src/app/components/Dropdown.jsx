@@ -1,16 +1,75 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 export default function Dropdown({
   label,
   data,
   display,
   setDisplay,
-  setFilter,
+  initialData,
+  setInitialData,
+  type,
 }) {
+  const [selectedItems, setSelectedItems] = useState([]);
+  useEffect(() => {
+    setSelectedItems(data);
+  }, [data]);
   const changeDisplay = () => {
     if (display === "hidden" && data.length > 0) {
       setDisplay("visible");
     } else {
       setDisplay("hidden");
     }
+  };
+  const toggleColumn = (key) => {
+    setSelectedItems((prevSelectedItems) => {
+      const updatedItems = prevSelectedItems.includes(key)
+        ? prevSelectedItems.filter((item) => item !== key)
+        : [...prevSelectedItems, key];
+
+      // console.log(updatedItems, "updatedItems");
+      if (type == "prdline") {
+        // console.log(initialData, "initialData");
+        let dataH = initialData.filter((item) =>
+          updatedItems.includes(item.prLine)
+        );
+        // console.log(dataH, "dataH");
+        setInitialData(dataH);
+      }
+      if (type == "vline") {
+        console.log(updatedItems, "updatedItems");
+        let dataH = initialData.filter((item) =>
+          updatedItems.includes(item.vname)
+        );
+        // console.log(dataH, "dataH");
+        setInitialData(dataH);
+      }
+      return updatedItems;
+    });
+  };
+  const selectAll = () => {
+    setSelectedItems(data); // Set all items as selected
+    if (type == "prdline") {
+      let dataH = initialData.filter((item) =>
+        updatedItems.includes(item.prLine)
+      );
+      // console.log(dataH, "dataH");
+      setInitialData(dataH);
+    }
+    if (type == "vline") {
+      let dataH = initialData.filter((item) =>
+        updatedItems.includes(item.vname)
+      );
+      // console.log(dataH, "dataH");
+      setInitialData(dataH);
+    }
+  };
+
+  // Deselect all items
+  const deselectAll = () => {
+    setSelectedItems([]); // Clear the selection
+    setInitialData([]);
   };
   return (
     <div
@@ -55,21 +114,23 @@ export default function Dropdown({
         {display === "visible" && (
           <>
             {/* Add "All" and "None" options */}
-            <li onClick={() => setFilter("all")}>
+            <li>
               <div className="flex items-center">
                 <label
                   htmlFor="checkbox-all"
-                  className="ms-2 text-xs font-inter text-gray-900"
+                  className="ms-2 text-xs cursor-pointer font-inter text-gray-900"
+                  onClick={selectAll}
                 >
                   All
                 </label>
               </div>
             </li>
-            <li onClick={() => setFilter("none")}>
+            <li>
               <div className="flex items-center">
                 <label
                   htmlFor="checkbox-none"
-                  className="ms-2 text-xs font-inter text-gray-900"
+                  className="ms-2 text-xs cursor-pointer font-inter text-gray-900"
+                  onClick={deselectAll}
                 >
                   None
                 </label>
@@ -78,11 +139,13 @@ export default function Dropdown({
             <hr className="border-gray-300" />
             {/* Map the rest of the items */}
             {data.map((item) => (
-              <li key={item} onClick={() => setFilter(item)}>
+              <li key={item}>
                 <div className="flex items-center">
                   <input
                     id={`checkbox-${item}`}
                     type="checkbox"
+                    checked={selectedItems.includes(item)}
+                    onChange={() => toggleColumn(item)}
                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700"
                   />
                   <label

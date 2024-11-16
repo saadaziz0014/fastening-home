@@ -6,12 +6,10 @@ export const GET = async (request) => {
         const { searchParams } = new URL(request.url);
         const pline = searchParams.get("pline");
         const vendor = searchParams.get("vendor");
-        console.log(pline, vendor);
         let prdmaster = [];
         if (!pline && !vendor) {
             return NextResponse.json({ error: "Please enter a search term", status: 400 })
         } else if (pline && !vendor) {
-            console.log(pline);
             prdmaster = await prisma.phocas_Prdmst.findMany({
                 where: {
                     PRDLIN: pline,
@@ -21,13 +19,24 @@ export const GET = async (request) => {
                     PRODNO: true,
                     VENDNO: true,
                     PRDSCE: true,
-                    VEVCST: true
+                    VEVCST: true,
+                    PRDCDE: true,
+                    LISTPR: true,
+                    PMINVC: true,
+                    PMPPER: true,
+                    QBRKCD: true,
+                    PMPMLT: true,
+                    PMSMLT: true,
+                    PMCONV: true,
+                    SELUNT: true,
+                    STKUNT: true,
+                    PURUNT: true,
+                    PMQCAR: true
                 },
-                take: 50
+                take: 5
             }
             )
         } else if (!pline && vendor) {
-            console.log(vendor);
             prdmaster = await prisma.phocas_Prdmst.findMany({
                 where: {
                     VENDNO: Number(vendor),
@@ -37,9 +46,21 @@ export const GET = async (request) => {
                     PRODNO: true,
                     VENDNO: true,
                     PRDSCE: true,
-                    VEVCST: true
+                    VEVCST: true,
+                    PRDCDE: true,
+                    LISTPR: true,
+                    PMINVC: true,
+                    PMPPER: true,
+                    QBRKCD: true,
+                    PMPMLT: true,
+                    PMSMLT: true,
+                    PMCONV: true,
+                    SELUNT: true,
+                    STKUNT: true,
+                    PURUNT: true,
+                    PMQCAR: true,
                 },
-                take: 50
+                take: 5
             })
         }
         for (let i = 0; i < prdmaster.length; i++) {
@@ -58,6 +79,17 @@ export const GET = async (request) => {
                 prdmaster[i].NEWCST = 0
                 prdmaster[i].VRD = 0
                 prdmaster[i].VRDPER = 0
+            }
+            let vendor = await prisma.phocas_Venlin.findFirst({
+                where: {
+                    VENDOR: prdmaster[i].VENDNO
+                },
+                select: {
+                    VNAME: true
+                }
+            })
+            if (vendor) {
+                prdmaster[i].VNAME = vendor.VNAME
             }
             let warehouse = await prisma.phocas_Whsprd.findMany({
                 where: {

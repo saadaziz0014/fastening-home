@@ -10,8 +10,10 @@ const columns = [
   { key: "dollarChange", label: "$ Change" },
   { key: "percentChange", label: "% Change" },
   { key: "avgCost", label: "Avg Cost" },
+  { key: "productCode", label: "Product Code" },
   { key: "regionalPrice", label: "Regional Price" },
-  { key: "list", label: "List" },
+  { key: "list", label: "List Price" },
+  { key: "newList", label: "New List" },
   { key: "dollarChangeList", label: "$ Change" },
   { key: "percentChangeList", label: "% Change" },
   { key: "zo9", label: "ZO9" },
@@ -27,10 +29,10 @@ const columns = [
   { key: "stkUnit", label: "STK Unit" },
   { key: "purUnit", label: "Pur Unit" },
   { key: "boxQty", label: "Box Quantity" },
+  { key: "vnd", label: "Vendor" },
 ];
 
 const TableComponent = ({ visibleColumns, initialData }) => {
-  console.log(initialData);
   const [data, setData] = useState(initialData);
 
   // Handle cell content update
