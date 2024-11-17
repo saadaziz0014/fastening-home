@@ -31,7 +31,11 @@ export const GET = async (request) => {
                     SELUNT: true,
                     STKUNT: true,
                     PURUNT: true,
-                    PMQCAR: true
+                    PMQCAR: true,
+                    PRDCDE: true,
+                    PMCLAS: true,
+                    PMGRP: true,
+                    VELCOD: true
                 },
                 take: 5
             }
@@ -59,11 +63,37 @@ export const GET = async (request) => {
                     STKUNT: true,
                     PURUNT: true,
                     PMQCAR: true,
+                    PRDCDE: true,
+                    PMCLAS: true,
+                    PMGRP: true,
+                    VELCOD: true
                 },
                 take: 5
             })
         }
         for (let i = 0; i < prdmaster.length; i++) {
+            let prdCls = await prisma.phocas_Prdcls.findFirst({
+                where: {
+                    PTCLAS: String(prdmaster[i].PMCLAS)
+                }
+            })
+            if (prdCls) {
+                prdmaster[i].PMCLSDESC = prdCls.PTDESC
+            }
+            else {
+                prdmaster[i].PMCLSDESC = ""
+            }
+            let prdGrp = await prisma.groups.findFirst({
+                where: {
+                    Group: Number(prdmaster[i].PMGRP)
+                }
+            })
+            if (prdGrp) {
+                prdmaster[i].PMGRPDESC = prdGrp.Description
+            }
+            else {
+                prdmaster[i].PMGRPDESC = ""
+            }
             let hist = await prisma.phocas_Split_Ordhst_2025_FHI.findFirst({
                 where: {
                     PRDLIN: prdmaster[i].PRDLIN,
@@ -100,11 +130,20 @@ export const GET = async (request) => {
                     AVGCST: "desc"
                 }
             })
+            // console.log(warehouse[0], "warehouse");
             if (warehouse.length > 0) {
                 prdmaster[i].AVGCST = warehouse[0].AVGCST
+                prdmaster[i].BRANCH = warehouse[0].WHSCOD
+                if (prdmaster[i].BRANCH == 3 || prdmaster[i].BRANCH == 7 || prdmaster[i].BRANCH == 10 || prdmaster[i].BRANCH == 11 || prdmaster[i].BRANCH == 12) {
+                    prdmaster[i].COMPANY = "FHI"
+                } else {
+                    prdmaster[i].COMPANY = "Sabre"
+                }
             } else {
                 prdmaster[i].AVGCST = 0
             }
+            // console.log(prdmaster[i].BRANCH, "prdmaster[i].BRANCH");
+            // console.log(prdmaster[i].COMPANY);
             let oh = await prisma.phocas_Whsprd.findMany({
                 where: {
                     PRDLIN: prdmaster[i].PRDLIN,

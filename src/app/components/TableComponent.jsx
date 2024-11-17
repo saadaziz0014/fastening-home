@@ -30,6 +30,16 @@ const columns = [
   { key: "purUnit", label: "Pur Unit" },
   { key: "boxQty", label: "Box Quantity" },
   { key: "vnd", label: "Vendor" },
+  { key: "code", label: "Code" },
+  { key: "class", label: "Class" },
+  { key: "group", label: "Group" },
+  { key: "codeDesc", label: "Code Description" },
+  { key: "classDesc", label: "Class Description" },
+  { key: "groupDesc", label: "Group Description" },
+  { key: "stock", label: "Stock" },
+  { key: "salesFHI", label: "Sales FHI" },
+  { key: "salesSabre", label: "Sales Sabre" },
+  { key: "vcode", label: "Velocity Code" },
 ];
 
 const TableComponent = ({ visibleColumns, initialData }) => {

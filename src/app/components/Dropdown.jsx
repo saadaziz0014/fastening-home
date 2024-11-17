@@ -38,13 +38,20 @@ export default function Dropdown({
         setInitialData(dataH);
       }
       if (type == "vline") {
-        console.log(updatedItems, "updatedItems");
+        // console.log(updatedItems, "updatedItems");
         let dataH = initialData.filter((item) =>
           updatedItems.includes(item.vname)
         );
         // console.log(dataH, "dataH");
         setInitialData(dataH);
       }
+      // if (type == "company") {
+      //   let dataH = initialData.filter((item) =>
+      //     updatedItems.includes(item.company)
+      //   );
+      //   // console.log(dataH, "dataH");
+      //   setInitialData(dataH);
+      // }
       return updatedItems;
     });
   };
@@ -63,6 +70,12 @@ export default function Dropdown({
       dataH = initialData.filter((item) => data.includes(item.vname));
       // console.log(dataH, "dataH");
     }
+    // if (type == "company") {
+    //   console.log(data, "data");
+    //   console.log(initialData, "initialData");
+    //   dataH = initialData.filter((item) => data.includes(item.company));
+    //   // console.log(dataH, "dataH");
+    // }
     setInitialData(dataH);
   };
 
