@@ -147,9 +147,10 @@ model Phocas_Prdcls {
 
 model WorkFile {
   id      Int     @id @default(autoincrement())
-  prdline String?
-  vcode   BigInt?
-  vname   String?
+  name    String? 
+  data  Json?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 model TabProduction {
