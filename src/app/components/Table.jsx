@@ -1,4 +1,5 @@
 export default function Table({ children }) {
+  console.log(children);
   return (
     <section className="container px-4 mx-auto">
       <div className="flex flex-col">
@@ -112,29 +113,38 @@ export default function Table({ children }) {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  <tr>
-                    <td className="px-4 py-4 text-sm font-medium text-black whitespace-nowrap">
-                      <div className="inline-flex items-center gap-x-3">
-                        <input
-                          type="checkbox"
-                          className="text-blue-500 border-gray-300 rounded dark:bg-gray-900 dark:ring-offset-gray-900 dark:border-gray-700"
-                        />
-                        <span>#3066</span>
-                      </div>
-                    </td>
-                    <td className="px-4 py-4 text-sm text-black whitespace-nowrap">
-                      Jan 6, 2022
-                    </td>
-                    <td className="px-4 py-4 text-sm text-black whitespace-nowrap">
-                      Paid
-                    </td>
-                    <td className="px-4 py-4 text-sm text-black whitespace-nowrap">
-                      Arthur Melo
-                    </td>
-                    <td className="px-4 py-4 text-sm text-black whitespace-nowrap">
-                      Monthly subscription
-                    </td>
-                  </tr>
+                  {children &&
+                    children.map((item) => (
+                      <tr>
+                        <td className="px-4 py-4 text-sm font-medium text-black whitespace-nowrap">
+                          <div className="inline-flex items-center gap-x-3">
+                            <input
+                              type="checkbox"
+                              className="text-blue-500 border-gray-300 rounded dark:bg-gray-900 dark:ring-offset-gray-900 dark:border-gray-700"
+                            />
+                            <span>{item.name}</span>
+                          </div>
+                        </td>
+                        <td className="px-4 py-4 text-sm text-black whitespace-nowrap">
+                          {item.data[0].vname}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-black whitespace-nowrap">
+                          {new Date(item.updated_at).toISOString().slice(0, 10)}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-black whitespace-nowrap">
+                          {""}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-black whitespace-nowrap">
+                          {new Date().toISOString().slice(0, 10)}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-black whitespace-nowrap">
+                          {""}
+                        </td>
+                        <td className="px-4 py-4 text-sm text-black whitespace-nowrap">
+                          {new Date().toISOString().slice(0, 10)}
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>

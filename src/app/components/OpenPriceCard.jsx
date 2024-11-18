@@ -1,5 +1,8 @@
+"use client";
+import { useRouter } from "next/navigation";
+
 export default function OpenPriceCard({ data }) {
-  console.log(data);
+  const router = useRouter();
   return (
     <div className="w-[30%] bg-white p-4 rounded-lg border border-gray-900 shadow-md">
       <div className="mb-2">
@@ -48,10 +51,15 @@ export default function OpenPriceCard({ data }) {
             data.map((item, index) => (
               <div key={index} className="flex justify-between">
                 <div className="flex flex-col gap-2">
-                  <h1 className="text-md font-semibold">{item.VNAME}</h1>
-                  <p className="text-sm">{item.VENDOR}</p>
+                  <h1 className="text-md font-semibold">{item.name}</h1>
+                  <p className="text-sm">
+                    {new Date(item.updated_at).toDateString()}
+                  </p>
                 </div>
-                <div className="flex">
+                <div
+                  className="flex"
+                  onClick={() => router.push(`/pim/work-file`)}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"

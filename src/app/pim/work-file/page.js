@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import TableComponent from "@/app/components/TableComponent";
 import DropdownMeasure from "@/app/components/DropdownMeasure";
+import Modal from "@/app/components/Modal";
 
 const columns = [
     { key: "prLine", label: "Pr. Line" },
@@ -146,6 +147,9 @@ export default function WorkFile() {
     const [vline, setVline] = useState("");
     const [initialData, setInitialData] = useState([]);
     const [mainData, setMainData] = useState([]);
+    const [stockData, setStockData] = useState([]);
+    const [modalDisplay, setModalDisplay] = useState(false);
+    const [workFileName, setWorkFileName] = useState("");
     const [prdline, setPrdline] = useState("");
     const [vcode, setVcode] = useState(0);
     const [data, setData] = useState([[{ value: "Pr. Line" }, { value: "Part Number" }, { value: "Description" }, { value: "Vendor" }, { value: "Cost" }, { value: "New Cost" }, { value: "Variance$" }, { value: "Variance%" }]]);
@@ -169,6 +173,7 @@ export default function WorkFile() {
     const [companyFlag, setCompanyFlag] = useState("hidden");
     const [filterLine, setFilterLine] = useState("");
     const [filterVendor, setFilterVendor] = useState("");
+    const [enabled, setEnabled] = useState(false);
     const fetchPlines = async () => {
         try {
             const resp = await axios.get("/api/product-lines?txt=" + pline);
@@ -211,6 +216,7 @@ export default function WorkFile() {
                         if (length > 0) {
                             setInitialData(data);
                             setMainData(data);
+                            setStockData(data);
                         }
                         else {
                             setInitialData([{ prLine: "NULL", partNumber: "NULL", description: "NULL", cost: "NULL", newCost: "NULL", dollarChange: "NULL", percentChange: "NULL", avgCost: "NULL", productCode: "NULL", qtyOH: "NULL", list: "NULL", isc: "NULL", stockPer: "NULL", purchPer: "NULL", pMult: "NULL", sMult: "NULL", pToStock: "NULL", sellUnit: "NULL", stkUnit: "NULL", purUnit: "NULL", boxQty: "NULL", code: "NULL" }]);
@@ -240,6 +246,7 @@ export default function WorkFile() {
                         if (length > 0) {
                             setInitialData(data);
                             setMainData(data);
+                            setStockData(data);
                         }
                         else {
                             setInitialData([{ prLine: "NULL", partNumber: "NULL", description: "NULL", cost: "NULL", newCost: "NULL", dollarChange: "NULL", percentChange: "NULL", avgCost: "NULL", productCode: "NULL", qtyOH: "NULL", list: "NULL", isc: "NULL", stockPer: "NULL", purchPer: "NULL", pMult: "NULL", sMult: "NULL", pToStock: "NULL", sellUnit: "NULL", stkUnit: "NULL", purUnit: "NULL", boxQty: "NULL", code: "NULL", class: "NULL", group: "NULL", classDesc: "NULL", groupDesc: "NULL", stock: "NULL", vcode: "NULL" }]);
@@ -288,6 +295,37 @@ export default function WorkFile() {
         setVline(item2);
         setVlines([]);
     }
+    const workFileAdd = async () => {
+        try {
+            if (mainData.length > 0 && workFileName.length > 0) {
+                let resp = await axios.post("/api/work-file", { data: mainData, fileName: workFileName });
+                if (resp.data.status === 200) {
+                    toast.success(resp.data.message);
+                    setModalDisplay(false);
+                }
+                setWorkFileName("");
+            }
+            else {
+                toast.error("Please add data and enter a file name")
+            }
+            return
+        } catch (error) {
+            setModalDisplay(false);
+            toast.error("Something went wrong in saving file")
+        }
+    }
+    const handleStock = () => {
+        if (!enabled) {
+            setStockData(initialData);
+            let stock = initialData[0].stock;
+            let updatedData = initialData.filter((item) => item.stock != undefined);
+            setInitialData(updatedData);
+            setEnabled(true);
+        } else {
+            setInitialData(stockData);
+            setEnabled(false);
+        }
+    }
     return (
         <div>
             <div className="flex justify-between items-center font-inter mt-3">
@@ -310,15 +348,18 @@ export default function WorkFile() {
                     <button className="underline py-1 text-[#614d87]">Remove Filters</button>
                 </div>
                 <div className="flex gap-1 items-center mr-2">
-                    <div className="relative inline-block w-11 h-5">
-                        <input defaultChecked id="switch-component" type="checkbox" className="peer appearance-none w-11 h-5 bg-slate-100 rounded-full checked:bg-slate-800 cursor-pointer transition-colors duration-300" />
-                        <label htmlFor="switch-component" className="absolute top-0 left-0 w-5 h-5 bg-white rounded-full border border-slate-300 shadow-sm transition-transform duration-300 peer-checked:translate-x-6 peer-checked:border-slate-800 cursor-pointer">
-                        </label>
-                    </div>
                     <h1>Stock</h1>
-                    <button className="bg-white px-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="gray" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-download"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" /></svg>
-                    </button>
+                    <div
+                        className={`relative inline-flex items-center h-6 w-11 cursor-pointer rounded-full transition-colors duration-300 ${enabled ? "bg-[#614d87]" : "bg-gray-300"
+                            }`}
+                        onClick={() => handleStock()}
+                    >
+                        <span
+                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${enabled ? "translate-x-5" : "translate-x-1"
+                                }`}
+                        />
+                    </div>
+
                     <div className="w-64 px-2">
                         <div className="relative">
                             <span className="absolute text-black top-5 left-4"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="gray" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
@@ -369,7 +410,7 @@ export default function WorkFile() {
                 <div className="flex gap-3 items-center mr-2">
                     <button onClick={generateFile} className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Generate File</button>
                     <button onClick={() => { router.push('/tab-production') }} className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Post Tab to Production</button>
-                    <button className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Save</button>
+                    <button onClick={() => setModalDisplay(true)} className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Save</button>
                 </div>
             </div>
             <div className="mt-12">
@@ -392,6 +433,7 @@ export default function WorkFile() {
                         : tab == 2 ? <TableComponent initialData={initialData} visibleColumns={visibleColumnsU} />
                             : tab == 5 ? <TableComponent initialData={initialData} visibleColumns={visibleColumnsI} /> : null}
             </div>
+            <Modal display={modalDisplay} onCancel={() => setModalDisplay(false)} onConfirm={workFileAdd} name={workFileName} setName={setWorkFileName} />
         </div>
     )
 }

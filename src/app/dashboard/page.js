@@ -19,7 +19,7 @@ export default function Dashboard() {
         try {
             const resp = await axios.get("/api/vendor-overview")
             if (resp.data.status === 200) {
-                setVendors(resp.data.vendors)
+                setVendors(resp.data.price)
             }
         } catch (error) {
             toast.error("Something went wrong in vendor overview")

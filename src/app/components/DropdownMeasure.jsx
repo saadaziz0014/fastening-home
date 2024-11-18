@@ -90,25 +90,30 @@ export default function DropdownMeasure({
             </li>
             <hr className="border-gray-300" />
             {/* Map the rest of the items */}
-            {data.map((item) => (
-              <li key={item}>
-                <div className="flex items-center">
-                  <input
-                    id={`checkbox-${item.key}`}
-                    type="checkbox"
-                    checked={visibleColumns.includes(item.key)}
-                    onChange={() => toggleColumn(item.key)}
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700"
-                  />
-                  <label
-                    htmlFor={`checkbox-${item.label}`}
-                    className="ms-2 text-xs font-inter text-gray-900"
-                  >
-                    {item.label}
-                  </label>
-                </div>
-              </li>
-            ))}
+            {data.map(
+              (item) =>
+                item.label != "Vendor" &&
+                item.label != "Company" &&
+                item.label != "Branch" && (
+                  <li key={item}>
+                    <div className="flex items-center">
+                      <input
+                        id={`checkbox-${item.key}`}
+                        type="checkbox"
+                        checked={visibleColumns.includes(item.key)}
+                        onChange={() => toggleColumn(item.key)}
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700"
+                      />
+                      <label
+                        htmlFor={`checkbox-${item.label}`}
+                        className="ms-2 text-xs font-inter text-gray-900"
+                      >
+                        {item.label}
+                      </label>
+                    </div>
+                  </li>
+                )
+            )}
           </>
         )}
       </ul>
