@@ -58,7 +58,7 @@ const TableComponent = ({ visibleColumns, initialData }) => {
   // Handle column visibility toggle
 
   return (
-    <div className="p-4 h-64 overflow-y-scroll .hidden-scrollbar">
+    <div className="p-4 h-96 overflow-y-scroll">
       {/* Column Visibility Controls */}
       {/* <div className="mb-4">
         {columns.map((col) => (
@@ -74,7 +74,7 @@ const TableComponent = ({ visibleColumns, initialData }) => {
       </div> */}
 
       {/* Table */}
-      <div className="overflow-x-scroll hidden-scrollbar">
+      <div className="overflow-x-scroll">
         <table className="border border-gray-300">
           <thead>
             <tr className="bg-gray-100">

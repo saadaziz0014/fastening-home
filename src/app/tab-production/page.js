@@ -58,7 +58,7 @@ export default function TabProduction() {
 
     const fetchData = async () => {
         try {
-            let resp = await axios.get(`/api/tabproduction?prdline=${form.prdline}`);
+            let resp = await axios.get(`/api/tabproduction?prdline=${pline}`);
             console.log(resp);
             if (resp.status === 200) {
                 if (!resp.data.id) {
@@ -188,7 +188,27 @@ export default function TabProduction() {
                 <div className="flex gap-3 items-center mr-2">
                     <button onClick={() => { addData() }} className="bg-[#614d87] text-white px-3 py-2 rounded-lg">Save</button>
                     <button onClick={() => { deleteData() }} className="bg-[#614d87] text-white px-3 py-2 rounded-lg">Delete</button>
-                    <button className="bg-[#614d87] text-white px-3 py-2 rounded-lg">Create New</button>
+                    <button onClick={() => {
+                        setForm({
+                            prdline: "",
+                            status: "",
+                            effectivedate: "",
+                            promofile: "",
+                            quotefile: "",
+                            deadstock: "",
+                            prlinevsvendor: "",
+                            customervalueprice: "",
+                            vendornumber: "",
+                            specialvendor: "",
+                            punchcomparison: "",
+                            freight: "",
+                            searchkey: "",
+                            pricelistform: "",
+                            sabreinfo: "",
+                            notes: "",
+                        })
+                        setPline("");
+                    }} className="bg-[#614d87] text-white px-3 py-2 rounded-lg">Create New</button>
                 </div>
             </div>
             <div className="flex justify-between mt-8 mr-2">
@@ -200,82 +220,82 @@ export default function TabProduction() {
                     <hr className="border-gray-300 mt-1 w-[66%]" />
                     <div className="mt-3 w-[66%] flex justify-between items-center">
                         <h2 className="">Product Line</h2>
-                        <input type="text" value={form.prdline} onChange={(e) => { setForm({ ...form, prdline: e.target.value }) }} name="prdline" className="border-0 p-1 bg-[#f7f8fa]" />
+                        <input type="text" value={form.prdline} onChange={(e) => { setForm({ ...form, prdline: e.target.value }) }} name="prdline" className="border-0 p-1 w-[10%] bg-[#f7f8fa]" />
                     </div>
                     <hr className="border-gray-300 mt-1 w-[66%]" />
                     <div className="mt-3 w-[66%] flex justify-between items-center">
                         <h2 className="">Status</h2>
-                        <input type="text" value={form.status} onChange={(e) => { setForm({ ...form, status: e.target.value }) }} name="status" className="border-0 p-1 bg-[#f7f8fa]" />
+                        <input type="text" value={form.status} onChange={(e) => { setForm({ ...form, status: e.target.value }) }} name="status" className="border-0 p-1 w-[10%] bg-[#f7f8fa]" />
                     </div>
                     <hr className="border-gray-300 mt-1 w-[66%]" />
                     <div className="mt-3 w-[66%] flex justify-between items-center">
                         <h2 className="">Effective Date</h2>
-                        <input type="text" value={form.effectivedate} onChange={(e) => { setForm({ ...form, effectivedate: e.target.value }) }} name="effectivedate" className="border-0 p-1 bg-[#f7f8fa]" />
+                        <input type="text" value={form.effectivedate} onChange={(e) => { setForm({ ...form, effectivedate: e.target.value }) }} name="effectivedate" className="border-0 p-1 w-[10%] bg-[#f7f8fa]" />
                     </div>
                     <hr className="border-gray-300 mt-1 w-[66%]" />
                     <div className="mt-3 w-[66%] flex justify-between items-center">
                         <h2 className="">Promo File</h2>
-                        <input type="text" value={form.promofile} onChange={(e) => { setForm({ ...form, promofile: e.target.value }) }} name="promofile" className="border-0 p-1 bg-[#f7f8fa]" />
+                        <input type="text" value={form.promofile} onChange={(e) => { setForm({ ...form, promofile: e.target.value }) }} name="promofile" className="border-0 p-1 w-[10%] bg-[#f7f8fa]" />
                     </div>
                     <hr className="border-gray-300 mt-1 w-[66%]" />
                     <div className="mt-3 w-[66%] flex justify-between items-center">
                         <h2 className="">Quote File</h2>
-                        <input type="text" value={form.quotefile} onChange={(e) => { setForm({ ...form, quotefile: e.target.value }) }} name="quotefile" className="border-0 p-1 bg-[#f7f8fa]" />
+                        <input type="text" value={form.quotefile} onChange={(e) => { setForm({ ...form, quotefile: e.target.value }) }} name="quotefile" className="border-0 p-1 w-[10%] bg-[#f7f8fa]" />
                     </div>
                     <hr className="border-gray-300 mt-1 w-[66%]" />
                     <div className="mt-3 w-[66%] flex justify-between items-center">
                         <h2 className="">Dead Stock</h2>
-                        <input type="text" value={form.deadstock} onChange={(e) => { setForm({ ...form, deadstock: e.target.value }) }} name="deadstock" className="border-0 p-1 bg-[#f7f8fa]" />
+                        <input type="text" value={form.deadstock} onChange={(e) => { setForm({ ...form, deadstock: e.target.value }) }} name="deadstock" className="border-0 p-1 w-[10%] bg-[#f7f8fa]" />
                     </div>
                     <hr className="border-gray-300 mt-1 w-[66%]" />
                     <div className="mt-3 w-[66%] flex justify-between items-center">
                         <h2 className="">Pr Line vs Vendor#</h2>
-                        <input type="text" value={form.prlinevsvendor} onChange={(e) => { setForm({ ...form, prlinevsvendor: e.target.value }) }} name="prlinevsvendor" className="border-0 p-1 bg-[#f7f8fa]" />
+                        <input type="text" value={form.prlinevsvendor} onChange={(e) => { setForm({ ...form, prlinevsvendor: e.target.value }) }} name="prlinevsvendor" className="border-0 p-1 w-[10%] bg-[#f7f8fa]" />
                     </div>
                     <hr className="border-gray-300 mt-1 w-[66%]" />
                     <div className="mt-3 w-[66%] flex justify-between items-center">
                         <h2 className="">Customer Volume Price</h2>
-                        <input type="text" value={form.customervalueprice} onChange={(e) => { setForm({ ...form, customervalueprice: e.target.value }) }} name="customervalueprice" className="border-0 p-1 bg-[#f7f8fa]" />
+                        <input type="text" value={form.customervalueprice} onChange={(e) => { setForm({ ...form, customervalueprice: e.target.value }) }} name="customervalueprice" className="border-0 p-1 w-[10%] bg-[#f7f8fa]" />
                     </div>
                     <hr className="border-gray-300 mt-1 w-[66%]" />
                     <div className="mt-3 w-[66%] flex justify-between items-center">
                         <h2 className="">Vendor #</h2>
-                        <input type="text" value={form.vendornumber} onChange={(e) => setForm({ ...form, vendornumber: e.target.value })} name="vendornumber" className="border-0 p-1 bg-[#f7f8fa]" />
+                        <input type="text" value={form.vendornumber} onChange={(e) => setForm({ ...form, vendornumber: e.target.value })} name="vendornumber" className="border-0 p-1 w-[10%] bg-[#f7f8fa]" />
                     </div>
                     <hr className="border-gray-300 mt-1 w-[66%]" />
                     <div className="mt-3 w-[66%] flex justify-between items-center">
                         <h2 className="">Special/Volume Vendor</h2>
-                        <input type="text" value={form.specialvendor} onChange={(e) => setForm({ ...form, specialvendor: e.target.value })} name="specialvendor" className="border-0 p-1 bg-[#f7f8fa]" />
+                        <input type="text" value={form.specialvendor} onChange={(e) => setForm({ ...form, specialvendor: e.target.value })} name="specialvendor" className="border-0 p-1 w-[10%] bg-[#f7f8fa]" />
                     </div>
                     <hr className="border-gray-300 mt-1 w-[66%]" />
                     <div className="mt-3 w-[66%] flex justify-between items-center">
                         <h2 className="">Punch Comparison $$</h2>
-                        <input type="text" value={form.punchcomparison} onChange={(e) => setForm({ ...form, punchcomparison: e.target.value })} name="punchcomparison" className="border-0 p-1 bg-[#f7f8fa]" />
+                        <input type="text" value={form.punchcomparison} onChange={(e) => setForm({ ...form, punchcomparison: e.target.value })} name="punchcomparison" className="border-0 p-1 w-[10%] bg-[#f7f8fa]" />
                     </div>
                     <hr className="border-gray-300 mt-1 w-[66%]" />
                     <div className="mt-3 w-[66%] flex justify-between items-center">
                         <h2 className="">Frieght</h2>
-                        <input type="text" value={form.freight} onChange={(e) => setForm({ ...form, freight: e.target.value })} name="freight" className="border-0 p-1 bg-[#f7f8fa]" />
+                        <input type="text" value={form.freight} onChange={(e) => setForm({ ...form, freight: e.target.value })} name="freight" className="border-0 p-1 w-[10%] bg-[#f7f8fa]" />
                     </div>
                     <hr className="border-gray-300 mt-1 w-[66%]" />
                     <div className="mt-3 w-[66%] flex justify-between items-center">
                         <h2 className="">Search Key</h2>
-                        <input type="text" value={form.searchkey} onChange={(e) => setForm({ ...form, searchkey: e.target.value })} name="searchkey" className="border-0 p-1 bg-[#f7f8fa]" />
+                        <input type="text" value={form.searchkey} onChange={(e) => setForm({ ...form, searchkey: e.target.value })} name="searchkey" className="border-0 p-1 w-[10%] bg-[#f7f8fa]" />
                     </div>
                     <hr className="border-gray-300 mt-1 w-[66%]" />
                     <div className="mt-3 w-[66%] flex justify-between items-center">
                         <h2 className="">Price List Form</h2>
-                        <input type="text" name="pricelistform" value={form.pricelistform} onChange={(e) => { setForm({ ...form, pricelistform: e.target.value }) }} className="border-0 p-1 bg-[#f7f8fa]" />
+                        <input type="text" name="pricelistform" value={form.pricelistform} onChange={(e) => { setForm({ ...form, pricelistform: e.target.value }) }} className="border-0 p-1 w-[10%] bg-[#f7f8fa]" />
                     </div>
                     <hr className="border-gray-300 mt-1 w-[66%]" />
                     <div className="mt-3 w-[66%] flex justify-between items-center">
                         <h2 className="">Sabre Info</h2>
-                        <input type="text" name="sabreinfo" value={form.sabreinfo} onChange={(e) => { setForm({ ...form, sabreinfo: e.target.value }) }} className="border-0 p-1 bg-[#f7f8fa]" />
+                        <input type="text" name="sabreinfo" value={form.sabreinfo} onChange={(e) => { setForm({ ...form, sabreinfo: e.target.value }) }} className="border-0 p-1 w-[10%] bg-[#f7f8fa]" />
                     </div>
                     <hr className="border-gray-300 mt-1 w-[66%]" />
                     <div className="mt-3 w-[66%] flex justify-between items-center">
                         <h2 className="">Last Update</h2>
-                        <input type="text" name="lastupdate" value={form.lastupdate} onChange={(e) => { setForm({ ...form, lastupdate: e.target.value }) }} className="border-0 p-1 bg-[#f7f8fa]" />
+                        <input type="text" name="lastupdate" value={form.lastupdate} onChange={(e) => { setForm({ ...form, lastupdate: e.target.value }) }} className="border-0 p-1 w-[10%] bg-[#f7f8fa]" />
                     </div>
                     <hr className="border-gray-300 mt-1 w-[66%]" />
                 </div>

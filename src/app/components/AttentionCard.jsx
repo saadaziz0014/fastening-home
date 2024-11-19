@@ -44,7 +44,7 @@ export default function AttentionCard() {
     },
   ];
   return (
-    <div className="w-[30%] bg-white p-4 rounded-lg border border-gray-900 shadow-md">
+    <div className="w-[30%] bg-white p-4 rounded-lg shadow-lg">
       <div className="mb-2">
         <div className="flex justify-between">
           <h1 className="text-lg font-bold">Need Attention</h1>
@@ -79,7 +79,7 @@ export default function AttentionCard() {
           </svg>
         </div>
         <div>
-          <p className="text-md">
+          <p className="text-md text-[#667085]">
             Lorem, ipsum dolor sit amet consectetur adipisicing elit
           </p>
         </div>

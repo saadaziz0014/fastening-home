@@ -37,7 +37,7 @@ export const GET = async (request) => {
                     PMGRP: true,
                     VELCOD: true
                 },
-                take: 5
+                take: 50
             }
             )
         } else if (!pline && vendor) {
@@ -68,7 +68,7 @@ export const GET = async (request) => {
                     PMGRP: true,
                     VELCOD: true
                 },
-                take: 5
+                take: 50
             })
         }
         for (let i = 0; i < prdmaster.length; i++) {

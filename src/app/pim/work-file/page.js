@@ -222,6 +222,7 @@ export default function WorkFile() {
                             setInitialData([{ prLine: "NULL", partNumber: "NULL", description: "NULL", cost: "NULL", newCost: "NULL", dollarChange: "NULL", percentChange: "NULL", avgCost: "NULL", productCode: "NULL", qtyOH: "NULL", list: "NULL", isc: "NULL", stockPer: "NULL", purchPer: "NULL", pMult: "NULL", sMult: "NULL", pToStock: "NULL", sellUnit: "NULL", stkUnit: "NULL", purUnit: "NULL", boxQty: "NULL", code: "NULL" }]);
                         }
                         let allVendorsResp = await axios.get("/api/all-vendors?PRDLIN=" + prdline);
+                        console.log(allVendorsResp, "as")
                         if (allVendorsResp.data.status === 200) {
                             setVendors(allVendorsResp.data.vendors);
                         }
@@ -298,12 +299,13 @@ export default function WorkFile() {
     const workFileAdd = async () => {
         try {
             if (mainData.length > 0 && workFileName.length > 0) {
-                let resp = await axios.post("/api/work-file", { data: mainData, fileName: workFileName });
+                let resp = await axios.post("/api/work-file", { data: initialData, fileName: workFileName });
                 if (resp.data.status === 200) {
                     toast.success(resp.data.message);
                     setModalDisplay(false);
                 }
                 setWorkFileName("");
+                setModalDisplay(false);
             }
             else {
                 toast.error("Please add data and enter a file name")
@@ -345,7 +347,7 @@ export default function WorkFile() {
                     }
                     <Dropdown label="Company" type="company" data={companies} display={companyFlag} setDisplay={setCompanyFlag} initialData={mainData} setInitialData={setInitialData} />
                     <Dropdown label="Database" type="database" data={[]} display="hidden" setDisplay={setDatabaseFlag} />
-                    <button className="underline py-1 text-[#614d87]">Remove Filters</button>
+                    <button onClick={() => setInitialData(mainData)} className="underline py-1 text-[#614d87]">Remove Filters</button>
                 </div>
                 <div className="flex gap-1 items-center mr-2">
                     <h1>Stock</h1>

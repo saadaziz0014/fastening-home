@@ -39,8 +39,8 @@ export default function UpdateMenu() {
                         <p className="text-sm">View your terms transaction and trades</p>
                     </div>
                     <div className="flex gap-2">
-                        <button className="bg-[#614d87] text-white px-3 py-2 rounded-lg text-xs">Add New Price File</button>
-                        <button onClick={() => { router.push('/pim/work-file') }} className="bg-[#614d87] text-white rounded-lg text-xs px-3 py-2">Create New Work File</button>
+                        <button className="bg-[#614d87] text-white px-3 rounded-lg text-xs">Add New Price File</button>
+                        <button onClick={() => { router.push('/pim/work-file') }} className="bg-[#614d87] text-white rounded-lg text-xs px-3">Create New Work File</button>
                     </div>
                 </div>
                 <div className="mt-12">

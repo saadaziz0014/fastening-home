@@ -9,16 +9,11 @@ export const GET = async (request) => {
                 OR: [
                     {
                         VENDOR: Number(txt)
-                    },
-                    {
-                        VNAME: {
-                            startsWith: txt,
-                            mode: "insensitive"
-                        }
                     }
                 ]
             }
         });
+        console.log(vlines, "vlines")
         vlines = vlines.sort((a, b) => a.VNAME > b.VNAME ? 1 : -1)
         for (let i = 0; i < vlines.length; i++) {
             let keys = Object.keys(vlines[i])
@@ -28,6 +23,7 @@ export const GET = async (request) => {
         }
         return NextResponse.json({ vlines, status: 200 })
     } catch (error) {
+        console.log(error, "error")
         return NextResponse.json({ error, status: 500 })
     }
 }

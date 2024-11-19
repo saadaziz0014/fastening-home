@@ -10,14 +10,16 @@ export const GET = async (request) => {
         for (let i = 0; i < vendorsData.length; i++) {
             let keys = Object.keys(vendors[i])
             for (let j = 0; j < keys.length; j++) {
-                vendorsData[i][keys[j]] = vendorsData[i][keys[j]] ? vendorsData[i][keys[j]].toString() : null
+                vendorsData[i][keys[j]] = vendorsData[i][keys[j]] && vendorsData[i][keys[j]].toString()
                 vendors.push(vendorsData[i][keys[j]])
             }
         }
         //unique vendors
+        console.log(vendors, "vendors")
         vendors = [...new Set(vendors)]
         return NextResponse.json({ vendors, status: 200 })
     } catch (error) {
+        console.log(error, "error")
         return NextResponse.json({ error, status: 500 })
     }
 }
