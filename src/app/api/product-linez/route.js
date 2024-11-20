@@ -4,18 +4,18 @@ export const GET = async (request) => {
     const { searchParams } = new URL(request.url);
     const txt = searchParams.get("txt");
     try {
-        let plines = await prisma.priceTracker.findMany({
+        let plines = await prisma.phocas_Prdln.findMany({
             where: {
-                prdline: {
+                P1LIN: {
                     startsWith: txt,
                     mode: "insensitive"
                 }
             },
             select: {
-                prdline: true
+                P1LIN: true
             }
         });
-        plines = plines.sort((a, b) => a.prdline > b.prdline ? 1 : -1)
+        plines = plines.sort((a, b) => a.P1LIN > b.P1LIN ? 1 : -1)
         for (let i = 0; i < plines.length; i++) {
             let keys = Object.keys(plines[i])
             for (let j = 0; j < keys.length; j++) {

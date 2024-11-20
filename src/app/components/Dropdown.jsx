@@ -118,7 +118,7 @@ export default function Dropdown({
       <ul
         className={`absolute min-w-0 max-w-auto hidden-scrollbar ${
           display === "visible"
-            ? "shadow-lg rounded-lg px-3 py-2 space-y-4 bg-white max-h-32 overflow-y-scroll"
+            ? "shadow-lg rounded-lg px-3 py-2 space-y-4 bg-white max-h-96 overflow-y-scroll"
             : "p-0 space-y-0 bg-transparent max-h-0 overflow-hidden"
         }`}
         aria-labelledby="dropdownCheckboxButton"
@@ -128,7 +128,11 @@ export default function Dropdown({
           <>
             {/* Add "All" and "None" options */}
             <li>
-              <div className="flex items-center">
+              <div
+                className={`flex items-center ${
+                  type == "vendor" ? "w-32" : "w-24"
+                }`}
+              >
                 <label
                   htmlFor="checkbox-all"
                   className="ms-2 text-xs cursor-pointer font-inter text-gray-900"

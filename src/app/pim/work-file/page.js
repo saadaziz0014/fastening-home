@@ -176,9 +176,13 @@ export default function WorkFile() {
     const [enabled, setEnabled] = useState(false);
     const fetchPlines = async () => {
         try {
-            const resp = await axios.get("/api/product-lines?txt=" + pline);
+            const resp = await axios.get("/api/product-linez?txt=" + pline);
             if (resp.data.status === 200) {
-                setPlines(resp.data.plines);
+                if (resp.data.plines.length == 1) {
+                    plineSelected(resp.data.plines[0].P1LIN);
+                }
+                else
+                    setPlines(resp.data.plines);
             }
         } catch (err) {
             toast.error("Something went wrong in product lines")
@@ -189,7 +193,11 @@ export default function WorkFile() {
         try {
             const resp = await axios.get("/api/vendor-lines?txt=" + vline);
             if (resp.data.status === 200) {
-                setVlines(resp.data.vlines);
+                if (resp.data.vlines.length == 1) {
+                    vlineSelected(resp.data.vlines[0].VCODE, resp.data.vlines[0].VNAME);
+                }
+                else
+                    setVlines(resp.data.vlines);
             }
         } catch (err) {
             toast.error("Something went wrong in vendor lines")
@@ -411,7 +419,7 @@ export default function WorkFile() {
                 </div>
                 <div className="flex gap-3 items-center mr-2">
                     <button onClick={generateFile} className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Generate File</button>
-                    <button onClick={() => { router.push('/tab-production') }} className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Post Tab to Production</button>
+                    <button className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Post Tab to Production</button>
                     <button onClick={() => setModalDisplay(true)} className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Save</button>
                 </div>
             </div>

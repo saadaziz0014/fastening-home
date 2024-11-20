@@ -3,19 +3,19 @@ import prisma from "@/db/prismaClient";
 export const POST = async (request) => {
     try {
         let body = await request.json()
-        let exist = await prisma.tabProduction.findFirst({
+        let exist = await prisma.priceTracker.findFirst({
             where: {
                 prdline: body.prdline,
             }
         })
         if (exist) {
-            await prisma.tabProduction.update({
+            await prisma.priceTracker.update({
                 where: {
                     id: exist.id,
                 },
                 data: {
                     prdline: body.prdline,
-                    vcode: body.vcode,
+                    vendor: body.vendor,
                     status: body.status,
                     effectivedate: body.effectivedate,
                     promofile: body.promofile,
@@ -35,10 +35,10 @@ export const POST = async (request) => {
             })
             return NextResponse.json({ message: "updated" }, { status: 200 })
         } else {
-            await prisma.tabProduction.create({
+            await prisma.priceTracker.create({
                 data: {
                     prdline: body.prdline,
-                    vcode: body.vcode,
+                    vendor: body.vendor,
                     status: body.status,
                     effectivedate: body.effectivedate,
                     promofile: body.promofile,
@@ -67,13 +67,13 @@ export const POST = async (request) => {
 export const PUT = async (request) => {
     try {
         let body = await request.json()
-        await prisma.tabProduction.update({
+        await prisma.priceTracker.update({
             where: {
                 prdline: body.prdline,
             },
             data: {
                 prdline: body.prdline,
-                vcode: body.vcode,
+                vendor: body.vendor,
                 status: body.status,
                 effectivedate: body.effectivedate,
                 promofile: body.promofile,
@@ -101,7 +101,7 @@ export const GET = async (request,) => {
     try {
         const { searchParams } = new URL(request.url)
         const prdline = searchParams.get("prdline")
-        let data = await prisma.tabProduction.findFirst({
+        let data = await prisma.priceTracker.findFirst({
             where: {
                 prdline: prdline
             }
@@ -117,13 +117,13 @@ export const DELETE = async (request) => {
     try {
         const { searchParams } = new URL(request.url)
         const prdline = searchParams.get("prdline")
-        let data = await prisma.tabProduction.findFirst({
+        let data = await prisma.priceTracker.findFirst({
             where: {
                 prdline: prdline
             }
         })
         if (!data) return NextResponse.json({ message: "not found" }, { status: 200 })
-        await prisma.tabProduction.delete({
+        await prisma.priceTracker.delete({
             where: {
                 id: data.id
             }

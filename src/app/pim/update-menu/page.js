@@ -32,15 +32,15 @@ export default function UpdateMenu() {
     };
     return (
         <div className="bg-[#F8F9FB] font-inter">
-            <div className="mt-5 mb-10">
+            <div className="mt-5">
                 <div className="flex justify-between">
-                    <div className="flex flex-col gap-2">
-                        <h1 className="text-3xl">Update Menu</h1>
-                        <p className="text-sm">View your terms transaction and trades</p>
+                    <div className="flex flex-col gap-1">
+                        <h1 className="text-2xl font-bold">Update Menu</h1>
+                        <p className="text-sm text-[#667085]">View your terms transaction and trades</p>
                     </div>
-                    <div className="flex gap-2">
-                        <button className="bg-[#614d87] text-white px-3 rounded-lg text-xs">Add New Price File</button>
-                        <button onClick={() => { router.push('/pim/work-file') }} className="bg-[#614d87] text-white rounded-lg text-xs px-3">Create New Work File</button>
+                    <div className="flex gap-3">
+                        <button className="bg-[#614d87] h-10 rounded-lg text-white px-3">Add New Price File</button>
+                        <button className="bg-[#614d87] h-10 rounded-lg text-white px-3" onClick={() => { router.push('/pim/work-file') }}>Create New Work File</button>
                     </div>
                 </div>
                 <div className="mt-12">

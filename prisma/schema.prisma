@@ -153,9 +153,10 @@ model WorkFile {
   updated_at DateTime @updatedAt
 }
 
-model TabProduction {
+model PriceTracker {
   id      Int     @id @default(autoincrement())
   prdline String?
+  vendor  String?
   status  String?
   effectivedate String?
   promofile String?

@@ -8,7 +8,10 @@ export const GET = async (request) => {
             where: {
                 OR: [
                     {
-                        VENDOR: Number(txt)
+                        VNAME: {
+                            startsWith: txt,
+                            mode: "insensitive"
+                        }
                     }
                 ]
             }

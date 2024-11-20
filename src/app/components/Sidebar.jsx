@@ -146,12 +146,16 @@ export default function Sidebar() {
                     </Link>
                   </li>
                   <li>
-                    <a
-                      href="#"
-                      className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                    <Link
+                      href="/pim/price-tracker"
+                      className={`flex items-center w-full p-2 transition duration-75 rounded-lg pl-11 group hover:bg-gray-700 ${
+                        pathname === "/pim/price-tracker"
+                          ? "bg-gray-700 text-white"
+                          : "text-white"
+                      }`}
                     >
                       Price Tracker
-                    </a>
+                    </Link>
                   </li>
                   <li>
                     <a
