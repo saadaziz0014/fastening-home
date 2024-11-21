@@ -162,9 +162,11 @@ export const GET = async (request) => {
         for (let i = 0; i < prdmaster.length; i++) {
             let keys = Object.keys(prdmaster[i])
             for (let j = 0; j < keys.length; j++) {
-                prdmaster[i][keys[j]] = prdmaster[i][keys[j]] ? prdmaster[i][keys[j]].toString() : null
+                prdmaster[i][keys[j]] = prdmaster[i][keys[j]] && prdmaster[i][keys[j]] != null && prdmaster[i][keys[j]] != undefined ? prdmaster[i][keys[j]].toString() : null
             }
         }
+        //send 5 
+        prdmaster = prdmaster.slice(0, 5)
         return NextResponse.json({ prdmaster, status: 200 })
     } catch (error) {
         console.log(error)

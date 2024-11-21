@@ -57,7 +57,9 @@ export default function Dropdown({
   };
   const selectAll = () => {
     setSelectedItems(data); // Set all items as selected
-    fileringOfData();
+    if (type != "database") {
+      fileringOfData();
+    }
   };
 
   const fileringOfData = () => {
@@ -82,7 +84,9 @@ export default function Dropdown({
   // Deselect all items
   const deselectAll = () => {
     setSelectedItems([]); // Clear the selection
-    setInitialData([]);
+    if (type != "database") {
+      setInitialData([]);
+    }
   };
   return (
     <div
@@ -118,7 +122,7 @@ export default function Dropdown({
       <ul
         className={`absolute min-w-0 max-w-auto hidden-scrollbar ${
           display === "visible"
-            ? "shadow-lg rounded-lg px-3 py-2 space-y-4 bg-white max-h-96 overflow-y-scroll"
+            ? "shadow-lg z-[3] rounded-lg px-3 py-2 space-y-4 bg-white max-h-96 overflow-y-scroll"
             : "p-0 space-y-0 bg-transparent max-h-0 overflow-hidden"
         }`}
         aria-labelledby="dropdownCheckboxButton"

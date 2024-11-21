@@ -8,6 +8,8 @@ import axios from "axios";
 import TableComponent from "@/app/components/TableComponent";
 import DropdownMeasure from "@/app/components/DropdownMeasure";
 import Modal from "@/app/components/Modal";
+import Handontable from "@/app/components/Handontable";
+import HandsontableExample from "@/app/components/Example";
 
 const columns = [
     { key: "prLine", label: "Pr. Line" },
@@ -52,6 +54,50 @@ const columns = [
     { key: "vcode", label: "Velocity Code" },
     { key: "company", label: "Company" }
 ];
+
+const dataCols = [
+    "Pr. Line",
+    "Part Number",
+    "Description",
+    "X-Ref",
+    "Cost",
+    "New Cost",
+    "$ Change",
+    "% Change",
+    "Avg Cost",
+    "Product Code",
+    "Regional Price",
+    "List Price",
+    "New List",
+    "$ Change",
+    "% Change",
+    "ZO9",
+    "Qty OH",
+    "ISC",
+    "Stock Per",
+    "Purch Per",
+    "Landed Cost",
+    "Purchase Multiple",
+    "Sell Multiple",
+    "P to Stock",
+    "Sell Unit",
+    "STK Unit",
+    "Pur Unit",
+    "Box Quantity",
+    "Vendor",
+    "Branch",
+    "Code",
+    "Class",
+    "Group",
+    "Code Description",
+    "Class Description",
+    "Group Description",
+    "Stock",
+    "Sales FHI",
+    "Sales Sabre",
+    "Velocity Code",
+    "Company",
+]
 
 const pricingColumns = [
     { key: "prLine", label: "Pr. Line" },
@@ -145,6 +191,8 @@ export default function WorkFile() {
     )
     const [pline, setPline] = useState("");
     const [vline, setVline] = useState("");
+    const [excelData, setExcelData] = useState([]);
+    const [mainExcelData, setMainExcelData] = useState([]);
     const [initialData, setInitialData] = useState([]);
     const [mainData, setMainData] = useState([]);
     const [stockData, setStockData] = useState([]);
@@ -166,6 +214,7 @@ export default function WorkFile() {
     const [measures, setMeasures] = useState(["Pr. Line", "Part Number", "Description", "Vendor", "Cost", "New Cost", "Variance$", "Variance%"]);
     const [measuresU, setMeasuresU] = useState(["Pr. Line", "Part Number", "Description", "Cost", "New Cost", "Average Cost", "Qty OH"]);
     const [baseMeasures, setBaseMeasures] = useState(measures);
+    const [databases, setDatabases] = useState(["Quote File", "Promo File", "Volume", "Search Keys", "Vendor Cross", "Product Cross", "Branch Pricing", "Code2"]);
     const [vendorsFlag, setVendorsFlag] = useState("hidden");
     const [linesFlag, setLinesFlag] = useState("hidden");
     const [measuresFlag, setMeasuresFlag] = useState("hidden");
@@ -216,14 +265,18 @@ export default function WorkFile() {
                         let arrayU = [];
                         let length = resp.data.prdmaster.length;
                         let data = [];
+                        let de = [];
                         for (let i = 0; i < length; i++) {
                             data.push({ prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, code: resp.data.prdmaster[i].PRDCDE });
+                            // excelData.push([resp.data.prdmaster[i]]);
+                            de.push([resp.data.prdmaster[i].PRDLIN, resp.data.prdmaster[i].PRODNO, resp.data.prdmaster[i].PRDSCE, resp.data.prdmaster[i].VENDNO, resp.data.prdmaster[i].VEVCST, resp.data.prdmaster[i].NEWCST, resp.data.prdmaster[i].VRD, resp.data.prdmaster[i].VRDPER, resp.data.prdmaster[i].AVGCST, resp.data.prdmaster[i].QTYOHD, resp.data.prdmaster[i].PRDCDE]);
                             array.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].VRD }, { value: resp.data.prdmaster[i].VRDPER }]);
                             arrayU.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].AVGCST }, { value: resp.data.prdmaster[i].QTYOHD }]);
                         }
                         if (length > 0) {
                             setInitialData(data);
                             setMainData(data);
+                            setExcelData(de);
                             setStockData(data);
                         }
                         else {
@@ -290,7 +343,7 @@ export default function WorkFile() {
         // if (prdline.length > 0 || vcode != 0) {
         //     generateFile();
         // }
-    }, [pline, vline, filterLine, filterVendor]);
+    }, [pline, vline, filterLine, filterVendor, excelData]);
 
     const plineSelected = (item) => {
         setPrdline(item);
@@ -354,7 +407,7 @@ export default function WorkFile() {
                                         : null
                     }
                     <Dropdown label="Company" type="company" data={companies} display={companyFlag} setDisplay={setCompanyFlag} initialData={mainData} setInitialData={setInitialData} />
-                    <Dropdown label="Database" type="database" data={[]} display="hidden" setDisplay={setDatabaseFlag} />
+                    <Dropdown label="Database" type="database" data={databases} display={databaseFlag} setDisplay={setDatabaseFlag} initialData={mainData} setInitialData={setInitialData} />
                     <button onClick={() => setInitialData(mainData)} className="underline py-1 text-[#614d87]">Remove Filters</button>
                 </div>
                 <div className="flex gap-1 items-center mr-2">
@@ -369,7 +422,13 @@ export default function WorkFile() {
                                 }`}
                         />
                     </div>
-
+                    <div>
+                        <button className="bg-white p-2 rounded-lg">
+                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M16.5 11.5V14.8333C16.5 15.2754 16.3244 15.6993 16.0118 16.0118C15.6993 16.3244 15.2754 16.5 14.8333 16.5H3.16667C2.72464 16.5 2.30072 16.3244 1.98816 16.0118C1.67559 15.6993 1.5 15.2754 1.5 14.8333V11.5M4.83333 7.33333L9 11.5M9 11.5L13.1667 7.33333M9 11.5V1.5" stroke="#344054" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </div>
                     <div className="w-64 px-2">
                         <div className="relative">
                             <span className="absolute text-black top-5 left-4"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="gray" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
@@ -437,11 +496,13 @@ export default function WorkFile() {
                 <hr className="border-gray-300" />
             </div>
             <div className="mt-10">
+                {/* <Handontable cols={dataCols} data={excelData} /> */}
+                {/* <HandsontableExample /> */}
                 {/* {tab == 0 ? <SpreadSheetData data={data} setData={setData} /> : tab == 2 ? <SpreadSheetData data={dataU} setData={setDataU} /> : null} */}
-                {tab == 0 ? <TableComponent initialData={initialData} visibleColumns={visibleColumns} />
+                {/* {tab == 0 ? <TableComponent initialData={initialData} visibleColumns={visibleColumns} />
                     : tab == 1 ? <TableComponent initialData={initialData} visibleColumns={visibleColumnsC} />
                         : tab == 2 ? <TableComponent initialData={initialData} visibleColumns={visibleColumnsU} />
-                            : tab == 5 ? <TableComponent initialData={initialData} visibleColumns={visibleColumnsI} /> : null}
+                            : tab == 5 ? <TableComponent initialData={initialData} visibleColumns={visibleColumnsI} /> : null} */}
             </div>
             <Modal display={modalDisplay} onCancel={() => setModalDisplay(false)} onConfirm={workFileAdd} name={workFileName} setName={setWorkFileName} />
         </div>

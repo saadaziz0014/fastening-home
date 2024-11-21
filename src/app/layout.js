@@ -1,9 +1,9 @@
 import localFont from "next/font/local";
+import "handsontable/dist/handsontable.full.min.css";
 import "./globals.css";
 import Layout from "./components/Layout";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
