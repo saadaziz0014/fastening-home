@@ -1,144 +1,51 @@
 "use client";
+
+import React, { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
+
+const Handsontable = dynamic(() => import("handsontable/base"), { ssr: false });
+const HotTable = dynamic(
+  () => import("@handsontable/react").then((mod) => mod.HotTable),
+  { ssr: false }
+);
+
+// Import Handsontable CSS
 import "handsontable/dist/handsontable.full.min.css";
-import { HotTable } from "@handsontable/react";
-import React, { useState, useRef } from "react";
 
-const HandsontableExample = () => {
-  const [colHeaders, setColHeaders] = useState(["Name", "Age", "Profession"]);
-  const [data, setData] = useState([
-    ["John Doe", 30, "Engineer"],
-    ["Jane Smith", 28, "Designer"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect"],
-    ["Sam Johnson", 35, "Architect", "King"],
-  ]);
-
+const HandsontableWrapper = () => {
+  const data = [
+    ["Item 1", "Item 2", "Item 3"],
+    ["Item 4", "Item 5", "Item 6"],
+    ["Item 7", "Item 8", "Item 9"],
+  ];
   const hotRef = useRef(null);
+  const [isClient, setIsClient] = useState(false);
 
-  const afterChange = (changes, source) => {
-    if (source === "edit") {
-      changes.forEach(([row, col, oldValue, newValue]) => {
-        if (oldValue !== newValue) {
-          const instance = hotRef.current.hotInstance;
-          const cellMeta = instance.getCellMeta(row, col);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
-          // Mark cell as edited
-          cellMeta.className = "changed-cell";
-          instance.render();
-        }
-      });
-    }
-  };
+  if (!isClient) {
+    return null; // or a loading spinner
+  }
 
-  const beforeChange = (changes, source) => {
-    if (source === "edit") {
-      changes.forEach(([row, col, oldValue, newValue]) => {
-        // If an edit happens in the column header row (row 0), update the header
-        if (row === 0 && oldValue !== newValue) {
-          const updatedHeaders = [...colHeaders];
-          updatedHeaders[col] = newValue; // Update the column header
-          setColHeaders(updatedHeaders); // Update state with the new headers
-        }
-      });
-    }
-  };
-  const handleHideColmns = () => {
-    let updatedHeaders = colHeaders.filter((_, index) => index !== 2);
-    let updatedData = data.map((row) => {
-      return row.filter((_, index) => index !== 2);
-    });
-    setColHeaders(updatedHeaders);
-    setData(updatedData);
-  };
   return (
-    <div>
-      <h1>Handsontable Example</h1>
-      <button onClick={handleHideColmns}>Hide Column</button>
-      <HotTable
-        ref={hotRef}
-        data={data}
-        colHeaders={colHeaders}
-        rowHeaders={true}
-        editable={true}
-        manualColumnMove={true}
-        manualColumnResize={true}
-        filters={true} // Enable filters
-        dropdownMenu={true} // Enable dropdown filter UI
-        contextMenu={true} // Enable right-click context menu
-        licenseKey="non-commercial-and-evaluation" // Required for free version
-        afterChange={afterChange}
-        beforeChange={beforeChange}
-        className="" // Center align content
-      />
-      <style>
-        {`
-          .changed-cell {
-            font-weight: bold;
-            background-color: #d4edda;
-          }
-        `}
-      </style>
-    </div>
+    <HotTable
+      ref={hotRef}
+      data={data}
+      licenseKey="non-commercial-and-evaluation"
+      colHeaders={true}
+      rowHeaders={true}
+      editable={true}
+      manualColumnMove={true}
+      manualColumnResize={true}
+      manualRowResize={true}
+      filter={true}
+      width="100%"
+      height="300px"
+      // Add any other Handsontable options here
+    />
   );
 };
 
-export default HandsontableExample;
+export default HandsontableWrapper;

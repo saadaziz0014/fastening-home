@@ -8,12 +8,10 @@ datasource db {
 }
 
 model Phocas_Prdln {
-  P1LIN String?
-  P1COD BigInt?
-  P1DSC String?
-  P1CLS String?
-  P1GRP Float?
-  id    Int     @id @default(autoincrement())
+  VENDOR BigInt?
+  PRDLIN String?
+  LINSCE String?
+  id     Int     @id @default(autoincrement())
 }
 
 model Phocas_Prdmst {
@@ -146,30 +144,30 @@ model Phocas_Prdcls {
 }
 
 model WorkFile {
-  id      Int     @id @default(autoincrement())
-  name    String? 
-  data  Json?
+  id         Int      @id @default(autoincrement())
   created_at DateTime @default(now())
+  data       Json?
+  name       String?
   updated_at DateTime @updatedAt
 }
 
 model PriceTracker {
-  id      Int     @id @default(autoincrement())
-  prdline String?
-  vendor  String?
-  status  String?
-  effectivedate String?
-  promofile String?
-  quotefile String?
-  deadstock String?
-  prlinevsvendor String?
+  id                 Int     @id @default(autoincrement())
+  prdline            String?
+  vendor             String?
+  status             String?
+  effectivedate      String?
+  promofile          String?
+  quotefile          String?
+  deadstock          String?
+  prlinevsvendor     String?
   customervalueprice String?
-  vendornumber String?
-  specialvendor String?
-  punchcomparison String?
-  freight String?
-  searchkey String?
-  pricelistform String?
-  sabreinfo String?
-  notes String?
+  vendornumber       String?
+  specialvendor      String?
+  punchcomparison    String?
+  freight            String?
+  searchkey          String?
+  pricelistform      String?
+  sabreinfo          String?
+  notes              String?
 }

@@ -19,7 +19,7 @@ export const GET = async (request) => {
         }
         //unique vendors
         vendors = [...new Set(vendors)]
-        console.log(vendors, "vendors")
+        // console.log(vendors, "vendors")
         return NextResponse.json({ vendors, status: 200 })
     } catch (error) {
         console.log(error, "error in vendors")

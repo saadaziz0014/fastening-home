@@ -10,7 +10,12 @@ import DropdownMeasure from "@/app/components/DropdownMeasure";
 import Modal from "@/app/components/Modal";
 import Handontable from "@/app/components/Handontable";
 import HandsontableExample from "@/app/components/Example";
+import dynamic from 'next/dynamic'
 
+const Datagrid = dynamic(
+    () => import('../../components/Datagrid'),
+    { ssr: false }
+);
 const columns = [
     { key: "prLine", label: "Pr. Line" },
     { key: "partNumber", label: "Part Number" },
@@ -54,6 +59,50 @@ const columns = [
     { key: "vcode", label: "Velocity Code" },
     { key: "company", label: "Company" }
 ];
+
+const spreadsheetColumns = [
+    { field: "prLine", filter: true, sortable: true },
+    { field: "partNumber", filter: true, sortable: true },
+    { field: "description", filter: true, sortable: true },
+    // { field: "xRef", filter: true, sortable: true },
+    // { field: "cost", filter: true, sortable: true },
+    // { field: "newCost", filter: true, sortable: true },
+    // { field: "dollarChange", filter: true, sortable: true },
+    // { field: "percentChange", filter: true, sortable: true },
+    // { field: "avgCost", filter: true, sortable: true },
+    // { field: "productCode", filter: true, sortable: true },
+    // { field: "regionalPrice", filter: true, sortable: true },
+    // { field: "list", filter: true, sortable: true },
+    // { field: "newList", filter: true, sortable: true },
+    // { field: "dollarChangeList", filter: true, sortable: true },
+    // { field: "percentChangeList", filter: true, sortable: true },
+    // { field: "zo9", filter: true, sortable: true },
+    // { field: "qtyOH", filter: true, sortable: true },
+    // { field: "isc", filter: true, sortable: true },
+    // { field: "stockPer", filter: true, sortable: true },
+    // { field: "purchPer", filter: true, sortable: true },
+    // { field: "landedCost", filter: true, sortable: true },
+    // { field: "pMult", filter: true, sortable: true },
+    // { field: "sMult", filter: true, sortable: true },
+    // { field: "pToStock", filter: true, sortable: true },
+    // { field: "sellUnit", filter: true, sortable: true },
+    // { field: "stkUnit", filter: true, sortable: true },
+    // { field: "purUnit", filter: true, sortable: true },
+    // { field: "boxQty", filter: true, sortable: true },
+    // { field: "vname", filter: true, sortable: true },
+    // { field: "branch", filter: true, sortable: true },
+    // { field: "code", filter: true, sortable: true },
+    // { field: "class", filter: true, sortable: true },
+    // { field: "group", filter: true, sortable: true },
+    // { field: "codeDesc", filter: true, sortable: true },
+    // { field: "classDesc", filter: true, sortable: true },
+    // { field: "groupDesc", filter: true, sortable: true },
+    // { field: "stock", filter: true, sortable: true },
+    // { field: "salesFHI", filter: true, sortable: true },
+    // { field: "salesSabre", filter: true, sortable: true },
+    // { field: "vcode", filter: true, sortable: true },
+    // { field: "company", filter: true, sortable: true },
+]
 
 const dataCols = [
     "Pr. Line",
@@ -130,6 +179,38 @@ const pricingColumns = [
     { key: "boxQty", label: "Box Quantity" },
     { key: "vname", label: "Vendor" },
 ];
+
+const pricingSpreadsheetColumns = [
+    { field: "prLine", filter: true, sortable: true },
+    { field: "partNumber", filter: true, sortable: true },
+    { field: "description", filter: true, sortable: true },
+    { field: "xRef", filter: true, sortable: true },
+    { field: "cost", filter: true, sortable: true },
+    { field: "newCost", filter: true, sortable: true },
+    { field: "dollarChange", filter: true, sortable: true },
+    { field: "percentChange", filter: true, sortable: true },
+    { field: "avgCost", filter: true, sortable: true },
+    { field: "productCode", filter: true, sortable: true },
+    { field: "regionalPrice", filter: true, sortable: true },
+    { field: "list", filter: true, sortable: true },
+    { field: "newList", filter: true, sortable: true },
+    { field: "dollarChangeList", filter: true, sortable: true },
+    { field: "percentChangeList", filter: true, sortable: true },
+    { field: "zo9", filter: true, sortable: true },
+    { field: "qtyOH", filter: true, sortable: true },
+    { field: "isc", filter: true, sortable: true },
+    { field: "stockPer", filter: true, sortable: true },
+    { field: "purchPer", filter: true, sortable: true },
+    { field: "landedCost", filter: true, sortable: true },
+    { field: "pMult", filter: true, sortable: true },
+    { field: "sMult", filter: true, sortable: true },
+    { field: "pToStock", filter: true, sortable: true },
+    { field: "sellUnit", filter: true, sortable: true },
+    { field: "stkUnit", filter: true, sortable: true },
+    { field: "purUnit", filter: true, sortable: true },
+    { field: "boxQty", filter: true, sortable: true },
+    { field: "vname", filter: true, sortable: true },
+]
 
 const codeColumns = [
     { key: "prLine", label: "Pr. Line" },
@@ -228,7 +309,7 @@ export default function WorkFile() {
             const resp = await axios.get("/api/product-linez?txt=" + pline);
             if (resp.data.status === 200) {
                 if (resp.data.plines.length == 1) {
-                    plineSelected(resp.data.plines[0].P1LIN);
+                    plineSelected(resp.data.plines[0].PRDLIN);
                 }
                 else
                     setPlines(resp.data.plines);
@@ -266,24 +347,24 @@ export default function WorkFile() {
                         let length = resp.data.prdmaster.length;
                         let data = [];
                         let de = [];
+                        let agReact = [];
                         for (let i = 0; i < length; i++) {
                             data.push({ prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, code: resp.data.prdmaster[i].PRDCDE });
-                            // excelData.push([resp.data.prdmaster[i]]);
-                            de.push([resp.data.prdmaster[i].PRDLIN, resp.data.prdmaster[i].PRODNO, resp.data.prdmaster[i].PRDSCE, resp.data.prdmaster[i].VENDNO, resp.data.prdmaster[i].VEVCST, resp.data.prdmaster[i].NEWCST, resp.data.prdmaster[i].VRD, resp.data.prdmaster[i].VRDPER, resp.data.prdmaster[i].AVGCST, resp.data.prdmaster[i].QTYOHD, resp.data.prdmaster[i].PRDCDE]);
+                            de.push({ "prLine": resp.data.prdmaster[i].PRDLIN, "partNumber": resp.data.prdmaster[i].PRODNO, "description": resp.data.prdmaster[i].PRDSCE });
                             array.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].VRD }, { value: resp.data.prdmaster[i].VRDPER }]);
                             arrayU.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].AVGCST }, { value: resp.data.prdmaster[i].QTYOHD }]);
                         }
                         if (length > 0) {
                             setInitialData(data);
                             setMainData(data);
-                            setExcelData(de);
+                            setExcelData(data);
                             setStockData(data);
                         }
                         else {
                             setInitialData([{ prLine: "NULL", partNumber: "NULL", description: "NULL", cost: "NULL", newCost: "NULL", dollarChange: "NULL", percentChange: "NULL", avgCost: "NULL", productCode: "NULL", qtyOH: "NULL", list: "NULL", isc: "NULL", stockPer: "NULL", purchPer: "NULL", pMult: "NULL", sMult: "NULL", pToStock: "NULL", sellUnit: "NULL", stkUnit: "NULL", purUnit: "NULL", boxQty: "NULL", code: "NULL" }]);
                         }
                         let allVendorsResp = await axios.get("/api/all-vendors?PRDLIN=" + prdline);
-                        console.log(allVendorsResp, "as")
+                        // console.log(allVendorsResp, "as")
                         if (allVendorsResp.data.status === 200) {
                             setVendors(allVendorsResp.data.vendors);
                         }
@@ -449,7 +530,7 @@ export default function WorkFile() {
                                 {plines.map((item) => {
                                     return (
                                         <div>
-                                            <option value={item.id} onClick={() => { plineSelected(item.P1LIN) }} className="text-black mt-1 text-xs cursor-pointer px-2 py-1 hover:bg-gray-100">{item.P1LIN}</option>
+                                            <option value={item.id} onClick={() => { plineSelected(item.PRDLIN) }} className="text-black mt-1 text-xs cursor-pointer px-2 py-1 hover:bg-gray-100">{item.PRDLIN}</option>
                                             <hr className="border-gray-300" />
                                         </div>
                                     )
@@ -496,6 +577,7 @@ export default function WorkFile() {
                 <hr className="border-gray-300" />
             </div>
             <div className="mt-10">
+                <Datagrid data={excelData} columns={pricingSpreadsheetColumns} />
                 {/* <Handontable cols={dataCols} data={excelData} /> */}
                 {/* <HandsontableExample /> */}
                 {/* {tab == 0 ? <SpreadSheetData data={data} setData={setData} /> : tab == 2 ? <SpreadSheetData data={dataU} setData={setDataU} /> : null} */}

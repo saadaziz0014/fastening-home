@@ -22,7 +22,7 @@ export const GET = async (request) => {
                 plines[i][keys[j]] = plines[i][keys[j]] && plines[i][keys[j]].toString()
             }
         }
-        console.log(plines, "plines")
+        // console.log(plines, "plines")
         return NextResponse.json({ plines, status: 200 })
     } catch (error) {
         console.log(error)
