@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Dropdown from "../../components/Dropdown";
 import SpreadSheetData from "../../components/SpreadSheetData";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import axios from "axios";
 import TableComponent from "@/app/components/TableComponent";
@@ -11,6 +11,7 @@ import Modal from "@/app/components/Modal";
 import Handontable from "@/app/components/Handontable";
 import HandsontableExample from "@/app/components/Example";
 import dynamic from 'next/dynamic'
+import { useSearchParams } from "next/navigation";
 
 const Datagrid = dynamic(
     () => import('../../components/Datagrid'),
@@ -30,13 +31,13 @@ const columns = [
     { key: "regionalPrice", label: "Regional Price" },
     { key: "list", label: "List Price" },
     { key: "newList", label: "New List" },
-    { key: "dollarChangeList", label: "$ Change" },
-    { key: "percentChangeList", label: "% Change" },
+    { key: "dollarChangeList", label: "$ Dollar Change" },
+    { key: "percentChangeList", label: "% Dollar Change" },
     { key: "zo9", label: "ZO9" },
     { key: "qtyOH", label: "Qty OH" },
     { key: "isc", label: "ISC" },
-    { key: "stockPer", label: "Stock %" },
-    { key: "purchPer", label: "Purch %" },
+    { key: "stockPer", label: "Stock Per" },
+    { key: "purchPer", label: "Purch Per" },
     { key: "landedCost", label: "Landed Cost" },
     { key: "pMult", label: "Purchase Multiple" },
     { key: "sMult", label: "Sell Multiple" },
@@ -61,47 +62,48 @@ const columns = [
 ];
 
 const spreadsheetColumns = [
+    { field: "id", filter: true, sortable: true },
     { field: "prLine", filter: true, sortable: true },
     { field: "partNumber", filter: true, sortable: true },
     { field: "description", filter: true, sortable: true },
-    // { field: "xRef", filter: true, sortable: true },
-    // { field: "cost", filter: true, sortable: true },
-    // { field: "newCost", filter: true, sortable: true },
-    // { field: "dollarChange", filter: true, sortable: true },
-    // { field: "percentChange", filter: true, sortable: true },
-    // { field: "avgCost", filter: true, sortable: true },
-    // { field: "productCode", filter: true, sortable: true },
-    // { field: "regionalPrice", filter: true, sortable: true },
-    // { field: "list", filter: true, sortable: true },
-    // { field: "newList", filter: true, sortable: true },
-    // { field: "dollarChangeList", filter: true, sortable: true },
-    // { field: "percentChangeList", filter: true, sortable: true },
-    // { field: "zo9", filter: true, sortable: true },
-    // { field: "qtyOH", filter: true, sortable: true },
-    // { field: "isc", filter: true, sortable: true },
-    // { field: "stockPer", filter: true, sortable: true },
-    // { field: "purchPer", filter: true, sortable: true },
-    // { field: "landedCost", filter: true, sortable: true },
-    // { field: "pMult", filter: true, sortable: true },
-    // { field: "sMult", filter: true, sortable: true },
-    // { field: "pToStock", filter: true, sortable: true },
-    // { field: "sellUnit", filter: true, sortable: true },
-    // { field: "stkUnit", filter: true, sortable: true },
-    // { field: "purUnit", filter: true, sortable: true },
-    // { field: "boxQty", filter: true, sortable: true },
-    // { field: "vname", filter: true, sortable: true },
-    // { field: "branch", filter: true, sortable: true },
-    // { field: "code", filter: true, sortable: true },
-    // { field: "class", filter: true, sortable: true },
-    // { field: "group", filter: true, sortable: true },
-    // { field: "codeDesc", filter: true, sortable: true },
-    // { field: "classDesc", filter: true, sortable: true },
-    // { field: "groupDesc", filter: true, sortable: true },
+    { field: "xRef", filter: true, sortable: true },
+    { field: "productCode", filter: true, sortable: true },
+    { field: "cost", filter: true, sortable: true },
+    { field: "newCost", filter: true, sortable: true },
+    { field: "dollarChange", filter: true, sortable: true },
+    { field: "percentChange", filter: true, sortable: true },
+    { field: "avgCost", filter: true, sortable: true },
+    { field: "regionalPrice", filter: true, sortable: true },
+    { field: "list", filter: true, sortable: true },
+    { field: "newList", filter: true, sortable: true },
+    { field: "dollarChangeList", filter: true, sortable: true },
+    { field: "percentChangeList", filter: true, sortable: true },
+    { field: "zo9", filter: true, sortable: true },
+    { field: "qtyOH", filter: true, sortable: true },
+    { field: "isc", filter: true, sortable: true },
+    { field: "stockPer", filter: true, sortable: true },
+    { field: "purchPer", filter: true, sortable: true },
+    { field: "landedCost", filter: true, sortable: true },
+    { field: "pMult", filter: true, sortable: true },
+    { field: "sMult", filter: true, sortable: true },
+    { field: "pToStock", filter: true, sortable: true },
+    { field: "sellUnit", filter: true, sortable: true },
+    { field: "stkUnit", filter: true, sortable: true },
+    { field: "purUnit", filter: true, sortable: true },
+    { field: "boxQty", filter: true, sortable: true },
+    { field: "vname", filter: true, sortable: true },
+    { field: "branch", filter: true, sortable: true },
+    { field: "code", filter: true, sortable: true },
+    { field: "class", filter: true, sortable: true },
+    { field: "group", filter: true, sortable: true },
+    { field: "codeDesc", filter: true, sortable: true },
+    { field: "classDesc", filter: true, sortable: true },
+    { field: "groupDesc", filter: true, sortable: true },
     // { field: "stock", filter: true, sortable: true },
-    // { field: "salesFHI", filter: true, sortable: true },
-    // { field: "salesSabre", filter: true, sortable: true },
-    // { field: "vcode", filter: true, sortable: true },
-    // { field: "company", filter: true, sortable: true },
+    { field: "salesFHI", filter: true, sortable: true },
+    { field: "salesSabre", filter: true, sortable: true },
+    { field: "vcode", filter: true, sortable: true },
+    { field: "company", filter: true, sortable: true },
 ]
 
 const dataCols = [
@@ -162,8 +164,8 @@ const pricingColumns = [
     { key: "regionalPrice", label: "Regional Price" },
     { key: "list", label: "List Price" },
     { key: "newList", label: "New List" },
-    { key: "dollarChangeList", label: "$ Change" },
-    { key: "percentChangeList", label: "% Change" },
+    { key: "dollarChangeList", label: "$ Dollar Change" },
+    { key: "percentChangeList", label: "% Dollar Change" },
     { key: "zo9", label: "ZO9" },
     { key: "qtyOH", label: "Qty OH" },
     { key: "isc", label: "ISC" },
@@ -177,7 +179,6 @@ const pricingColumns = [
     { key: "stkUnit", label: "STK Unit" },
     { key: "purUnit", label: "Pur Unit" },
     { key: "boxQty", label: "Box Quantity" },
-    { key: "vname", label: "Vendor" },
 ];
 
 const pricingSpreadsheetColumns = [
@@ -257,7 +258,9 @@ const iscColumns = [
 ]
 
 export default function WorkFile() {
-    const router = useRouter();
+    const searchParams = useSearchParams();
+    const name = searchParams.get("name");
+    const [isLoading, setIsLoading] = useState(false);
     const [visibleColumns, setVisibleColumns] = useState(
         pricingColumns.map((col) => col.key)
     );
@@ -281,9 +284,9 @@ export default function WorkFile() {
     const [workFileName, setWorkFileName] = useState("");
     const [prdline, setPrdline] = useState("");
     const [vcode, setVcode] = useState(0);
-    const [data, setData] = useState([[{ value: "Pr. Line" }, { value: "Part Number" }, { value: "Description" }, { value: "Vendor" }, { value: "Cost" }, { value: "New Cost" }, { value: "Variance$" }, { value: "Variance%" }]]);
-    const [dataU, setDataU] = useState([[{ value: "Pr. Line" }, { value: "Part Number" }, { value: "Description" }, { value: "Cost" }, { value: "New Cost" }, { value: "Average Cost" }, { value: "Qty OH" }]]);
-    const [dataI, setDataI] = useState([[{ value: "Pr. Line" }, { value: "Part Number" }, { value: "Description" }, { value: "ISC" }, { value: "Qty OH" }]]);
+    const [data, setData] = useState();
+    const [dataU, setDataU] = useState();
+    const [dataI, setDataI] = useState();
     const [plines, setPlines] = useState([]);
     const [vlines, setVlines] = useState([]);
     const [flagPrdline, setFlagPrdline] = useState(false);
@@ -324,7 +327,7 @@ export default function WorkFile() {
             const resp = await axios.get("/api/vendor-lines?txt=" + vline);
             if (resp.data.status === 200) {
                 if (resp.data.vlines.length == 1) {
-                    vlineSelected(resp.data.vlines[0].VCODE, resp.data.vlines[0].VNAME);
+                    vlineSelected(resp.data.vlines[0].VENDOR, resp.data.vlines[0].VNAME);
                 }
                 else
                     setVlines(resp.data.vlines);
@@ -346,17 +349,15 @@ export default function WorkFile() {
                         let arrayU = [];
                         let length = resp.data.prdmaster.length;
                         let data = [];
-                        let de = [];
-                        let agReact = [];
                         for (let i = 0; i < length; i++) {
-                            data.push({ prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, code: resp.data.prdmaster[i].PRDCDE });
-                            de.push({ "prLine": resp.data.prdmaster[i].PRDLIN, "partNumber": resp.data.prdmaster[i].PRODNO, "description": resp.data.prdmaster[i].PRDSCE });
+                            data.push({ id: resp.data.prdmaster[i].id, prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, code: resp.data.prdmaster[i].PRDCDE, company: resp.data.prdmaster[i].COMPANY });
                             array.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].VRD }, { value: resp.data.prdmaster[i].VRDPER }]);
                             arrayU.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].AVGCST }, { value: resp.data.prdmaster[i].QTYOHD }]);
                         }
                         if (length > 0) {
                             setInitialData(data);
                             setMainData(data);
+                            setMainExcelData(data);
                             setExcelData(data);
                             setStockData(data);
                         }
@@ -382,12 +383,14 @@ export default function WorkFile() {
                         let length = resp.data.prdmaster.length;
                         let data = [];
                         for (let i = 0; i < length; i++) {
-                            data.push({ prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, branch: resp.data.prdmaster[i].BRANCH, code: resp.data.prdmaster[i].PRDCDE, class: resp.data.prdmaster[i].PMCLAS, group: resp.data.prdmaster[i].PMGRP, classDesc: resp.data.prdmaster[i].PMCLSDESC, groupDesc: resp.data.prdmaster[i].PMGRPDESC, stock: resp.data.prdmaster[i].QBRKCD, vcode: resp.data.prdmaster[i].VELCOD, company: resp.data.prdmaster[i].COMPANY });
+                            data.push({ id: resp.data.prdmaster[i].id, prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, branch: resp.data.prdmaster[i].BRANCH, code: resp.data.prdmaster[i].PRDCDE, class: resp.data.prdmaster[i].PMCLAS, group: resp.data.prdmaster[i].PMGRP, classDesc: resp.data.prdmaster[i].PMCLSDESC, groupDesc: resp.data.prdmaster[i].PMGRPDESC, stock: resp.data.prdmaster[i].QBRKCD, vcode: resp.data.prdmaster[i].VELCOD, company: resp.data.prdmaster[i].COMPANY });
                             array.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].VRD }, { value: resp.data.prdmaster[i].VRDPER }]);
                             arrayU.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].AVGCST }, { value: resp.data.prdmaster[i].QTYOHD }]);
                         }
                         if (length > 0) {
                             setInitialData(data);
+                            setExcelData(data);
+                            setMainExcelData(data);
                             setMainData(data);
                             setStockData(data);
                         }
@@ -424,7 +427,7 @@ export default function WorkFile() {
         // if (prdline.length > 0 || vcode != 0) {
         //     generateFile();
         // }
-    }, [pline, vline, filterLine, filterVendor, excelData]);
+    }, [pline, vline]);
 
     const plineSelected = (item) => {
         setPrdline(item);
@@ -460,13 +463,13 @@ export default function WorkFile() {
     }
     const handleStock = () => {
         if (!enabled) {
-            setStockData(initialData);
-            let stock = initialData[0].stock;
-            let updatedData = initialData.filter((item) => item.stock != undefined);
-            setInitialData(updatedData);
+            setStockData(excelData);
+            let stock = excelData[0].qtyOH;
+            let updatedData = excelData.filter((item) => item.qtyOH != null);
+            setExcelData(updatedData);
             setEnabled(true);
         } else {
-            setInitialData(stockData);
+            setExcelData(stockData);
             setEnabled(false);
         }
     }
@@ -475,19 +478,19 @@ export default function WorkFile() {
             <div className="flex justify-between items-center font-inter mt-3">
                 <div className="flex gap-10 items-center">
                     <div>
-                        <Dropdown label="Pr. Lines" type="prdline" initialData={mainData} setInitialData={setInitialData} data={lines} display={linesFlag} setDisplay={setLinesFlag} />
+                        <Dropdown label="Pr. Lines" type="prdline" initialData={mainExcelData} setInitialData={setExcelData} data={lines} display={linesFlag} setDisplay={setLinesFlag} />
                     </div>
                     <div>
-                        <Dropdown label="Vendors" type="vline" initialData={mainData} setInitialData={setInitialData} data={vendors} display={vendorsFlag} setDisplay={setVendorsFlag} />
+                        <Dropdown label="Vendors" type="vline" initialData={mainExcelData} setInitialData={setExcelData} data={vendors} display={vendorsFlag} setDisplay={setVendorsFlag} />
                     </div>
                     {
-                        tab == 0 ? <DropdownMeasure visibleColumns={visibleColumns} setVisibleColumns={setVisibleColumns} label="Measures" data={columns} display={measuresFlag} setDisplay={setMeasuresFlag} />
+                        tab == 0 ? <DropdownMeasure visibleColumns={visibleColumns} setVisibleColumns={setVisibleColumns} label="Measures" display={measuresFlag} setDisplay={setMeasuresFlag} />
                             : tab == 1 ? <DropdownMeasure visibleColumns={visibleColumnsC} setVisibleColumns={setVisibleColumnsC} label="Measures" data={columns} display={measuresFlag} setDisplay={setMeasuresFlag} />
                                 : tab == 2 ? <DropdownMeasure visibleColumns={visibleColumnsU} setVisibleColumns={setVisibleColumnsU} label="Measures" data={columns} display={measuresFlag} setDisplay={setMeasuresFlag} />
                                     : tab == 5 ? <DropdownMeasure visibleColumns={visibleColumnsI} setVisibleColumns={setVisibleColumnsI} label="Measures" data={columns} display={measuresFlag} setDisplay={setMeasuresFlag} />
                                         : null
                     }
-                    <Dropdown label="Company" type="company" data={companies} display={companyFlag} setDisplay={setCompanyFlag} initialData={mainData} setInitialData={setInitialData} />
+                    <Dropdown label="Company" type="company" data={companies} display={companyFlag} setDisplay={setCompanyFlag} initialData={mainExcelData} setInitialData={setExcelData} />
                     <Dropdown label="Database" type="database" data={databases} display={databaseFlag} setDisplay={setDatabaseFlag} initialData={mainData} setInitialData={setInitialData} />
                     <button onClick={() => setInitialData(mainData)} className="underline py-1 text-[#614d87]">Remove Filters</button>
                 </div>
@@ -520,7 +523,7 @@ export default function WorkFile() {
                     </div>
                 </div>
             </div>
-            <div className="flex justify-between mt-8 items-center">
+            <div className="flex justify-between mt-5 items-center">
                 <div className="flex gap-3 items-center">
                     <label className="text-gray-900 text-sm">Pr. Lines</label>
                     <div>
@@ -563,7 +566,7 @@ export default function WorkFile() {
                     <button onClick={() => setModalDisplay(true)} className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Save</button>
                 </div>
             </div>
-            <div className="mt-12">
+            <div className="mt-5">
                 <ul className="flex gap-4">
                     <li onClick={() => { setTab(0); setBaseMeasures(measures) }}><h1 className={`${tab == 0 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer`}>Pricing</h1></li>
                     <li onClick={() => { setTab(1); setBaseMeasures(measures) }}><h1 className={`${tab == 1 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer`}>Code/Class</h1></li>
@@ -576,8 +579,11 @@ export default function WorkFile() {
                 </ul>
                 <hr className="border-gray-300" />
             </div>
-            <div className="mt-10">
-                <Datagrid data={excelData} columns={pricingSpreadsheetColumns} />
+            <div className="mt-5">
+                {tab == 0 ? <Datagrid data={excelData} visibleColumns={visibleColumns} columns={spreadsheetColumns} />
+                    : tab == 1 ? <Datagrid data={excelData} visibleColumns={visibleColumnsC} columns={spreadsheetColumns} />
+                        : tab == 2 ? <Datagrid data={excelData} visibleColumns={visibleColumnsU} columns={spreadsheetColumns} />
+                            : tab == 5 ? <Datagrid data={excelData} visibleColumns={visibleColumnsI} columns={spreadsheetColumns} /> : null}
                 {/* <Handontable cols={dataCols} data={excelData} /> */}
                 {/* <HandsontableExample /> */}
                 {/* {tab == 0 ? <SpreadSheetData data={data} setData={setData} /> : tab == 2 ? <SpreadSheetData data={dataU} setData={setDataU} /> : null} */}

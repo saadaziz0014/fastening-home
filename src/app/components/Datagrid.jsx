@@ -12,27 +12,21 @@ const defaultColDef = {
   resizable: true,
 };
 
-export default function Datagrid({ data, columns }) {
-  console.log(data, "data");
+export default function Datagrid({ data, columns, visibleColumns }) {
   const [rowData, setRowData] = useState([...data]);
-  const [columnData, setColumnData] = useState(columns);
+  const [columnData, setColumnData] = useState([]);
   const [newColumnName, setNewColumnName] = useState("");
   const [newColumnType, setNewColumnType] = useState("text");
+  const [selectedColumn, setSelectedColumn] = useState(""); // New state for selected column
+
   useEffect(() => {
     setRowData(data);
-  }, [data]);
-  // const [columnDefs, setColumnDefs] = useState([
-  //   { field: "make", sortable: true, filter: true },
-  //   { field: "model", sortable: true, filter: true },
-  //   { field: "price", sortable: true, filter: true },
-  // ]);
+    let updatedColumns = columns.filter((col) =>
+      visibleColumns.includes(col.field)
+    );
+    setColumnData(updatedColumns);
+  }, [data, visibleColumns]);
 
-  // // Initial row data
-  // const [rowData, setRowData] = useState([
-  //   { make: "Toyota", model: "Celica", price: 35000 },
-  //   { make: "Ford", model: "Mondeo", price: 32000 },
-  //   { make: "Porsche", model: "Boxster", price: 72000 },
-  // ]);
   const addColumn = () => {
     if (!newColumnName) return;
 
@@ -54,8 +48,23 @@ export default function Datagrid({ data, columns }) {
         params.value ? new Date(params.value).toLocaleDateString() : "";
     }
 
+    // Determine position to insert the new column
+    let position = columnData.findIndex((col) => col.field === selectedColumn);
+
+    let updatedColumns;
+    if (position >= 0) {
+      updatedColumns = [
+        ...columnData.slice(0, position + 1),
+        newColumn,
+        ...columnData.slice(position + 1),
+      ];
+    } else {
+      // If no column is selected, append at the end
+      updatedColumns = [...columnData, newColumn];
+    }
+
     // Update column definitions
-    setColumnData((prev) => [...prev, newColumn]);
+    setColumnData(updatedColumns);
 
     // Update row data with empty values for new column
     setRowData((prev) =>
@@ -65,9 +74,11 @@ export default function Datagrid({ data, columns }) {
       }))
     );
 
-    // Reset input
+    // Reset inputs
     setNewColumnName("");
+    setSelectedColumn("");
   };
+
   return (
     <>
       <div>
@@ -96,9 +107,30 @@ export default function Datagrid({ data, columns }) {
             </select>
           </div>
 
+          <div className="flex flex-col">
+            <label className="text-sm text-gray-600 mb-1">
+              Add After Column
+            </label>
+            <select
+              value={selectedColumn}
+              onChange={(e) => setSelectedColumn(e.target.value)}
+              className="px-3 py-2 border rounded"
+            >
+              <option value="">Select Column</option>
+              {columns.map(
+                (col) =>
+                  col.field != "id" && (
+                    <option key={col.field} value={col.field}>
+                      {col.field}
+                    </option>
+                  )
+              )}
+            </select>
+          </div>
+
           <button
             onClick={addColumn}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="px-4 py-2 bg-[#614d87] text-white rounded hover:bg-purple-900"
           >
             Add Column
           </button>
@@ -111,18 +143,48 @@ export default function Datagrid({ data, columns }) {
           defaultColDef={defaultColDef}
           animateRows={true}
           pagination={true}
-          paginationPageSize={10}
+          paginationPageSize={30}
           onCellValueChanged={(event) => {
-            console.log(event);
-            setRowData((prev) => {
-              const newData = prev.map((item) => {
-                if (item.id === event.data.id) {
-                  return { ...item, [event.colDef.field]: event.newValue };
+            // console.log(event);
+            setRowData((prev) =>
+              prev.map((row) => {
+                if (row.id === event.data.id) {
+                  if (event.colDef.field === "cost") {
+                    let newCost = event.data.newCost;
+                    if (!newCost) {
+                      return { ...row, [event.colDef.field]: event.newValue };
+                    }
+                    let dollarChange = newCost - event.newValue;
+                    let percentChange = Math.round(
+                      (dollarChange / newCost) * 100
+                    );
+                    return {
+                      ...row,
+                      [event.colDef.field]: event.newValue,
+                      newCost: newCost,
+                      dollarChange: dollarChange,
+                      percentChange: percentChange,
+                    };
+                  } else if (event.colDef.field === "newCost") {
+                    let cost = event.data.cost;
+                    if (!cost) {
+                      return { ...row, [event.colDef.field]: event.newValue };
+                    }
+                    let dollarChange = event.newValue - cost;
+                    let percentChange = Math.round((dollarChange / cost) * 100);
+                    return {
+                      ...row,
+                      [event.colDef.field]: event.newValue,
+                      cost: cost,
+                      dollarChange: dollarChange,
+                      percentChange: percentChange,
+                    };
+                  }
+                  return { ...row, [event.colDef.field]: event.newValue };
                 }
-                return item;
-              });
-              return newData;
-            });
+                return row;
+              })
+            );
           }}
         />
       </div>

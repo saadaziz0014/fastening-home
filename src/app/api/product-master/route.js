@@ -14,30 +14,7 @@ export const GET = async (request) => {
                 where: {
                     PRDLIN: pline,
                 },
-                select: {
-                    PRDLIN: true,
-                    PRODNO: true,
-                    VENDNO: true,
-                    PRDSCE: true,
-                    VEVCST: true,
-                    PRDCDE: true,
-                    LISTPR: true,
-                    PMINVC: true,
-                    PMPPER: true,
-                    QBRKCD: true,
-                    PMPMLT: true,
-                    PMSMLT: true,
-                    PMCONV: true,
-                    SELUNT: true,
-                    STKUNT: true,
-                    PURUNT: true,
-                    PMQCAR: true,
-                    PRDCDE: true,
-                    PMCLAS: true,
-                    PMGRP: true,
-                    VELCOD: true
-                },
-                take: 50
+                take: 5
             }
             )
         } else if (!pline && vendor) {
@@ -45,30 +22,7 @@ export const GET = async (request) => {
                 where: {
                     VENDNO: Number(vendor),
                 },
-                select: {
-                    PRDLIN: true,
-                    PRODNO: true,
-                    VENDNO: true,
-                    PRDSCE: true,
-                    VEVCST: true,
-                    PRDCDE: true,
-                    LISTPR: true,
-                    PMINVC: true,
-                    PMPPER: true,
-                    QBRKCD: true,
-                    PMPMLT: true,
-                    PMSMLT: true,
-                    PMCONV: true,
-                    SELUNT: true,
-                    STKUNT: true,
-                    PURUNT: true,
-                    PMQCAR: true,
-                    PRDCDE: true,
-                    PMCLAS: true,
-                    PMGRP: true,
-                    VELCOD: true
-                },
-                take: 50
+                take: 5
             })
         }
         for (let i = 0; i < prdmaster.length; i++) {
@@ -104,7 +58,7 @@ export const GET = async (request) => {
                 let cost = hist.COST ? hist.COST : 0
                 prdmaster[i].NEWCST = cost
                 prdmaster[i].VRD = cost - prdmaster[i].VEVCST
-                prdmaster[i].VRDPER = ((cost - prdmaster[i].VEVCST) / cost) * 100
+                prdmaster[i].VRDPER = Math.round(((cost - prdmaster[i].VEVCST) / prdmaster[i].VEVCST) * 100)
             } else {
                 prdmaster[i].NEWCST = 0
                 prdmaster[i].VRD = 0
@@ -112,7 +66,7 @@ export const GET = async (request) => {
             }
             let vendor = await prisma.phocas_Venlin.findFirst({
                 where: {
-                    VENDOR: prdmaster[i].VENDNO
+                    VENDOR: Number(prdmaster[i].VENDNO)
                 },
                 select: {
                     VNAME: true
@@ -133,7 +87,7 @@ export const GET = async (request) => {
             // console.log(warehouse[0], "warehouse");
             if (warehouse.length > 0) {
                 prdmaster[i].AVGCST = warehouse[0].AVGCST
-                prdmaster[i].BRANCH = warehouse[0].WHSCOD
+                prdmaster[i].BRANCH = warehouse[0].WHSCOD ? warehouse[0].WHSCOD : 0
                 if (prdmaster[i].BRANCH == 3 || prdmaster[i].BRANCH == 7 || prdmaster[i].BRANCH == 10 || prdmaster[i].BRANCH == 11 || prdmaster[i].BRANCH == 12) {
                     prdmaster[i].COMPANY = "FHI"
                 } else {
@@ -141,6 +95,7 @@ export const GET = async (request) => {
                 }
             } else {
                 prdmaster[i].AVGCST = 0
+                prdmaster[i].COMPANY = "FHI"
             }
             // console.log(prdmaster[i].BRANCH, "prdmaster[i].BRANCH");
             // console.log(prdmaster[i].COMPANY);
@@ -166,7 +121,7 @@ export const GET = async (request) => {
             }
         }
         //send 5 
-        prdmaster = prdmaster.slice(0, 5)
+        // prdmaster = prdmaster.slice(0, 5)
         return NextResponse.json({ prdmaster, status: 200 })
     } catch (error) {
         console.log(error)

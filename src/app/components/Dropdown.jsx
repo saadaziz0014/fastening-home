@@ -11,6 +11,8 @@ export default function Dropdown({
   setInitialData,
   type,
 }) {
+  console.log(data, "data");
+  console.log(initialData, "initialData");
   const [selectedItems, setSelectedItems] = useState([]);
   useEffect(() => {
     setSelectedItems(data);
@@ -45,13 +47,13 @@ export default function Dropdown({
         // console.log(dataH, "dataH");
         setInitialData(dataH);
       }
-      // if (type == "company") {
-      //   let dataH = initialData.filter((item) =>
-      //     updatedItems.includes(item.company)
-      //   );
-      //   // console.log(dataH, "dataH");
-      //   setInitialData(dataH);
-      // }
+      if (type == "company") {
+        let dataH = initialData.filter((item) =>
+          updatedItems.includes(item.company)
+        );
+        // console.log(dataH, "dataH");
+        setInitialData(dataH);
+      }
       return updatedItems;
     });
   };
@@ -72,12 +74,12 @@ export default function Dropdown({
       dataH = initialData.filter((item) => data.includes(item.vname));
       // console.log(dataH, "dataH");
     }
-    // if (type == "company") {
-    //   console.log(data, "data");
-    //   console.log(initialData, "initialData");
-    //   dataH = initialData.filter((item) => data.includes(item.company));
-    //   // console.log(dataH, "dataH");
-    // }
+    if (type == "company") {
+      console.log(data, "data");
+      console.log(initialData, "initialData");
+      dataH = initialData.filter((item) => data.includes(item.company));
+      // console.log(dataH, "dataH");
+    }
     setInitialData(dataH);
   };
 
@@ -126,7 +128,6 @@ export default function Dropdown({
             : "p-0 space-y-0 bg-transparent max-h-0 overflow-hidden"
         }`}
         aria-labelledby="dropdownCheckboxButton"
-        onMouseEnter={() => setDisplay("visible")}
       >
         {display === "visible" && (
           <>

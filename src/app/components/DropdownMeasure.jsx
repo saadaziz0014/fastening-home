@@ -1,25 +1,75 @@
+"use client";
+import { useState } from "react";
+
+const data = [
+  { key: "prLine", label: "Pr. Line" },
+  { key: "partNumber", label: "Part Number" },
+  { key: "description", label: "Description" },
+  { key: "xRef", label: "X-Ref" },
+  { key: "cost", label: "Cost" },
+  { key: "newCost", label: "New Cost" },
+  { key: "dollarChange", label: "$ Change" },
+  { key: "percentChange", label: "% Change" },
+  { key: "avgCost", label: "Avg Cost" },
+  { key: "productCode", label: "Product Code" },
+  { key: "regionalPrice", label: "Regional Price" },
+  { key: "list", label: "List Price" },
+  { key: "newList", label: "New List" },
+  { key: "dollarChangeList", label: "$ Dollar Change" },
+  { key: "percentChangeList", label: "% Dollar Change" },
+  { key: "zo9", label: "ZO9" },
+  { key: "qtyOH", label: "Qty OH" },
+  { key: "isc", label: "ISC" },
+  { key: "stockPer", label: "Stock Per" },
+  { key: "purchPer", label: "Purch Per" },
+  { key: "landedCost", label: "Landed Cost" },
+  { key: "pMult", label: "Purchase Multiple" },
+  { key: "sMult", label: "Sell Multiple" },
+  { key: "pToStock", label: "P to Stock" },
+  { key: "sellUnit", label: "Sell Unit" },
+  { key: "stkUnit", label: "STK Unit" },
+  { key: "purUnit", label: "Pur Unit" },
+  { key: "boxQty", label: "Box Quantity" },
+  // { key: "vname", label: "Vendor" },
+  // { key: "branch", label: "Branch" },
+  { key: "code", label: "Code" },
+  { key: "class", label: "Class" },
+  { key: "group", label: "Group" },
+  { key: "codeDesc", label: "Code Description" },
+  { key: "classDesc", label: "Class Description" },
+  { key: "groupDesc", label: "Group Description" },
+  // { key: "stock", label: "Stock Per" },
+  { key: "salesFHI", label: "Sales FHI" },
+  { key: "salesSabre", label: "Sales Sabre" },
+  { key: "vcode", label: "Velocity Code" },
+  // { key: "company", label: "Company" },
+];
+
 export default function DropdownMeasure({
-  label,
-  data,
   display,
   setDisplay,
   visibleColumns,
   setVisibleColumns,
 }) {
+  // console.log(data, "data dropdown");
+  const [dropdown, setDropdown] = useState([...data]);
+  const [dropdownKeys, setDropdownKeys] = useState(
+    data.map((item) => item.key)
+  );
   const toggleColumn = (key) => {
     setVisibleColumns((prev) =>
       prev.includes(key) ? prev.filter((col) => col !== key) : [...prev, key]
     );
   };
   const changeDisplay = () => {
-    if (display === "hidden" && data.length > 0) {
+    if (display === "hidden") {
       setDisplay("visible");
     } else {
       setDisplay("hidden");
     }
   };
   const selectAll = () => {
-    const allKeys = data.map((item) => item.key); // Extract all column keys
+    const allKeys = dropdownKeys; // Extract all column keys
     setVisibleColumns(allKeys);
   };
   const deselectAll = () => {
@@ -41,7 +91,7 @@ export default function DropdownMeasure({
         data-twe-ripple-init
         data-twe-ripple-color="light"
       >
-        {label}
+        Measures
         <span className="w-2 [&>svg]:h-5 [&>svg]:w-5">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -59,7 +109,7 @@ export default function DropdownMeasure({
       <ul
         className={`absolute min-w-0 max-w-auto hidden-scrollbar ${
           display === "visible"
-            ? "shadow-lg rounded-lg px-3 py-2 space-y-4 bg-white max-h-96 overflow-y-scroll"
+            ? "shadow-lg z-[3] rounded-lg px-3 py-2 space-y-4 bg-white max-h-96 overflow-y-scroll"
             : "p-0 space-y-0 bg-transparent max-h-0 overflow-hidden"
         }`}
         aria-labelledby="dropdownCheckboxButton"
@@ -90,30 +140,25 @@ export default function DropdownMeasure({
             </li>
             <hr className="border-gray-300" />
             {/* Map the rest of the items */}
-            {data.map(
-              (item) =>
-                item.label != "Vendor" &&
-                item.label != "Company" &&
-                item.label != "Branch" && (
-                  <li key={item}>
-                    <div className="flex items-center w-28">
-                      <input
-                        id={`checkbox-${item.key}`}
-                        type="checkbox"
-                        checked={visibleColumns.includes(item.key)}
-                        onChange={() => toggleColumn(item.key)}
-                        className="h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700"
-                      />
-                      <label
-                        htmlFor={`checkbox-${item.label}`}
-                        className="ms-2 text-xs font-inter text-gray-900"
-                      >
-                        {item.label}
-                      </label>
-                    </div>
-                  </li>
-                )
-            )}
+            {dropdown.map((item) => (
+              <li key={item}>
+                <div className="flex items-center w-28" key={item.key}>
+                  <input
+                    id={`checkbox-${item.key}`}
+                    type="checkbox"
+                    checked={visibleColumns.includes(item.key)}
+                    onChange={() => toggleColumn(item.key)}
+                    className="h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700"
+                  />
+                  <label
+                    htmlFor={`checkbox-${item.label}`}
+                    className="ms-2 text-xs font-inter text-gray-900"
+                  >
+                    {item.label}
+                  </label>
+                </div>
+              </li>
+            ))}
           </>
         )}
       </ul>

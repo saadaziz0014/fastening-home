@@ -1,5 +1,10 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+
 export default function Table({ children }) {
-  console.log(children);
+  // console.log(children);
+  const router = useRouter();
   return (
     <section className="container px-4 mx-auto">
       <div className="flex flex-col">
@@ -115,7 +120,12 @@ export default function Table({ children }) {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {children &&
                     children.map((item) => (
-                      <tr>
+                      <tr
+                        key={item.id}
+                        onClick={() =>
+                          router.push("/pim/work-file?name=" + item.name)
+                        }
+                      >
                         <td className="px-4 py-4 text-sm font-medium text-black whitespace-nowrap">
                           <div className="inline-flex items-center gap-x-3">
                             <input

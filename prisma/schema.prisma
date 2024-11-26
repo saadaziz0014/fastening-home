@@ -7,6 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model Phocas_Prdln {
   VENDOR BigInt?
   PRDLIN String?
@@ -14,6 +15,7 @@ model Phocas_Prdln {
   id     Int     @id @default(autoincrement())
 }
 
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model Phocas_Prdmst {
   DTEPRC BigInt?
   LISTPR Float?
@@ -51,6 +53,7 @@ model Phocas_Prdmst {
   id     Int     @id @default(autoincrement())
 }
 
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model Phocas_Split_Ordhst_2025_FHI {
   CUSTNO BigInt?
   CNAME  String?
@@ -84,6 +87,7 @@ model Phocas_Split_Ordhst_2025_FHI {
   id     Int     @id @default(autoincrement())
 }
 
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model Phocas_Whsprd {
   PRDLIN String?
   PRODNO String?
@@ -116,6 +120,7 @@ model Phocas_Whsprd {
   id     Int     @id @default(autoincrement())
 }
 
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model Phocas_Venlin {
   VENDOR BigInt?
   VNAME  String?
@@ -124,12 +129,14 @@ model Phocas_Venlin {
   id     Int     @id @default(autoincrement())
 }
 
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model Groups {
   Group       BigInt?
   Description String?
   id          Int     @id @default(autoincrement())
 }
 
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model Phocas_Prdcde {
   P1LIN String?
   P1COD BigInt?
@@ -137,20 +144,14 @@ model Phocas_Prdcde {
   id    Int     @id @default(autoincrement())
 }
 
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model Phocas_Prdcls {
   PTCLAS String?
   PTDESC String?
   id     Int     @id @default(autoincrement())
 }
 
-model WorkFile {
-  id         Int      @id @default(autoincrement())
-  created_at DateTime @default(now())
-  data       Json?
-  name       String?
-  updated_at DateTime @updatedAt
-}
-
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model PriceTracker {
   id                 Int     @id @default(autoincrement())
   prdline            String?
@@ -170,4 +171,45 @@ model PriceTracker {
   pricelistform      String?
   sabreinfo          String?
   notes              String?
+}
+
+model WorkFile {
+  id         Int      @id @default(autoincrement())
+  created_at DateTime @default(now())
+  data       Json?
+  name       String?
+  updated_at DateTime @updatedAt
+}
+
+model Phocas_Split_Ordhst_2025_SABRE {
+  CUSTNO Float?
+  CNAME  String?
+  BRANCH Float?
+  SLSMN_ Float?  @map("SLSMN#")
+  SNAME  String?
+  ORDNO  Float?
+  INVNO  Float?
+  ORIDAT Float?
+  PRDLIN String?
+  PRODNO String?
+  DESC   String?
+  QS     Float?
+  DUCOST Float?
+  ORGNET Float?
+  ORGDIS Float?
+  UNET   Float?
+  DISC   Float?
+  PRCSRC String?
+  COST   Float?
+  NET    Float?
+  DEOPER String?
+  OPRCHG String?
+  DISCOD String?
+  SLSNO  Float?
+  DFSTCD Float?
+  DPRDGP Float?
+  VELCOD String?
+  PMINVC String?
+  CUSPON String?
+  id     Int     @id @default(autoincrement())
 }
