@@ -42,7 +42,7 @@ export const GET = async (request) => {
         const { searchParams } = new URL(request.url)
         let page = searchParams.get("page")
         let tab = searchParams.get("tab")
-        let limit = 8
+        let limit = 5
         let skip = (page - 1) * limit
         if (tab == "1") {
             let total = await prisma.workFile.count()

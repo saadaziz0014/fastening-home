@@ -122,6 +122,7 @@ export default function Table({ children }) {
                     children.map((item) => (
                       <tr
                         key={item.id}
+                        className="cursor-pointer"
                         onClick={() =>
                           router.push("/pim/work-file?name=" + item.name)
                         }
@@ -136,7 +137,9 @@ export default function Table({ children }) {
                           </div>
                         </td>
                         <td className="px-4 py-4 text-sm text-black whitespace-nowrap">
-                          {item.data[0].vname}
+                          {item.data[0] && item.data[0].vname
+                            ? item.data[0].vname
+                            : "N/A"}
                         </td>
                         <td className="px-4 py-4 text-sm text-black whitespace-nowrap">
                           {new Date(item.updated_at).toISOString().slice(0, 10)}

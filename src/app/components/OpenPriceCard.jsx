@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 export default function OpenPriceCard({ data }) {
   const router = useRouter();
   return (
-    <div className="w-[30%] bg-white p-4 rounded-lg border border-gray-900 shadow-md">
+    <div className="w-[30%] bg-white p-4 rounded-lg shadow-custom-lg">
       <div className="mb-2">
         <div className="flex justify-between">
           <h1 className="text-lg font-bold">Open Price</h1>
@@ -39,7 +39,7 @@ export default function OpenPriceCard({ data }) {
           </svg>
         </div>
         <div>
-          <p className="text-md">
+          <p className="text-md text-[#667085]">
             Lorem, ipsum dolor sit amet consectetur adipisicing elit
           </p>
         </div>

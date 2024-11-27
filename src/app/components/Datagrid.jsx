@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
@@ -12,33 +12,64 @@ const defaultColDef = {
   resizable: true,
 };
 
-export default function Datagrid({ data, columns, visibleColumns }) {
-  const [rowData, setRowData] = useState([...data]);
+export default function Datagrid({
+  data,
+  setData,
+  columns,
+  visibleColumns,
+  name,
+  search,
+}) {
+  const [rowData, setRowData] = useState();
   const [columnData, setColumnData] = useState([]);
   const [newColumnName, setNewColumnName] = useState("");
   const [newColumnType, setNewColumnType] = useState("text");
-  const [selectedColumn, setSelectedColumn] = useState(""); // New state for selected column
+  const [selectedColumn, setSelectedColumn] = useState("");
+  const gridApiRef = useRef(null); // Reference to the grid API
 
   useEffect(() => {
     setRowData(data);
-    let updatedColumns = columns.filter((col) =>
-      visibleColumns.includes(col.field)
-    );
-    setColumnData(updatedColumns);
-  }, [data, visibleColumns]);
+    if (visibleColumns) {
+      let updatedColumns = columns.map((col) => ({
+        ...col,
+        cellStyle: (params) =>
+          search &&
+          search.length > 2 &&
+          params.value?.toString().toLowerCase().includes(search.toLowerCase())
+            ? { backgroundColor: "yellow" }
+            : { backgroundColor: "white" }, // Highlight cells containing the search string
+      }));
+
+      let visibleColumnDefs = updatedColumns.filter((col) =>
+        visibleColumns.includes(col.field)
+      );
+      setColumnData(visibleColumnDefs);
+    }
+  }, [data, visibleColumns, columns, search]);
+
+  useEffect(() => {
+    // Refresh the cells when the search prop changes
+    if (gridApiRef.current) {
+      gridApiRef.current.refreshCells({ force: true });
+    }
+  }, [search]);
 
   const addColumn = () => {
     if (!newColumnName) return;
 
-    // Create new column definition
     const newColumn = {
       field: newColumnName.toLowerCase().replace(/\s+/g, "_"),
       headerName: newColumnName,
       sortable: true,
       filter: true,
+      cellStyle: (params) =>
+        search &&
+        search.length > 2 &&
+        params.value?.toString().toLowerCase().includes(search.toLowerCase())
+          ? { backgroundColor: "yellow" }
+          : { backgroundColor: "white" }, // Apply the same conditional styling to new columns
     };
 
-    // Add specific properties based on column type
     if (newColumnType === "number") {
       newColumn.filter = "agNumberColumnFilter";
       newColumn.valueParser = (params) => Number(params.newValue);
@@ -48,9 +79,7 @@ export default function Datagrid({ data, columns, visibleColumns }) {
         params.value ? new Date(params.value).toLocaleDateString() : "";
     }
 
-    // Determine position to insert the new column
     let position = columnData.findIndex((col) => col.field === selectedColumn);
-
     let updatedColumns;
     if (position >= 0) {
       updatedColumns = [
@@ -59,14 +88,11 @@ export default function Datagrid({ data, columns, visibleColumns }) {
         ...columnData.slice(position + 1),
       ];
     } else {
-      // If no column is selected, append at the end
       updatedColumns = [...columnData, newColumn];
     }
 
-    // Update column definitions
     setColumnData(updatedColumns);
 
-    // Update row data with empty values for new column
     setRowData((prev) =>
       prev.map((row) => ({
         ...row,
@@ -74,14 +100,24 @@ export default function Datagrid({ data, columns, visibleColumns }) {
       }))
     );
 
-    // Reset inputs
+    setData((prev) =>
+      prev.map((row) => ({
+        ...row,
+        [newColumn.field]: "",
+      }))
+    );
+
     setNewColumnName("");
     setSelectedColumn("");
   };
 
+  const handleGridReady = (params) => {
+    gridApiRef.current = params.api; // Set the grid API reference
+  };
+
   return (
     <>
-      <div>
+      <div className="flex justify-between">
         <div className="flex gap-4 items-end mb-4">
           <div className="flex flex-col">
             <label className="text-sm text-gray-600 mb-1">Column Name</label>
@@ -135,9 +171,13 @@ export default function Datagrid({ data, columns, visibleColumns }) {
             Add Column
           </button>
         </div>
+        <div className="flex items-end mb-4">
+          {name && <h1 className="font-bold text-[#614d87]">File: {name}</h1>}
+        </div>
       </div>
       <div className="ag-theme-alpine w-full h-96">
         <AgGridReact
+          onGridReady={handleGridReady} // Set the grid API when ready
           rowData={rowData}
           columnDefs={columnData}
           defaultColDef={defaultColDef}
@@ -145,7 +185,6 @@ export default function Datagrid({ data, columns, visibleColumns }) {
           pagination={true}
           paginationPageSize={30}
           onCellValueChanged={(event) => {
-            // console.log(event);
             setRowData((prev) =>
               prev.map((row) => {
                 if (row.id === event.data.id) {
@@ -157,6 +196,20 @@ export default function Datagrid({ data, columns, visibleColumns }) {
                     let dollarChange = newCost - event.newValue;
                     let percentChange = Math.round(
                       (dollarChange / newCost) * 100
+                    );
+                    setData((prev) =>
+                      prev.map((item) => {
+                        if (item.id === event.data.id) {
+                          return {
+                            ...item,
+                            cost: event.newValue,
+                            newCost: newCost,
+                            dollarChange: dollarChange,
+                            percentChange: percentChange,
+                          };
+                        }
+                        return item;
+                      })
                     );
                     return {
                       ...row,
@@ -172,6 +225,20 @@ export default function Datagrid({ data, columns, visibleColumns }) {
                     }
                     let dollarChange = event.newValue - cost;
                     let percentChange = Math.round((dollarChange / cost) * 100);
+                    setData((prev) =>
+                      prev.map((item) => {
+                        if (item.id === event.data.id) {
+                          return {
+                            ...item,
+                            cost: cost,
+                            newCost: event.newValue,
+                            dollarChange: dollarChange,
+                            percentChange: percentChange,
+                          };
+                        }
+                        return item;
+                      })
+                    );
                     return {
                       ...row,
                       [event.colDef.field]: event.newValue,
@@ -179,8 +246,20 @@ export default function Datagrid({ data, columns, visibleColumns }) {
                       dollarChange: dollarChange,
                       percentChange: percentChange,
                     };
+                  } else {
+                    setData((prev) =>
+                      prev.map((item) => {
+                        if (item.id === event.data.id) {
+                          return {
+                            ...item,
+                            [event.colDef.field]: event.newValue,
+                          };
+                        }
+                        return item;
+                      })
+                    );
+                    return { ...row, [event.colDef.field]: event.newValue };
                   }
-                  return { ...row, [event.colDef.field]: event.newValue };
                 }
                 return row;
               })

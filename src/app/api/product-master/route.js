@@ -14,13 +14,20 @@ export const GET = async (request) => {
                 where: {
                     PRDLIN: pline,
                 },
+                orderBy: {
+                    PRODNO: "asc"
+                },
                 take: 5
             }
             )
         } else if (!pline && vendor) {
+            console.log(vendor, "vendor")
             prdmaster = await prisma.phocas_Prdmst.findMany({
                 where: {
                     VENDNO: Number(vendor),
+                },
+                orderBy: {
+                    PRODNO: "asc"
                 },
                 take: 5
             })
@@ -106,12 +113,28 @@ export const GET = async (request) => {
                 },
                 orderBy: {
                     QTYOHD: "desc"
-                }
+                },
+                take: 1
             })
             if (oh.length > 0) {
                 prdmaster[i].QTYOHD = oh[0].QTYOHD
             } else {
                 prdmaster[i].QTYOHD = 0
+            }
+            let qtyCom = await prisma.phocas_Whsprd.findMany({
+                where: {
+                    PRDLIN: prdmaster[i].PRDLIN,
+                    PRODNO: prdmaster[i].PRODNO
+                },
+                orderBy: {
+                    QTYCOM: "desc"
+                },
+                take: 1
+            })
+            if (qtyCom.length > 0) {
+                prdmaster[i].QTYCOM = qtyCom[0].QTYCOM
+            } else {
+                prdmaster[i].QTYCOM = 0
             }
         }
         for (let i = 0; i < prdmaster.length; i++) {

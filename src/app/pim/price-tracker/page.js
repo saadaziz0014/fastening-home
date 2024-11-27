@@ -67,13 +67,13 @@ export default function TabProduction() {
     const fetchData = async () => {
         try {
             let resp = await axios.get(`/api/pricetracker?prdline=${pline}`);
-            console.log(resp);
+            // console.log(resp);
             if (resp.status === 200) {
                 if (!resp.data.id) {
                     return
                 }
                 let data = resp.data;
-                console.log(data);
+                // console.log(data);
                 setForm({ ...form, ...data });
             }
         } catch (error) {

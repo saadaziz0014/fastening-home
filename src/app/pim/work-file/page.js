@@ -12,6 +12,7 @@ import Handontable from "@/app/components/Handontable";
 import HandsontableExample from "@/app/components/Example";
 import dynamic from 'next/dynamic'
 import { useSearchParams } from "next/navigation";
+import Loading from "@/app/components/Loading";
 
 const Datagrid = dynamic(
     () => import('../../components/Datagrid'),
@@ -260,6 +261,8 @@ const iscColumns = [
 export default function WorkFile() {
     const searchParams = useSearchParams();
     const name = searchParams.get("name");
+    const [search, setSearch] = useState("");
+    const [loading, setLoading] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [visibleColumns, setVisibleColumns] = useState(
         pricingColumns.map((col) => col.key)
@@ -273,6 +276,8 @@ export default function WorkFile() {
     const [visibleColumnsI, setVisibleColumnsI] = useState(
         iscColumns.map((col) => col.key)
     )
+    const [visibleColumnsV, setVisibleColumnsV] = useState();
+    const [namef, setName] = useState("");
     const [pline, setPline] = useState("");
     const [vline, setVline] = useState("");
     const [excelData, setExcelData] = useState([]);
@@ -307,6 +312,14 @@ export default function WorkFile() {
     const [filterLine, setFilterLine] = useState("");
     const [filterVendor, setFilterVendor] = useState("");
     const [enabled, setEnabled] = useState(false);
+    const [state, setState] = useState('ALL'); // Initial state
+    const handleToggle = () => {
+        setState((prevState) => {
+            if (prevState === 'OH') return 'ALL';
+            if (prevState === 'ALL') return 'NONE';
+            return 'OH';
+        });
+    };
     const fetchPlines = async () => {
         try {
             const resp = await axios.get("/api/product-linez?txt=" + pline);
@@ -338,6 +351,7 @@ export default function WorkFile() {
     }
     const generateFile = async () => {
         try {
+            // setLoading(true);
             setInitialData([]);
             setData([[{ value: "Pr. Line" }, { value: "Part Number" }, { value: "Description" }, { value: "Vendor" }, { value: "Cost" }, { value: "New Cost" }, { value: "Variance$" }, { value: "Variance%" }]]);
             setDataU([{ value: "Pr. Line" }, { value: "Part Number" }, { value: "Description" }, { value: "Cost" }, { value: "New Cost" }, { value: "Average Cost" }, { value: "Qty OH" }]);
@@ -350,7 +364,7 @@ export default function WorkFile() {
                         let length = resp.data.prdmaster.length;
                         let data = [];
                         for (let i = 0; i < length; i++) {
-                            data.push({ id: resp.data.prdmaster[i].id, prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, code: resp.data.prdmaster[i].PRDCDE, company: resp.data.prdmaster[i].COMPANY });
+                            data.push({ id: resp.data.prdmaster[i].id, prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, branch: resp.data.prdmaster[i].BRANCH, code: resp.data.prdmaster[i].PRDCDE, class: resp.data.prdmaster[i].PMCLAS, group: resp.data.prdmaster[i].PMGRP, classDesc: resp.data.prdmaster[i].PMCLSDESC, groupDesc: resp.data.prdmaster[i].PMGRPDESC, stock: resp.data.prdmaster[i].QBRKCD, vcode: resp.data.prdmaster[i].VELCOD, company: resp.data.prdmaster[i].COMPANY, qtyCOM: resp.data.prdmaster[i].QTYCOM });
                             array.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].VRD }, { value: resp.data.prdmaster[i].VRDPER }]);
                             arrayU.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].AVGCST }, { value: resp.data.prdmaster[i].QTYOHD }]);
                         }
@@ -383,7 +397,7 @@ export default function WorkFile() {
                         let length = resp.data.prdmaster.length;
                         let data = [];
                         for (let i = 0; i < length; i++) {
-                            data.push({ id: resp.data.prdmaster[i].id, prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, branch: resp.data.prdmaster[i].BRANCH, code: resp.data.prdmaster[i].PRDCDE, class: resp.data.prdmaster[i].PMCLAS, group: resp.data.prdmaster[i].PMGRP, classDesc: resp.data.prdmaster[i].PMCLSDESC, groupDesc: resp.data.prdmaster[i].PMGRPDESC, stock: resp.data.prdmaster[i].QBRKCD, vcode: resp.data.prdmaster[i].VELCOD, company: resp.data.prdmaster[i].COMPANY });
+                            data.push({ id: resp.data.prdmaster[i].id, prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, branch: resp.data.prdmaster[i].BRANCH, code: resp.data.prdmaster[i].PRDCDE, class: resp.data.prdmaster[i].PMCLAS, group: resp.data.prdmaster[i].PMGRP, classDesc: resp.data.prdmaster[i].PMCLSDESC, groupDesc: resp.data.prdmaster[i].PMGRPDESC, stock: resp.data.prdmaster[i].QBRKCD, vcode: resp.data.prdmaster[i].VELCOD, company: resp.data.prdmaster[i].COMPANY, qtyCOM: resp.data.prdmaster[i].QTYCOM });
                             array.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].VRD }, { value: resp.data.prdmaster[i].VRDPER }]);
                             arrayU.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].AVGCST }, { value: resp.data.prdmaster[i].QTYOHD }]);
                         }
@@ -410,6 +424,7 @@ export default function WorkFile() {
             } else {
                 toast.error("Please select a product line or a vendor line")
             }
+            setLoading(false);
         } catch (error) {
             console.log(error)
             toast.error("Something went wrong in generating file")
@@ -418,6 +433,12 @@ export default function WorkFile() {
     useEffect(() => {
         setPlines([])
         setVlines([])
+        handleStock()
+        if (name) {
+            setTab(3);
+            setName(name);
+            fetchData();
+        }
         if (!flagPrdline && pline.length > 2) {
             fetchPlines();
         }
@@ -427,7 +448,7 @@ export default function WorkFile() {
         // if (prdline.length > 0 || vcode != 0) {
         //     generateFile();
         // }
-    }, [pline, vline]);
+    }, [pline, vline, loading, state]);
 
     const plineSelected = (item) => {
         setPrdline(item);
@@ -441,10 +462,24 @@ export default function WorkFile() {
         setVline(item2);
         setVlines([]);
     }
+    const fetchData = async () => {
+        try {
+            let resp = await axios.get("/api/work-file/details?name=" + name);
+            if (resp.status == 200) {
+                let data = resp.data.data;
+                let keys = Object.keys(data[0]);
+                setVisibleColumnsV(keys);
+                setExcelData(data);
+                setMainExcelData(data);
+            }
+        } catch (error) {
+            toast.error("Something went wrong in fetching data")
+        }
+    }
     const workFileAdd = async () => {
         try {
-            if (mainData.length > 0 && workFileName.length > 0) {
-                let resp = await axios.post("/api/work-file", { data: initialData, fileName: workFileName });
+            if (mainExcelData.length > 0 && workFileName.length > 0) {
+                let resp = await axios.post("/api/work-file", { data: excelData, fileName: workFileName });
                 if (resp.data.status === 200) {
                     toast.success(resp.data.message);
                     setModalDisplay(false);
@@ -462,137 +497,169 @@ export default function WorkFile() {
         }
     }
     const handleStock = () => {
-        if (!enabled) {
-            setStockData(excelData);
-            let stock = excelData[0].qtyOH;
-            let updatedData = excelData.filter((item) => item.qtyOH != null);
+        console.log(excelData)
+        console.log(state)
+        if (state == "OH") {
+            let updatedData = excelData.filter((item) => item.qtyOH && item.qtyOH > 0);
             setExcelData(updatedData);
-            setEnabled(true);
-        } else {
-            setExcelData(stockData);
-            setEnabled(false);
+        } else if (state == "NONE") {
+            let updatedData = excelData.filter((item) => !item.qtyOH || item.qtyOH == 0 || item.qtyOH == null);
+            setExcelData(updatedData);
+        } else if (state == "ALL") {
+            let updatedData = excelData.filter((item) => item.qtyCOM && item.qtyCOM > 0);
+            setExcelData(updatedData);
         }
     }
-    return (
-        <div>
-            <div className="flex justify-between items-center font-inter mt-3">
-                <div className="flex gap-10 items-center">
-                    <div>
-                        <Dropdown label="Pr. Lines" type="prdline" initialData={mainExcelData} setInitialData={setExcelData} data={lines} display={linesFlag} setDisplay={setLinesFlag} />
+    if (!loading) {
+        return (
+            <div>
+                <div className="flex justify-between items-center font-inter mt-3">
+                    <div className="flex gap-10 items-center">
+                        <div>
+                            <Dropdown label="Pr. Lines" type="prdline" initialData={mainExcelData} setInitialData={setExcelData} data={lines} display={linesFlag} setDisplay={setLinesFlag} />
+                        </div>
+                        <div>
+                            <Dropdown label="Vendors" type="vline" initialData={mainExcelData} setInitialData={setExcelData} data={vendors} display={vendorsFlag} setDisplay={setVendorsFlag} />
+                        </div>
+                        {
+                            tab == 0 ? <DropdownMeasure visibleColumns={visibleColumns} setVisibleColumns={setVisibleColumns} label="Measures" display={measuresFlag} setDisplay={setMeasuresFlag} />
+                                : tab == 1 ? <DropdownMeasure visibleColumns={visibleColumnsC} setVisibleColumns={setVisibleColumnsC} label="Measures" data={columns} display={measuresFlag} setDisplay={setMeasuresFlag} />
+                                    : tab == 2 ? <DropdownMeasure visibleColumns={visibleColumnsU} setVisibleColumns={setVisibleColumnsU} label="Measures" data={columns} display={measuresFlag} setDisplay={setMeasuresFlag} />
+                                        : tab == 3 ? <DropdownMeasure visibleColumns={visibleColumnsV} setVisibleColumns={setVisibleColumnsV} label="Measures" data={columns} display={measuresFlag} setDisplay={setMeasuresFlag} />
+                                            : tab == 5 ? <DropdownMeasure visibleColumns={visibleColumnsI} setVisibleColumns={setVisibleColumnsI} label="Measures" data={columns} display={measuresFlag} setDisplay={setMeasuresFlag} />
+                                                : null
+                        }
+                        <Dropdown label="Company" type="company" data={companies} display={companyFlag} setDisplay={setCompanyFlag} initialData={mainExcelData} setInitialData={setExcelData} />
+                        <Dropdown label="Database" type="database" data={databases} display={databaseFlag} setDisplay={setDatabaseFlag} initialData={mainData} setInitialData={setInitialData} />
+                        <button onClick={() => setInitialData(mainData)} className="underline py-1 text-[#614d87]">Remove Filters</button>
                     </div>
-                    <div>
-                        <Dropdown label="Vendors" type="vline" initialData={mainExcelData} setInitialData={setExcelData} data={vendors} display={vendorsFlag} setDisplay={setVendorsFlag} />
-                    </div>
-                    {
-                        tab == 0 ? <DropdownMeasure visibleColumns={visibleColumns} setVisibleColumns={setVisibleColumns} label="Measures" display={measuresFlag} setDisplay={setMeasuresFlag} />
-                            : tab == 1 ? <DropdownMeasure visibleColumns={visibleColumnsC} setVisibleColumns={setVisibleColumnsC} label="Measures" data={columns} display={measuresFlag} setDisplay={setMeasuresFlag} />
-                                : tab == 2 ? <DropdownMeasure visibleColumns={visibleColumnsU} setVisibleColumns={setVisibleColumnsU} label="Measures" data={columns} display={measuresFlag} setDisplay={setMeasuresFlag} />
-                                    : tab == 5 ? <DropdownMeasure visibleColumns={visibleColumnsI} setVisibleColumns={setVisibleColumnsI} label="Measures" data={columns} display={measuresFlag} setDisplay={setMeasuresFlag} />
-                                        : null
-                    }
-                    <Dropdown label="Company" type="company" data={companies} display={companyFlag} setDisplay={setCompanyFlag} initialData={mainExcelData} setInitialData={setExcelData} />
-                    <Dropdown label="Database" type="database" data={databases} display={databaseFlag} setDisplay={setDatabaseFlag} initialData={mainData} setInitialData={setInitialData} />
-                    <button onClick={() => setInitialData(mainData)} className="underline py-1 text-[#614d87]">Remove Filters</button>
-                </div>
-                <div className="flex gap-1 items-center mr-2">
-                    <h1>Stock</h1>
-                    <div
-                        className={`relative inline-flex items-center h-6 w-11 cursor-pointer rounded-full transition-colors duration-300 ${enabled ? "bg-[#614d87]" : "bg-gray-300"
-                            }`}
-                        onClick={() => handleStock()}
-                    >
-                        <span
-                            className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${enabled ? "translate-x-5" : "translate-x-1"
+                    <div className="flex gap-1 items-center mr-2">
+                        {/* <h1>Stock</h1> */}
+                        {/* <div
+                            className={`relative inline-flex items-center h-6 w-11 cursor-pointer rounded-full transition-colors duration-300 ${enabled ? "bg-[#614d87]" : "bg-gray-300"
                                 }`}
-                        />
-                    </div>
-                    <div>
-                        <button className="bg-white p-2 rounded-lg">
-                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M16.5 11.5V14.8333C16.5 15.2754 16.3244 15.6993 16.0118 16.0118C15.6993 16.3244 15.2754 16.5 14.8333 16.5H3.16667C2.72464 16.5 2.30072 16.3244 1.98816 16.0118C1.67559 15.6993 1.5 15.2754 1.5 14.8333V11.5M4.83333 7.33333L9 11.5M9 11.5L13.1667 7.33333M9 11.5V1.5" stroke="#344054" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </button>
-                    </div>
-                    <div className="w-64 px-2">
-                        <div className="relative">
-                            <span className="absolute text-black top-5 left-4"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="gray" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+                            onClick={() => handleStock()}
+                        >
+                            <span
+                                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-300 ${enabled ? "translate-x-5" : "translate-x-1"
+                                    }`}
+                            />
+                        </div> */}
+                        <div
+                            className="relative text-xs w-36 h-10 bg-gray-200 rounded-full flex items-center cursor-pointer"
+                            onClick={handleToggle}
+                        >
+                            {/* The slider */}
+                            <div
+                                className={`absolute w-10 h-10 rounded-full transition-all duration-300 ${state === 'ALL'
+                                    ? 'bg-green-500 left-2'
+                                    : state === 'NONE'
+                                        ? 'bg-red-500 right-2'
+                                        : 'bg-gray-500 left-1/2 transform -translate-x-1/2'
+                                    }`}
+                            ></div>
 
-                            </span>
-                            <input type="text" placeholder="Search for Trades" className="bg-white h-14 w-full px-12 rounded-lg focus:outline-none hover:cursor-pointer" name />
+                            {/* Labels */}
+                            <div className="absolute left-3 text-xs text-gray-600">ALL</div>
+                            <div className="absolute right-3 text-xs text-gray-600">NONE</div>
+                            <div className="absolute left-1/2 transform -translate-x-1/2 text-xs text-gray-600">
+                                OH
+                            </div>
+                        </div>
+
+
+                        <div>
+                            <button className="bg-white p-2 rounded-lg">
+                                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M16.5 11.5V14.8333C16.5 15.2754 16.3244 15.6993 16.0118 16.0118C15.6993 16.3244 15.2754 16.5 14.8333 16.5H3.16667C2.72464 16.5 2.30072 16.3244 1.98816 16.0118C1.67559 15.6993 1.5 15.2754 1.5 14.8333V11.5M4.83333 7.33333L9 11.5M9 11.5L13.1667 7.33333M9 11.5V1.5" stroke="#344054" stroke-width="1.67" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div className="w-64 px-2">
+                            <div className="relative">
+                                <span className="absolute text-black top-5 left-4"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="gray" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-search"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+
+                                </span>
+                                <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search for Trades" className="bg-white h-14 w-full px-12 rounded-lg focus:outline-none hover:cursor-pointer" name />
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className="flex justify-between mt-5 items-center">
-                <div className="flex gap-3 items-center">
-                    <label className="text-gray-900 text-sm">Pr. Lines</label>
-                    <div>
-                        <input id="prlines" value={pline} onChange={(e) => { setPline(e.target.value); setVline(''); setFlagPrdline(false); setFilterLine(''); setFilterVendor(''); setVcode(0); }} class="w-16 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" />
-                        {plines.length > 0 && (
-                            <div className="shadow-lg p-2 bg-white text-black rounded-lg absolute mt-1 z-50">
-                                {plines.map((item) => {
-                                    return (
-                                        <div>
-                                            <option value={item.id} onClick={() => { plineSelected(item.PRDLIN) }} className="text-black mt-1 text-xs cursor-pointer px-2 py-1 hover:bg-gray-100">{item.PRDLIN}</option>
-                                            <hr className="border-gray-300" />
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                        )}
+                <div className="flex justify-between mt-5 items-center">
+                    <div className="flex gap-3 items-center">
+                        <label className="text-gray-900 text-sm">Pr. Lines</label>
+                        <div>
+                            <input id="prlines" value={pline} onChange={(e) => { setPline(e.target.value); setVline(''); setFlagPrdline(false); setFilterLine(''); setFilterVendor(''); setVcode(0); }} class="w-16 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" />
+                            {plines.length > 0 && (
+                                <div className="shadow-lg p-2 bg-white text-black rounded-lg absolute mt-1 z-50">
+                                    {plines.map((item) => {
+                                        return (
+                                            <div>
+                                                <option value={item.id} onClick={() => { plineSelected(item.PRDLIN) }} className="text-black mt-1 text-xs cursor-pointer px-2 py-1 hover:bg-gray-100">{item.PRDLIN}</option>
+                                                <hr className="border-gray-300" />
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            )}
+                        </div>
+                        <label className="text-gray-900 text-sm">Vendors</label>
+                        <div>
+                            <input id="vendors" value={vline} onChange={(e) => { setVline(e.target.value); setPline(''); setPrdline(''); setFlagVline(false); setFilterVendor(''); setFilterLine('') }} class="w-60 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" />
+                            {vlines.length > 0 && (
+                                <div className="shadow-lg p-2 bg-white text-black rounded-lg absolute mt-1 z-50">
+                                    {vlines.map((item) => {
+                                        return (
+                                            <div>
+                                                <option value={item.id} onClick={() => { vlineSelected(item.VENDOR, item.VNAME) }} className="text-black mt-1 text-xs cursor-pointer px-2 py-1 hover:bg-gray-100">{item.VNAME} {item.VCODE}</option>
+                                                <hr className="border-gray-300" />
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            )}
+                        </div>
+                        <label className="text-gray-900 text-sm">Purchasers</label>
+                        <input type="text" className="w-16 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" />
                     </div>
-                    <label className="text-gray-900 text-sm">Vendors</label>
-                    <div>
-                        <input id="vendors" value={vline} onChange={(e) => { setVline(e.target.value); setPline(''); setPrdline(''); setFlagVline(false); setFilterVendor(''); setFilterLine('') }} class="w-60 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" />
-                        {vlines.length > 0 && (
-                            <div className="shadow-lg p-2 bg-white text-black rounded-lg absolute mt-1 z-50">
-                                {vlines.map((item) => {
-                                    return (
-                                        <div>
-                                            <option value={item.id} onClick={() => { vlineSelected(item.VENDOR, item.VNAME) }} className="text-black mt-1 text-xs cursor-pointer px-2 py-1 hover:bg-gray-100">{item.VNAME} {item.VCODE}</option>
-                                            <hr className="border-gray-300" />
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                        )}
+                    <div className="flex gap-3 items-center mr-2">
+                        <button onClick={generateFile} className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Generate File</button>
+                        <button className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Post Tab to Production</button>
+                        <button onClick={() => setModalDisplay(true)} className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Save</button>
                     </div>
-                    <label className="text-gray-900 text-sm">Purchasers</label>
-                    <input type="text" className="w-16 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5" />
                 </div>
-                <div className="flex gap-3 items-center mr-2">
-                    <button onClick={generateFile} className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Generate File</button>
-                    <button className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Post Tab to Production</button>
-                    <button onClick={() => setModalDisplay(true)} className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Save</button>
+                <div className="mt-5">
+                    <ul className="flex gap-4">
+                        <li onClick={() => { setTab(0); setBaseMeasures(measures) }}><h1 className={`${tab == 0 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer`}>Pricing</h1></li>
+                        <li onClick={() => { setTab(1); setBaseMeasures(measures) }}><h1 className={`${tab == 1 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer`}>Code/Class</h1></li>
+                        <li onClick={() => { setTab(2); setBaseMeasures(measuresU) }}><h1 className={`${tab == 2 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer`}>UOM</h1></li>
+                        <li onClick={() => { setTab(3); setBaseMeasures(measures) }}><h1 className={`${tab == 3 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer'} px-3 py-2 cursor-pointer`}>Vendor File</h1></li>
+                        <li><h1 className={`${tab == 4 && 'bg-[#9843D0] text-white rounded-lg'} px-3 py-2 cursor-pointer`}>Discount Table</h1></li>
+                        <li onClick={() => { setTab(5); setBaseMeasures(measures) }}><h1 className={`${tab == 5 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer'} px-3 py-2 cursor-pointer`}>ISC</h1></li>
+                        <li><h1 className="px-3 py-2">Database</h1></li>
+                        <li><h1 className="px-3 py-2">Other</h1></li>
+                    </ul>
+                    <hr className="border-gray-300" />
                 </div>
+                <div className="mt-5">
+                    {tab == 0 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumns} search={search} columns={spreadsheetColumns} name={namef} />
+                        : tab == 1 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumnsC} search={search} columns={spreadsheetColumns} name={namef} />
+                            : tab == 2 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumnsU} search={search} columns={spreadsheetColumns} name={namef} />
+                                : tab == 3 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumnsV} search={search} columns={spreadsheetColumns} name={namef} />
+                                    : tab == 5 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumnsI} search={search} columns={spreadsheetColumns} name={namef} /> : null}
+                    {/* <Handontable cols={dataCols} data={excelData} /> */}
+                    {/* <HandsontableExample /> */}
+                    {/* {tab == 0 ? <SpreadSheetData data={data} setData={setData} /> : tab == 2 ? <SpreadSheetData data={dataU} setData={setDataU} /> : null} */}
+                    {/* {tab == 0 ? <TableComponent initialData={initialData} visibleColumns={visibleColumns} />
+                        : tab == 1 ? <TableComponent initialData={initialData} visibleColumns={visibleColumnsC} />
+                            : tab == 2 ? <TableComponent initialData={initialData} visibleColumns={visibleColumnsU} />
+                                : tab == 5 ? <TableComponent initialData={initialData} visibleColumns={visibleColumnsI} /> : null} */}
+                </div>
+                <Modal display={modalDisplay} onCancel={() => setModalDisplay(false)} onConfirm={workFileAdd} name={workFileName} setName={setWorkFileName} />
             </div>
-            <div className="mt-5">
-                <ul className="flex gap-4">
-                    <li onClick={() => { setTab(0); setBaseMeasures(measures) }}><h1 className={`${tab == 0 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer`}>Pricing</h1></li>
-                    <li onClick={() => { setTab(1); setBaseMeasures(measures) }}><h1 className={`${tab == 1 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer`}>Code/Class</h1></li>
-                    <li onClick={() => { setTab(2); setBaseMeasures(measuresU) }}><h1 className={`${tab == 2 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer`}>UOM</h1></li>
-                    <li onClick={() => { setTab(3); setBaseMeasures(measures) }}><h1 className={`${tab == 3 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer'} px-3 py-2 cursor-pointer`}>Vendor File</h1></li>
-                    <li><h1 className={`${tab == 4 && 'bg-[#9843D0] text-white rounded-lg'} px-3 py-2 cursor-pointer`}>Discount Table</h1></li>
-                    <li onClick={() => { setTab(5); setBaseMeasures(measures) }}><h1 className={`${tab == 5 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer'} px-3 py-2 cursor-pointer`}>ISC</h1></li>
-                    <li><h1 className="px-3 py-2">Database</h1></li>
-                    <li><h1 className="px-3 py-2">Other</h1></li>
-                </ul>
-                <hr className="border-gray-300" />
-            </div>
-            <div className="mt-5">
-                {tab == 0 ? <Datagrid data={excelData} visibleColumns={visibleColumns} columns={spreadsheetColumns} />
-                    : tab == 1 ? <Datagrid data={excelData} visibleColumns={visibleColumnsC} columns={spreadsheetColumns} />
-                        : tab == 2 ? <Datagrid data={excelData} visibleColumns={visibleColumnsU} columns={spreadsheetColumns} />
-                            : tab == 5 ? <Datagrid data={excelData} visibleColumns={visibleColumnsI} columns={spreadsheetColumns} /> : null}
-                {/* <Handontable cols={dataCols} data={excelData} /> */}
-                {/* <HandsontableExample /> */}
-                {/* {tab == 0 ? <SpreadSheetData data={data} setData={setData} /> : tab == 2 ? <SpreadSheetData data={dataU} setData={setDataU} /> : null} */}
-                {/* {tab == 0 ? <TableComponent initialData={initialData} visibleColumns={visibleColumns} />
-                    : tab == 1 ? <TableComponent initialData={initialData} visibleColumns={visibleColumnsC} />
-                        : tab == 2 ? <TableComponent initialData={initialData} visibleColumns={visibleColumnsU} />
-                            : tab == 5 ? <TableComponent initialData={initialData} visibleColumns={visibleColumnsI} /> : null} */}
-            </div>
-            <Modal display={modalDisplay} onCancel={() => setModalDisplay(false)} onConfirm={workFileAdd} name={workFileName} setName={setWorkFileName} />
-        </div>
-    )
+        )
+    }
+    else {
+        <Loading />
+    }
 }

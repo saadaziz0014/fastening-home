@@ -44,7 +44,7 @@ export default function AttentionCard() {
     },
   ];
   return (
-    <div className="w-[30%] bg-white p-4 rounded-lg shadow-lg">
+    <div className="w-[30%] bg-white p-4 rounded-lg shadow-custom-lg">
       <div className="mb-2">
         <div className="flex justify-between">
           <h1 className="text-lg font-bold">Need Attention</h1>
@@ -86,14 +86,16 @@ export default function AttentionCard() {
       </div>
       <div>
         <hr className="border-black" />
-        <div className="flex flex-col gap-5 mt-5">
+        <div className="flex flex-col gap-3 mt-5">
           {data.map((item, index) => (
             <div key={index}>
-              <div className="flex gap-2 items-center">
-                {item.svg}
-                <h1 className="text-lg">{item.title}</h1>
+              <div className="flex gap-2">
+                <span className="mt-1">{item.svg}</span>
+                <div className="flex flex-col">
+                  <h1 className="text-lg">{item.title}</h1>
+                  <p className="text-[#667085] underline">{item.value}</p>
+                </div>
               </div>
-              <p className="text-md">{item.value}</p>
             </div>
           ))}
         </div>

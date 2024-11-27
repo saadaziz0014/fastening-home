@@ -16,7 +16,7 @@ export const GET = async (request) => {
                 ]
             }
         });
-        console.log(vlines, "vlines")
+        // console.log(vlines, "vlines")
         vlines = vlines.sort((a, b) => a.VNAME > b.VNAME ? 1 : -1)
         for (let i = 0; i < vlines.length; i++) {
             let keys = Object.keys(vlines[i])

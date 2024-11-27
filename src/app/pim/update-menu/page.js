@@ -28,7 +28,8 @@ export default function UpdateMenu() {
         fetchData();
     }, [page, tab]);
     const handlePageChange = (selectedPage) => {
-        setPage(selectedPage.selected); // `selected` is the index of the selected page (0-based).
+        console.log(selectedPage);
+        setPage(selectedPage.selected + 1); // `selected` is the index of the selected page (0-based).
     };
     return (
         <div className="bg-[#F8F9FB] font-inter">
@@ -65,11 +66,12 @@ export default function UpdateMenu() {
                         previousLabel="Previous"
                         renderOnZeroPageCount={null}
                         containerClassName="pagination"
-                        pageLinkClassName="page-num"
-                        previousLinkClassName="page-num"
-                        nextLinkClassName="page-num"
+                        pageLinkClassName="page-num-link"
+                        previousLinkClassName="page-num-prev"
+                        nextLinkClassName="page-num-next"
                         activeLinkClassName="active"
                     />
+
                 </div>
             </div>
         </div>

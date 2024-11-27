@@ -19,9 +19,7 @@
 
 .pagination {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
   margin: 1rem 1rem;
   position: fixed;
   width: 77%;
@@ -30,4 +28,8 @@
   border-radius: 0.5rem;
   background-color: #fff;
   padding: 0.5rem 1rem;
+}
+
+.active {
+  color: #614d87;
 }

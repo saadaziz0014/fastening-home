@@ -46,7 +46,7 @@ export default function ReportCard() {
     },
   ];
   return (
-    <div className="w-[30%] bg-white p-4 rounded-lg shadow-md border border-gray-900">
+    <div className="w-[30%] bg-white p-4 rounded-lg shadow-custom-lg">
       <div className="mb-2">
         <div className="flex justify-between">
           <h1 className="text-lg font-bold">Reports</h1>
@@ -81,7 +81,7 @@ export default function ReportCard() {
           </svg>
         </div>
         <div>
-          <p className="text-md">
+          <p className="text-[#667085]">
             Lorem, ipsum dolor sit amet consectetur adipisicing elit
           </p>
         </div>
