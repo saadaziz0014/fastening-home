@@ -20,7 +20,8 @@ export default function Datagrid({
   name,
   search,
 }) {
-  const [rowData, setRowData] = useState();
+  // console.log(data, "data");
+  const [rowData, setRowData] = useState([...data]);
   const [columnData, setColumnData] = useState([]);
   const [newColumnName, setNewColumnName] = useState("");
   const [newColumnType, setNewColumnType] = useState("text");
@@ -45,7 +46,7 @@ export default function Datagrid({
       );
       setColumnData(visibleColumnDefs);
     }
-  }, [data, visibleColumns, columns, search]);
+  }, [visibleColumns, columns, search, data]);
 
   useEffect(() => {
     // Refresh the cells when the search prop changes
@@ -100,12 +101,7 @@ export default function Datagrid({
       }))
     );
 
-    setData((prev) =>
-      prev.map((row) => ({
-        ...row,
-        [newColumn.field]: "",
-      }))
-    );
+    setData(rowData);
 
     setNewColumnName("");
     setSelectedColumn("");
@@ -175,7 +171,7 @@ export default function Datagrid({
           {name && <h1 className="font-bold text-[#614d87]">File: {name}</h1>}
         </div>
       </div>
-      <div className="ag-theme-alpine w-full h-96">
+      <div className="ag-theme-alpine w-full h-[100vh]">
         <AgGridReact
           onGridReady={handleGridReady} // Set the grid API when ready
           rowData={rowData}
@@ -246,6 +242,57 @@ export default function Datagrid({
                       dollarChange: dollarChange,
                       percentChange: percentChange,
                     };
+                  } else if (event.colDef.field === "newList") {
+                    let list = event.data.list;
+                    if (!list) {
+                      return { ...row, [event.colDef.field]: event.newValue };
+                    }
+                    let dollarChange = event.newValue - list;
+                    let percentChange = Math.round((dollarChange / list) * 100);
+                    setData((prev) =>
+                      prev.map((item) => {
+                        if (item.id === event.data.id) {
+                          return {
+                            ...item,
+                            list: list,
+                            newList: event.newValue,
+                            dollarChangeList: dollarChange,
+                            percentChangeList: percentChange,
+                          };
+                        }
+                        return item;
+                      })
+                    );
+                    return {
+                      ...row,
+                      [event.colDef.field]: event.newValue,
+                      list: list,
+                      dollarChangeList: dollarChange,
+                      percentChangeList: percentChange,
+                    };
+                  } else if (event.colDef.field === "list") {
+                    let newList = event.data.newList;
+                    if (!newList) {
+                      return { ...row, [event.colDef.field]: event.newValue };
+                    }
+                    let dollarChange = newList - event.newValue;
+                    let percentChange = Math.round(
+                      (dollarChange / newList) * 100
+                    );
+                    setData((prev) =>
+                      prev.map((item) => {
+                        if (item.id === event.data.id) {
+                          return {
+                            ...item,
+                            newList: newList,
+                            list: event.newValue,
+                            dollarChangeList: dollarChange,
+                            percentChangeList: percentChange,
+                          };
+                        }
+                        return item;
+                      })
+                    );
                   } else {
                     setData((prev) =>
                       prev.map((item) => {

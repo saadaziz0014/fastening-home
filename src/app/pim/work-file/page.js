@@ -152,6 +152,7 @@ const dataCols = [
 ]
 
 const pricingColumns = [
+    { key: "id", label: "ID" },
     { key: "prLine", label: "Pr. Line" },
     { key: "partNumber", label: "Part Number" },
     { key: "description", label: "Description" },
@@ -215,6 +216,7 @@ const pricingSpreadsheetColumns = [
 ]
 
 const codeColumns = [
+    { key: "id", label: "ID" },
     { key: "prLine", label: "Pr. Line" },
     { key: "partNumber", label: "Part Number" },
     { key: "description", label: "Description" },
@@ -228,6 +230,7 @@ const codeColumns = [
 ]
 
 const uomColumns = [
+    { key: "id", label: "ID" },
     { key: "prLine", label: "Pr. Line" },
     { key: "partNumber", label: "Part Number" },
     { key: "description", label: "Description" },
@@ -248,6 +251,7 @@ const uomColumns = [
 ]
 
 const iscColumns = [
+    { key: "id", label: "ID" },
     { key: "prLine", label: "Pr. Line" },
     { key: "partNumber", label: "Part Number" },
     { key: "description", label: "Description" },
@@ -256,6 +260,12 @@ const iscColumns = [
     { key: "salesFHI", label: "Sales FHI" },
     { key: "salesSabre", label: "Sales Sabre" },
     { key: "vcode", label: "Velocity Code" }
+]
+
+const otherColumns = [
+    { key: "id", label: "ID" },
+    { key: "prLine", label: "Pr. Line" },
+    { key: "partNumber", label: "Part Number" },
 ]
 
 export default function WorkFile() {
@@ -275,6 +285,9 @@ export default function WorkFile() {
     )
     const [visibleColumnsI, setVisibleColumnsI] = useState(
         iscColumns.map((col) => col.key)
+    )
+    const [visibleColumnsO, setVisibleColumnsO] = useState(
+        otherColumns.map((col) => col.key)
     )
     const [visibleColumnsV, setVisibleColumnsV] = useState();
     const [namef, setName] = useState("");
@@ -313,6 +326,7 @@ export default function WorkFile() {
     const [filterVendor, setFilterVendor] = useState("");
     const [enabled, setEnabled] = useState(false);
     const [state, setState] = useState('ALL'); // Initial state
+    const [columnV, setColumnV] = useState([])
     const handleToggle = () => {
         setState((prevState) => {
             if (prevState === 'OH') return 'ALL';
@@ -364,7 +378,7 @@ export default function WorkFile() {
                         let length = resp.data.prdmaster.length;
                         let data = [];
                         for (let i = 0; i < length; i++) {
-                            data.push({ id: resp.data.prdmaster[i].id, prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, branch: resp.data.prdmaster[i].BRANCH, code: resp.data.prdmaster[i].PRDCDE, class: resp.data.prdmaster[i].PMCLAS, group: resp.data.prdmaster[i].PMGRP, classDesc: resp.data.prdmaster[i].PMCLSDESC, groupDesc: resp.data.prdmaster[i].PMGRPDESC, stock: resp.data.prdmaster[i].QBRKCD, vcode: resp.data.prdmaster[i].VELCOD, company: resp.data.prdmaster[i].COMPANY, qtyCOM: resp.data.prdmaster[i].QTYCOM });
+                            data.push({ id: resp.data.prdmaster[i].id, prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, branch: resp.data.prdmaster[i].BRANCH, code: resp.data.prdmaster[i].PRDCDE, class: resp.data.prdmaster[i].PMCLAS, group: resp.data.prdmaster[i].PMGRP, classDesc: resp.data.prdmaster[i].PMCLSDESC, groupDesc: resp.data.prdmaster[i].PMGRPDESC, stock: resp.data.prdmaster[i].QBRKCD, vcode: resp.data.prdmaster[i].VELCOD, company: resp.data.prdmaster[i].COMPANY, qtyCOM: resp.data.prdmaster[i].QTYCOM, salesFHI: resp.data.prdmaster[i].salesFHI, salesSabre: resp.data.prdmaster[i].salesSabre });
                             array.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].VRD }, { value: resp.data.prdmaster[i].VRDPER }]);
                             arrayU.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].AVGCST }, { value: resp.data.prdmaster[i].QTYOHD }]);
                         }
@@ -397,7 +411,7 @@ export default function WorkFile() {
                         let length = resp.data.prdmaster.length;
                         let data = [];
                         for (let i = 0; i < length; i++) {
-                            data.push({ id: resp.data.prdmaster[i].id, prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, branch: resp.data.prdmaster[i].BRANCH, code: resp.data.prdmaster[i].PRDCDE, class: resp.data.prdmaster[i].PMCLAS, group: resp.data.prdmaster[i].PMGRP, classDesc: resp.data.prdmaster[i].PMCLSDESC, groupDesc: resp.data.prdmaster[i].PMGRPDESC, stock: resp.data.prdmaster[i].QBRKCD, vcode: resp.data.prdmaster[i].VELCOD, company: resp.data.prdmaster[i].COMPANY, qtyCOM: resp.data.prdmaster[i].QTYCOM });
+                            data.push({ id: resp.data.prdmaster[i].id, prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, branch: resp.data.prdmaster[i].BRANCH, code: resp.data.prdmaster[i].PRDCDE, class: resp.data.prdmaster[i].PMCLAS, group: resp.data.prdmaster[i].PMGRP, classDesc: resp.data.prdmaster[i].PMCLSDESC, groupDesc: resp.data.prdmaster[i].PMGRPDESC, stock: resp.data.prdmaster[i].QBRKCD, vcode: resp.data.prdmaster[i].VELCOD, company: resp.data.prdmaster[i].COMPANY, qtyCOM: resp.data.prdmaster[i].QTYCOM, salesFHI: resp.data.prdmaster[i].salesFHI, salesSabre: resp.data.prdmaster[i].salesSabre });
                             array.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].VRD }, { value: resp.data.prdmaster[i].VRDPER }]);
                             arrayU.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].AVGCST }, { value: resp.data.prdmaster[i].QTYOHD }]);
                         }
@@ -468,11 +482,28 @@ export default function WorkFile() {
             if (resp.status == 200) {
                 let data = resp.data.data;
                 let keys = Object.keys(data[0]);
+                let newCols = []
+                for (let i = 0; i < keys.length; i++) {
+                    newCols.push({
+                        field: keys[i],
+                        sortable: true,
+                        filter: true
+                    })
+                }
+                //i want not to replace the existing keys, just add the new ones
+                let spreadsheetColumnz = [
+                    ...spreadsheetColumns,
+                    ...newCols.filter(
+                        (newCol) => !spreadsheetColumns.some((col) => col.field === newCol.field)
+                    ),
+                ];
+                setColumnV(spreadsheetColumnz);
                 setVisibleColumnsV(keys);
                 setExcelData(data);
                 setMainExcelData(data);
             }
         } catch (error) {
+            console.log(error, "hj")
             toast.error("Something went wrong in fetching data")
         }
     }
@@ -497,17 +528,14 @@ export default function WorkFile() {
         }
     }
     const handleStock = () => {
-        console.log(excelData)
-        console.log(state)
         if (state == "OH") {
-            let updatedData = excelData.filter((item) => item.qtyOH && item.qtyOH > 0);
+            let updatedData = mainExcelData.filter((item) => item.qtyOH != undefined && item.qtyOH != null && Number(item.qtyOH) != 0);
             setExcelData(updatedData);
         } else if (state == "NONE") {
-            let updatedData = excelData.filter((item) => !item.qtyOH || item.qtyOH == 0 || item.qtyOH == null);
+            let updatedData = mainExcelData.filter((item) => item.qtyOH == undefined || Number(item.qtyOH) == 0 || item.qtyOH == null);
             setExcelData(updatedData);
         } else if (state == "ALL") {
-            let updatedData = excelData.filter((item) => item.qtyCOM && item.qtyCOM > 0);
-            setExcelData(updatedData);
+            setExcelData(mainExcelData);
         }
     }
     if (!loading) {
@@ -525,13 +553,14 @@ export default function WorkFile() {
                             tab == 0 ? <DropdownMeasure visibleColumns={visibleColumns} setVisibleColumns={setVisibleColumns} label="Measures" display={measuresFlag} setDisplay={setMeasuresFlag} />
                                 : tab == 1 ? <DropdownMeasure visibleColumns={visibleColumnsC} setVisibleColumns={setVisibleColumnsC} label="Measures" data={columns} display={measuresFlag} setDisplay={setMeasuresFlag} />
                                     : tab == 2 ? <DropdownMeasure visibleColumns={visibleColumnsU} setVisibleColumns={setVisibleColumnsU} label="Measures" data={columns} display={measuresFlag} setDisplay={setMeasuresFlag} />
-                                        : tab == 3 ? <DropdownMeasure visibleColumns={visibleColumnsV} setVisibleColumns={setVisibleColumnsV} label="Measures" data={columns} display={measuresFlag} setDisplay={setMeasuresFlag} />
+                                        : tab == 3 ? <DropdownMeasure visibleColumns={visibleColumnsV} setVisibleColumns={setVisibleColumnsV} label="Measures" data={columnV} display={measuresFlag} setDisplay={setMeasuresFlag} />
                                             : tab == 5 ? <DropdownMeasure visibleColumns={visibleColumnsI} setVisibleColumns={setVisibleColumnsI} label="Measures" data={columns} display={measuresFlag} setDisplay={setMeasuresFlag} />
-                                                : null
+                                                : tab == 7 ? <DropdownMeasure visibleColumns={visibleColumnsO} setVisibleColumns={setVisibleColumnsO} label="Measures" data={columns} display={measuresFlag} setDisplay={setMeasuresFlag} />
+                                                    : null
                         }
                         <Dropdown label="Company" type="company" data={companies} display={companyFlag} setDisplay={setCompanyFlag} initialData={mainExcelData} setInitialData={setExcelData} />
                         <Dropdown label="Database" type="database" data={databases} display={databaseFlag} setDisplay={setDatabaseFlag} initialData={mainData} setInitialData={setInitialData} />
-                        <button onClick={() => setInitialData(mainData)} className="underline py-1 text-[#614d87]">Remove Filters</button>
+                        <button onClick={() => setExcelData(mainExcelData)} className="underline py-1 text-[#614d87]">Remove Filters</button>
                     </div>
                     <div className="flex gap-1 items-center mr-2">
                         {/* <h1>Stock</h1> */}
@@ -637,7 +666,7 @@ export default function WorkFile() {
                         <li><h1 className={`${tab == 4 && 'bg-[#9843D0] text-white rounded-lg'} px-3 py-2 cursor-pointer`}>Discount Table</h1></li>
                         <li onClick={() => { setTab(5); setBaseMeasures(measures) }}><h1 className={`${tab == 5 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer'} px-3 py-2 cursor-pointer`}>ISC</h1></li>
                         <li><h1 className="px-3 py-2">Database</h1></li>
-                        <li><h1 className="px-3 py-2">Other</h1></li>
+                        <li onClick={() => { setTab(7); setBaseMeasures(measures) }}><h1 className={`${tab == 7 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer`}>Other</h1></li>
                     </ul>
                     <hr className="border-gray-300" />
                 </div>
@@ -645,8 +674,9 @@ export default function WorkFile() {
                     {tab == 0 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumns} search={search} columns={spreadsheetColumns} name={namef} />
                         : tab == 1 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumnsC} search={search} columns={spreadsheetColumns} name={namef} />
                             : tab == 2 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumnsU} search={search} columns={spreadsheetColumns} name={namef} />
-                                : tab == 3 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumnsV} search={search} columns={spreadsheetColumns} name={namef} />
-                                    : tab == 5 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumnsI} search={search} columns={spreadsheetColumns} name={namef} /> : null}
+                                : tab == 3 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumnsV} search={search} columns={columnV} name={namef} />
+                                    : tab == 5 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumnsI} search={search} columns={spreadsheetColumns} name={namef} /> :
+                                        tab == 7 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumnsO} search={search} columns={spreadsheetColumns} name={namef} /> : null}
                     {/* <Handontable cols={dataCols} data={excelData} /> */}
                     {/* <HandsontableExample /> */}
                     {/* {tab == 0 ? <SpreadSheetData data={data} setData={setData} /> : tab == 2 ? <SpreadSheetData data={dataU} setData={setDataU} /> : null} */}

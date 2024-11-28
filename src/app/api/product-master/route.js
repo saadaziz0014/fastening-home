@@ -15,19 +15,18 @@ export const GET = async (request) => {
                     PRDLIN: pline,
                 },
                 orderBy: {
-                    PRODNO: "asc"
+                    id: "asc"
                 },
                 take: 5
             }
             )
         } else if (!pline && vendor) {
-            console.log(vendor, "vendor")
             prdmaster = await prisma.phocas_Prdmst.findMany({
                 where: {
                     VENDNO: Number(vendor),
                 },
                 orderBy: {
-                    PRODNO: "asc"
+                    id: "asc"
                 },
                 take: 5
             })
@@ -95,6 +94,9 @@ export const GET = async (request) => {
             if (warehouse.length > 0) {
                 prdmaster[i].AVGCST = warehouse[0].AVGCST
                 prdmaster[i].BRANCH = warehouse[0].WHSCOD ? warehouse[0].WHSCOD : 0
+                if (prdmaster[i].BRANCH == 50n) {
+                    prdmaster[i].BRANCH = 50
+                }
                 if (prdmaster[i].BRANCH == 3 || prdmaster[i].BRANCH == 7 || prdmaster[i].BRANCH == 10 || prdmaster[i].BRANCH == 11 || prdmaster[i].BRANCH == 12) {
                     prdmaster[i].COMPANY = "FHI"
                 } else {
@@ -106,6 +108,28 @@ export const GET = async (request) => {
             }
             // console.log(prdmaster[i].BRANCH, "prdmaster[i].BRANCH");
             // console.log(prdmaster[i].COMPANY);
+            if (prdmaster[i].BRANCH == 3 || prdmaster[i].BRANCH == 7 || prdmaster[i].BRANCH == 10 || prdmaster[i].BRANCH == 11 || prdmaster[i].BRANCH == 12) {
+                let fhi = await prisma.phocas_Split_Ordhst_2025_FHI.aggregate({
+                    where: {
+                        BRANCH: prdmaster[i].BRANCH,
+                    },
+                    _sum: {
+                        QS: true
+                    }
+                })
+                prdmaster[i].salesFHI = fhi._sum.QS
+            }
+            else {
+                let sabre = await prisma.phocas_Split_Ordhst_2025_SABRE.aggregate({
+                    where: {
+                        BRANCH: prdmaster[i].BRANCH,
+                    },
+                    _sum: {
+                        QS: true
+                    }
+                })
+                prdmaster[i].salesSabre = sabre._sum.QS
+            }
             let oh = await prisma.phocas_Whsprd.findMany({
                 where: {
                     PRDLIN: prdmaster[i].PRDLIN,

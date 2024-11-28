@@ -58,7 +58,7 @@ export default function OpenPriceCard({ data }) {
                 </div>
                 <div
                   className="flex"
-                  onClick={() => router.push(`/pim/work-file`)}
+                  onClick={() => router.push(`/pim/update-menu`)}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
