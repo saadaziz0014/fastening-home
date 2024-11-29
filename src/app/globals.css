@@ -33,3 +33,15 @@
 .active {
   color: #614d87;
 }
+
+.ag-theme-alpine .ag-cell {
+  border: 1px solid #ccc; /* Add borders to all cells */
+}
+
+.ag-theme-alpine .ag-row {
+  border-collapse: separate; /* Ensure borders don't collapse */
+}
+
+.bold-cell {
+  font-weight: bold;
+}

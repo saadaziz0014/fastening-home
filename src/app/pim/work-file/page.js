@@ -63,7 +63,7 @@ const columns = [
 ];
 
 const spreadsheetColumns = [
-    { field: "id", filter: true, sortable: true },
+    { field: "srNo", filter: true, sortable: true },
     { field: "prLine", filter: true, sortable: true },
     { field: "partNumber", filter: true, sortable: true },
     { field: "description", filter: true, sortable: true },
@@ -71,17 +71,17 @@ const spreadsheetColumns = [
     { field: "productCode", filter: true, sortable: true },
     { field: "cost", filter: true, sortable: true },
     { field: "newCost", filter: true, sortable: true },
-    { field: "dollarChange", filter: true, sortable: true },
-    { field: "percentChange", filter: true, sortable: true },
+    { headerName: "$ Change", field: "dollarChange", filter: true, sortable: true },
+    { headerName: "% Change", field: "percentChange", filter: true, sortable: true },
     { field: "avgCost", filter: true, sortable: true },
     { field: "regionalPrice", filter: true, sortable: true },
     { field: "list", filter: true, sortable: true },
     { field: "newList", filter: true, sortable: true },
-    { field: "dollarChangeList", filter: true, sortable: true },
-    { field: "percentChangeList", filter: true, sortable: true },
+    { headerName: "$ Change List", field: "dollarChangeList", filter: true, sortable: true },
+    { headerName: "% Change List", field: "percentChangeList", filter: true, sortable: true },
     { field: "zo9", filter: true, sortable: true },
     { field: "qtyOH", filter: true, sortable: true },
-    { field: "isc", filter: true, sortable: true },
+    { headerName: "ISC", field: "isc", filter: true, sortable: true },
     { field: "stockPer", filter: true, sortable: true },
     { field: "purchPer", filter: true, sortable: true },
     { field: "landedCost", filter: true, sortable: true },
@@ -107,52 +107,8 @@ const spreadsheetColumns = [
     { field: "company", filter: true, sortable: true },
 ]
 
-const dataCols = [
-    "Pr. Line",
-    "Part Number",
-    "Description",
-    "X-Ref",
-    "Cost",
-    "New Cost",
-    "$ Change",
-    "% Change",
-    "Avg Cost",
-    "Product Code",
-    "Regional Price",
-    "List Price",
-    "New List",
-    "$ Change",
-    "% Change",
-    "ZO9",
-    "Qty OH",
-    "ISC",
-    "Stock Per",
-    "Purch Per",
-    "Landed Cost",
-    "Purchase Multiple",
-    "Sell Multiple",
-    "P to Stock",
-    "Sell Unit",
-    "STK Unit",
-    "Pur Unit",
-    "Box Quantity",
-    "Vendor",
-    "Branch",
-    "Code",
-    "Class",
-    "Group",
-    "Code Description",
-    "Class Description",
-    "Group Description",
-    "Stock",
-    "Sales FHI",
-    "Sales Sabre",
-    "Velocity Code",
-    "Company",
-]
-
 const pricingColumns = [
-    { key: "id", label: "ID" },
+    { key: "srNo", label: "Sr. No." },
     { key: "prLine", label: "Pr. Line" },
     { key: "partNumber", label: "Part Number" },
     { key: "description", label: "Description" },
@@ -183,40 +139,8 @@ const pricingColumns = [
     { key: "boxQty", label: "Box Quantity" },
 ];
 
-const pricingSpreadsheetColumns = [
-    { field: "prLine", filter: true, sortable: true },
-    { field: "partNumber", filter: true, sortable: true },
-    { field: "description", filter: true, sortable: true },
-    { field: "xRef", filter: true, sortable: true },
-    { field: "cost", filter: true, sortable: true },
-    { field: "newCost", filter: true, sortable: true },
-    { field: "dollarChange", filter: true, sortable: true },
-    { field: "percentChange", filter: true, sortable: true },
-    { field: "avgCost", filter: true, sortable: true },
-    { field: "productCode", filter: true, sortable: true },
-    { field: "regionalPrice", filter: true, sortable: true },
-    { field: "list", filter: true, sortable: true },
-    { field: "newList", filter: true, sortable: true },
-    { field: "dollarChangeList", filter: true, sortable: true },
-    { field: "percentChangeList", filter: true, sortable: true },
-    { field: "zo9", filter: true, sortable: true },
-    { field: "qtyOH", filter: true, sortable: true },
-    { field: "isc", filter: true, sortable: true },
-    { field: "stockPer", filter: true, sortable: true },
-    { field: "purchPer", filter: true, sortable: true },
-    { field: "landedCost", filter: true, sortable: true },
-    { field: "pMult", filter: true, sortable: true },
-    { field: "sMult", filter: true, sortable: true },
-    { field: "pToStock", filter: true, sortable: true },
-    { field: "sellUnit", filter: true, sortable: true },
-    { field: "stkUnit", filter: true, sortable: true },
-    { field: "purUnit", filter: true, sortable: true },
-    { field: "boxQty", filter: true, sortable: true },
-    { field: "vname", filter: true, sortable: true },
-]
-
 const codeColumns = [
-    { key: "id", label: "ID" },
+    { key: "srNo", label: "Sr No" },
     { key: "prLine", label: "Pr. Line" },
     { key: "partNumber", label: "Part Number" },
     { key: "description", label: "Description" },
@@ -230,7 +154,7 @@ const codeColumns = [
 ]
 
 const uomColumns = [
-    { key: "id", label: "ID" },
+    { key: "srNo", label: "Sr No" },
     { key: "prLine", label: "Pr. Line" },
     { key: "partNumber", label: "Part Number" },
     { key: "description", label: "Description" },
@@ -251,7 +175,7 @@ const uomColumns = [
 ]
 
 const iscColumns = [
-    { key: "id", label: "ID" },
+    { key: "srNo", label: "Sr No" },
     { key: "prLine", label: "Pr. Line" },
     { key: "partNumber", label: "Part Number" },
     { key: "description", label: "Description" },
@@ -263,7 +187,7 @@ const iscColumns = [
 ]
 
 const otherColumns = [
-    { key: "id", label: "ID" },
+    { key: "srNo", label: "Sr No" },
     { key: "prLine", label: "Pr. Line" },
     { key: "partNumber", label: "Part Number" },
 ]
@@ -365,10 +289,10 @@ export default function WorkFile() {
     }
     const generateFile = async () => {
         try {
-            // setLoading(true);
             setInitialData([]);
             setData([[{ value: "Pr. Line" }, { value: "Part Number" }, { value: "Description" }, { value: "Vendor" }, { value: "Cost" }, { value: "New Cost" }, { value: "Variance$" }, { value: "Variance%" }]]);
             setDataU([{ value: "Pr. Line" }, { value: "Part Number" }, { value: "Description" }, { value: "Cost" }, { value: "New Cost" }, { value: "Average Cost" }, { value: "Qty OH" }]);
+            setLoading(true);
             if (prdline.length > 0 || vcode != 0) {
                 if (prdline.length > 0) {
                     let resp = await axios.get("/api/product-master?pline=" + prdline);
@@ -378,9 +302,9 @@ export default function WorkFile() {
                         let length = resp.data.prdmaster.length;
                         let data = [];
                         for (let i = 0; i < length; i++) {
-                            data.push({ id: resp.data.prdmaster[i].id, prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, branch: resp.data.prdmaster[i].BRANCH, code: resp.data.prdmaster[i].PRDCDE, class: resp.data.prdmaster[i].PMCLAS, group: resp.data.prdmaster[i].PMGRP, classDesc: resp.data.prdmaster[i].PMCLSDESC, groupDesc: resp.data.prdmaster[i].PMGRPDESC, stock: resp.data.prdmaster[i].QBRKCD, vcode: resp.data.prdmaster[i].VELCOD, company: resp.data.prdmaster[i].COMPANY, qtyCOM: resp.data.prdmaster[i].QTYCOM, salesFHI: resp.data.prdmaster[i].salesFHI, salesSabre: resp.data.prdmaster[i].salesSabre });
+                            data.push({ id: resp.data.prdmaster[i].id, prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, branch: resp.data.prdmaster[i].BRANCH, code: resp.data.prdmaster[i].PRDCDE, class: resp.data.prdmaster[i].PMCLAS, group: resp.data.prdmaster[i].PMGRP, classDesc: resp.data.prdmaster[i].PMCLSDESC, groupDesc: resp.data.prdmaster[i].PMGRPDESC, stock: resp.data.prdmaster[i].QBRKCD, vcode: resp.data.prdmaster[i].VELCOD, company: resp.data.prdmaster[i].COMPANY, qtyCOM: resp.data.prdmaster[i].QTYCOM, salesFHI: resp.data.prdmaster[i].salesFHI, salesSabre: resp.data.prdmaster[i].salesSabre, srNo: resp.data.prdmaster[i].srNo });
                             array.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].VRD }, { value: resp.data.prdmaster[i].VRDPER }]);
-                            arrayU.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].AVGCST }, { value: resp.data.prdmaster[i].QTYOHD }]);
+                            arrayU.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].AVGCST }, { value: resp.data.prdmaster[i].QTYOHD }, { srNo: i + 1 }]);
                         }
                         if (length > 0) {
                             setInitialData(data);
@@ -411,7 +335,7 @@ export default function WorkFile() {
                         let length = resp.data.prdmaster.length;
                         let data = [];
                         for (let i = 0; i < length; i++) {
-                            data.push({ id: resp.data.prdmaster[i].id, prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, branch: resp.data.prdmaster[i].BRANCH, code: resp.data.prdmaster[i].PRDCDE, class: resp.data.prdmaster[i].PMCLAS, group: resp.data.prdmaster[i].PMGRP, classDesc: resp.data.prdmaster[i].PMCLSDESC, groupDesc: resp.data.prdmaster[i].PMGRPDESC, stock: resp.data.prdmaster[i].QBRKCD, vcode: resp.data.prdmaster[i].VELCOD, company: resp.data.prdmaster[i].COMPANY, qtyCOM: resp.data.prdmaster[i].QTYCOM, salesFHI: resp.data.prdmaster[i].salesFHI, salesSabre: resp.data.prdmaster[i].salesSabre });
+                            data.push({ id: resp.data.prdmaster[i].id, prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, branch: resp.data.prdmaster[i].BRANCH, code: resp.data.prdmaster[i].PRDCDE, class: resp.data.prdmaster[i].PMCLAS, group: resp.data.prdmaster[i].PMGRP, classDesc: resp.data.prdmaster[i].PMCLSDESC, groupDesc: resp.data.prdmaster[i].PMGRPDESC, stock: resp.data.prdmaster[i].QBRKCD, vcode: resp.data.prdmaster[i].VELCOD, company: resp.data.prdmaster[i].COMPANY, qtyCOM: resp.data.prdmaster[i].QTYCOM, salesFHI: resp.data.prdmaster[i].salesFHI, salesSabre: resp.data.prdmaster[i].salesSabre, srNo: resp.data.prdmaster[i].srNo });
                             array.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].VRD }, { value: resp.data.prdmaster[i].VRDPER }]);
                             arrayU.push([{ value: resp.data.prdmaster[i].PRDLIN }, { value: resp.data.prdmaster[i].PRODNO }, { value: resp.data.prdmaster[i].PRDSCE }, { value: resp.data.prdmaster[i].VENDNO }, { value: resp.data.prdmaster[i].VEVCST }, { value: resp.data.prdmaster[i].NEWCST }, { value: resp.data.prdmaster[i].AVGCST }, { value: resp.data.prdmaster[i].QTYOHD }]);
                         }
@@ -440,7 +364,7 @@ export default function WorkFile() {
             }
             setLoading(false);
         } catch (error) {
-            console.log(error)
+            // console.log(error)
             toast.error("Something went wrong in generating file")
         }
     }
@@ -449,9 +373,9 @@ export default function WorkFile() {
         setVlines([])
         handleStock()
         if (name) {
-            setTab(3);
+            // setTab(3);
             setName(name);
-            fetchData();
+            mainExcelData.length == 0 ? fetchData() : setLoading(false);
         }
         if (!flagPrdline && pline.length > 2) {
             fetchPlines();
@@ -497,6 +421,11 @@ export default function WorkFile() {
                         (newCol) => !spreadsheetColumns.some((col) => col.field === newCol.field)
                     ),
                 ];
+                let distinctPrLines = [...new Set(data.map(item => item.prLine))];
+                let distinctVendors = [...new Set(data.map(item => item.vname))];
+                setLines(distinctPrLines);
+                setVendors(distinctVendors);
+                setCompanies(["FHI", "Sabre"])
                 setColumnV(spreadsheetColumnz);
                 setVisibleColumnsV(keys);
                 setExcelData(data);
@@ -662,10 +591,10 @@ export default function WorkFile() {
                         <li onClick={() => { setTab(0); setBaseMeasures(measures) }}><h1 className={`${tab == 0 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer`}>Pricing</h1></li>
                         <li onClick={() => { setTab(1); setBaseMeasures(measures) }}><h1 className={`${tab == 1 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer`}>Code/Class</h1></li>
                         <li onClick={() => { setTab(2); setBaseMeasures(measuresU) }}><h1 className={`${tab == 2 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer`}>UOM</h1></li>
-                        <li onClick={() => { setTab(3); setBaseMeasures(measures) }}><h1 className={`${tab == 3 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer'} px-3 py-2 cursor-pointer`}>Vendor File</h1></li>
+                        <li ><h1 className={`${tab == 3 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer'} px-3 py-2 cursor-pointer`}>Vendor File</h1></li>
                         <li><h1 className={`${tab == 4 && 'bg-[#9843D0] text-white rounded-lg'} px-3 py-2 cursor-pointer`}>Discount Table</h1></li>
                         <li onClick={() => { setTab(5); setBaseMeasures(measures) }}><h1 className={`${tab == 5 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer'} px-3 py-2 cursor-pointer`}>ISC</h1></li>
-                        <li><h1 className="px-3 py-2">Database</h1></li>
+                        <li><h1 className={`${tab == 6 && 'bg-[#9843D0] text-white rounded-lg'} px-3 py-2 cursor-pointer`}>Database</h1></li>
                         <li onClick={() => { setTab(7); setBaseMeasures(measures) }}><h1 className={`${tab == 7 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer`}>Other</h1></li>
                     </ul>
                     <hr className="border-gray-300" />
@@ -690,6 +619,8 @@ export default function WorkFile() {
         )
     }
     else {
-        <Loading />
+        return (
+            <Loading />
+        )
     }
 }

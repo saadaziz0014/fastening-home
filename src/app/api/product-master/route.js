@@ -32,6 +32,7 @@ export const GET = async (request) => {
             })
         }
         for (let i = 0; i < prdmaster.length; i++) {
+            prdmaster[i].srNo = i + 1
             let prdCls = await prisma.phocas_Prdcls.findFirst({
                 where: {
                     PTCLAS: String(prdmaster[i].PMCLAS)
