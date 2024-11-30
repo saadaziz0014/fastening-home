@@ -180,7 +180,6 @@ export default function Datagrid({
         return row;
       })
     );
-
     // Refresh the grid to apply styles
     gridApiRef.current.refreshCells();
   };

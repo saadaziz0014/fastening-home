@@ -5,10 +5,16 @@ import { useEffect, useState } from "react";
 export default function Dropdown({
   label,
   data,
+  mainData,
   display,
   setDisplay,
   initialData,
   setInitialData,
+  selectedPlines,
+  setSelectedPlines,
+  selectedVendors,
+  setSelectedVendors,
+  selectedStock,
   type,
 }) {
   // console.log(data, "data");
@@ -30,55 +36,91 @@ export default function Dropdown({
         ? prevSelectedItems.filter((item) => item !== key)
         : [...prevSelectedItems, key];
 
-      // console.log(updatedItems, "updatedItems");
       if (type == "prdline") {
-        // console.log(initialData, "initialData");
-        let dataH = initialData.filter((item) =>
-          updatedItems.includes(item.prLine)
-        );
-        // console.log(dataH, "dataH");
-        setInitialData(dataH);
+        setSelectedPlines(updatedItems);
       }
       if (type == "vline") {
-        // console.log(updatedItems, "updatedItems");
-        let dataH = initialData.filter((item) =>
-          updatedItems.includes(item.vname)
-        );
-        // console.log(dataH, "dataH");
-        setInitialData(dataH);
+        setSelectedVendors(updatedItems);
+      }
+
+      let dataH = [];
+      if (type == "prdline") {
+        dataH = mainData.filter((item) => updatedItems.includes(item.prLine));
+        dataH = dataH.filter((item) => selectedVendors.includes(item.vname));
+      }
+      if (type == "vline") {
+        dataH = mainData.filter((item) => updatedItems.includes(item.vname));
+        dataH = dataH.filter((item) => selectedPlines.includes(item.prLine));
       }
       if (type == "company") {
-        let dataH = initialData.filter((item) =>
-          updatedItems.includes(item.company)
-        );
-        // console.log(dataH, "dataH");
-        setInitialData(dataH);
       }
+      if (selectedStock == "OH") {
+        dataH = dataH.filter(
+          (item) =>
+            item.qtyOH == undefined ||
+            Number(item.qtyOH) == 0 ||
+            item.qtyOH == null
+        );
+      }
+      if (selectedStock == "NONE") {
+        dataH = dataH.filter(
+          (item) =>
+            item.qtyOH == undefined ||
+            Number(item.qtyOH) == 0 ||
+            item.qtyOH == null
+        );
+      }
+      setInitialData(dataH);
       return updatedItems;
     });
   };
   const selectAll = () => {
     setSelectedItems(data); // Set all items as selected
-    if (type != "database") {
+    if (type != "database" && type != "company") {
       fileringOfData();
+    }
+    if (type == "prdline") {
+      setSelectedPlines(data);
+    }
+    if (type == "vline") {
+      setSelectedVendors(data);
     }
   };
 
   const fileringOfData = () => {
     let dataH = [];
     if (type == "prdline") {
-      dataH = initialData.filter((item) => data.includes(item.prLine));
+      dataH = mainData.filter((item) => data.includes(item.prLine));
+      dataH = dataH.filter((item) => selectedVendors.includes(item.vname));
+
       // console.log(dataH, "dataH");
     }
     if (type == "vline") {
-      dataH = initialData.filter((item) => data.includes(item.vname));
+      dataH = mainData.filter((item) => data.includes(item.vname));
+      dataH = dataH.filter((item) => selectedPlines.includes(item.prLine));
       // console.log(dataH, "dataH");
     }
     if (type == "company") {
       // console.log(data, "data");
       // console.log(initialData, "initialData");
-      dataH = initialData.filter((item) => data.includes(item.company));
+      // dataH = initialData.filter((item) => data.includes(item.company));
       // console.log(dataH, "dataH");
+    }
+    if (selectedStock == "OH") {
+      dataH = dataH.filter(
+        (item) =>
+          item.qtyOH == undefined ||
+          Number(item.qtyOH) == 0 ||
+          item.qtyOH == null
+      );
+    }
+    if (selectedStock == "NONE") {
+      dataH = dataH.filter(
+        (item) =>
+          item.qtyOH == undefined ||
+          Number(item.qtyOH) == 0 ||
+          item.qtyOH == null
+      );
     }
     setInitialData(dataH);
   };
@@ -86,8 +128,14 @@ export default function Dropdown({
   // Deselect all items
   const deselectAll = () => {
     setSelectedItems([]); // Clear the selection
-    if (type != "database") {
+    if (type != "database" && type != "company") {
       setInitialData([]);
+    }
+    if (type == "prdline") {
+      setSelectedPlines([]);
+    }
+    if (type == "vline") {
+      setSelectedVendors([]);
     }
   };
   return (
@@ -122,10 +170,11 @@ export default function Dropdown({
         </span>
       </button>
       <ul
-        className={`absolute min-w-0 max-w-auto hidden-scrollbar ${display === "visible"
-          ? "shadow-lg z-[3] rounded-lg px-3 py-2 space-y-4 bg-white max-h-96 overflow-y-scroll"
-          : "p-0 space-y-0 bg-transparent max-h-0 overflow-hidden"
-          }`}
+        className={`absolute min-w-0 max-w-auto hidden-scrollbar ${
+          display === "visible"
+            ? "shadow-lg z-[3] rounded-lg px-3 py-2 space-y-4 bg-white max-h-96 overflow-y-scroll"
+            : "p-0 space-y-0 bg-transparent max-h-0 overflow-hidden"
+        }`}
         aria-labelledby="dropdownCheckboxButton"
       >
         {display === "visible" && (
@@ -133,8 +182,9 @@ export default function Dropdown({
             {/* Add "All" and "None" options */}
             <li>
               <div
-                className={`flex items-center ${type == "vendor" ? "w-32" : "w-24"
-                  }`}
+                className={`flex items-center ${
+                  type == "vendor" ? "w-32" : "w-24"
+                }`}
               >
                 <label
                   htmlFor="checkbox-all"
