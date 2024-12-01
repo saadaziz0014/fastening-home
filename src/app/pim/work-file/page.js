@@ -246,14 +246,19 @@ export default function WorkFile() {
     const [columnV, setColumnV] = useState([]);
     const [selectedPlines, setSelectedPlines] = useState([]);
     const [selectedVendors, setSelectedVendors] = useState([]);
-    const [selectedStock, setSelectedStock] = useState("");
+    const [selectedCompanies, setSelectedCompanies] = useState([]);
+    const [selectedStock, setSelectedStock] = useState("ALL");
     const handleToggle = () => {
         setState((prevState) => {
             if (prevState === 'OH') return 'ALL';
             if (prevState === 'ALL') return 'NONE';
             return 'OH';
         });
-        setSelectedStock(state)
+        setSelectedStock((prevState) => {
+            if (prevState === 'OH') return 'ALL';
+            if (prevState === 'ALL') return 'NONE';
+            return 'OH';
+        })
     };
     const fetchPlines = async () => {
         try {
@@ -294,7 +299,7 @@ export default function WorkFile() {
                         let length = resp.data.prdmaster.length;
                         let data = [];
                         for (let i = 0; i < length; i++) {
-                            data.push({ id: resp.data.prdmaster[i].id, prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, branch: resp.data.prdmaster[i].BRANCH, code: resp.data.prdmaster[i].PRDCDE, class: resp.data.prdmaster[i].PMCLAS, group: resp.data.prdmaster[i].PMGRP, classDesc: resp.data.prdmaster[i].PMCLSDESC, groupDesc: resp.data.prdmaster[i].PMGRPDESC, stock: resp.data.prdmaster[i].QBRKCD, vcode: resp.data.prdmaster[i].VELCOD, company: resp.data.prdmaster[i].COMPANY, qtyCOM: resp.data.prdmaster[i].QTYCOM, salesFHI: resp.data.prdmaster[i].salesFHI, salesSabre: resp.data.prdmaster[i].salesSabre, srNo: resp.data.prdmaster[i].srNo });
+                            data.push({ id: resp.data.prdmaster[i].id, prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, branch: resp.data.prdmaster[i].BRANCH, code: resp.data.prdmaster[i].PRDCDE, class: resp.data.prdmaster[i].PMCLAS, group: resp.data.prdmaster[i].PMGRP, classDesc: resp.data.prdmaster[i].PMCLSDESC, groupDesc: resp.data.prdmaster[i].PMGRPDESC, stock: resp.data.prdmaster[i].QBRKCD, vcode: resp.data.prdmaster[i].VELCOD, company: resp.data.prdmaster[i].COMPANY, qtyCOM: resp.data.prdmaster[i].QTYCOM, salesFHI: resp.data.prdmaster[i].salesFHI, salesSabre: resp.data.prdmaster[i].salesSabre, srNo: resp.data.prdmaster[i].srNo, avgCostFhi: resp.data.prdmaster[i].AVGCSTFHI, avgCostSabre: resp.data.prdmaster[i].AVGCSTSABRE, avgCostAll: resp.data.prdmaster[i].AVGCST });
                         }
                         if (length > 0) {
                             setMainExcelData(data);
@@ -309,6 +314,7 @@ export default function WorkFile() {
                         setCompanies(["FHI", "Sabre"])
                         setLines([prdline]);
                         setSelectedPlines([prdline]);
+                        setSelectedCompanies(["FHI", "Sabre"]);
                     } else {
                         toast.error("Something went wrong in generating file")
                     }
@@ -319,7 +325,7 @@ export default function WorkFile() {
                         let length = resp.data.prdmaster.length;
                         let data = [];
                         for (let i = 0; i < length; i++) {
-                            data.push({ id: resp.data.prdmaster[i].id, prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, branch: resp.data.prdmaster[i].BRANCH, code: resp.data.prdmaster[i].PRDCDE, class: resp.data.prdmaster[i].PMCLAS, group: resp.data.prdmaster[i].PMGRP, classDesc: resp.data.prdmaster[i].PMCLSDESC, groupDesc: resp.data.prdmaster[i].PMGRPDESC, stock: resp.data.prdmaster[i].QBRKCD, vcode: resp.data.prdmaster[i].VELCOD, company: resp.data.prdmaster[i].COMPANY, qtyCOM: resp.data.prdmaster[i].QTYCOM, salesFHI: resp.data.prdmaster[i].salesFHI, salesSabre: resp.data.prdmaster[i].salesSabre, srNo: resp.data.prdmaster[i].srNo });
+                            data.push({ id: resp.data.prdmaster[i].id, prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, branch: resp.data.prdmaster[i].BRANCH, code: resp.data.prdmaster[i].PRDCDE, class: resp.data.prdmaster[i].PMCLAS, group: resp.data.prdmaster[i].PMGRP, classDesc: resp.data.prdmaster[i].PMCLSDESC, groupDesc: resp.data.prdmaster[i].PMGRPDESC, stock: resp.data.prdmaster[i].QBRKCD, vcode: resp.data.prdmaster[i].VELCOD, company: resp.data.prdmaster[i].COMPANY, qtyCOM: resp.data.prdmaster[i].QTYCOM, salesFHI: resp.data.prdmaster[i].salesFHI, salesSabre: resp.data.prdmaster[i].salesSabre, srNo: resp.data.prdmaster[i].srNo, avgCostFhi: resp.data.prdmaster[i].AVGCSTFHI, avgCostSabre: resp.data.prdmaster[i].AVGCSTSABRE, avgCostAll: resp.data.prdmaster[i].AVGCST });
                         }
                         if (length > 0) {
                             setExcelData(data);
@@ -334,6 +340,7 @@ export default function WorkFile() {
                         setCompanies(["FHI", "Sabre"])
                         setVendors([vline]);
                         setSelectedVendors([vline]);
+                        setSelectedCompanies(["FHI", "Sabre"]);
                     } else {
                         toast.error("Something went wrong in generating file")
                     }
@@ -381,6 +388,7 @@ export default function WorkFile() {
     }
     const fetchData = async () => {
         try {
+            setLoading(true);
             let resp = await axios.get("/api/work-file/details?name=" + name);
             if (resp.status == 200) {
                 let data = resp.data.data;
@@ -404,11 +412,14 @@ export default function WorkFile() {
                 let distinctVendors = [...new Set(data.map(item => item.vname))];
                 setLines(distinctPrLines);
                 setVendors(distinctVendors);
+                setSelectedPlines(distinctPrLines);
+                setSelectedVendors(distinctVendors);
                 setCompanies(["FHI", "Sabre"])
                 setColumnV(spreadsheetColumnz);
                 setVisibleColumnsV(keys);
                 setExcelData(data);
                 setMainExcelData(data);
+                setLoading(false);
             }
         } catch (error) {
             console.log(error, "hj")
@@ -440,15 +451,114 @@ export default function WorkFile() {
             let updatedData = mainExcelData.filter((item) => item.qtyOH != undefined && item.qtyOH != null && Number(item.qtyOH) != 0);
             updatedData = updatedData.filter((item) => selectedVendors.includes(item.vname));
             updatedData = updatedData.filter((item) => selectedPlines.includes(item.prLine));
+            if (selectedCompanies.length == 1) {
+                if (selectedCompanies[0] == "FHI") {
+                    updatedData = updatedData.map((item) => {
+                        return {
+                            ...item,
+                            avgCost: item.avgCostFhi
+                        }
+                    })
+                }
+                else if (selectedCompanies[0] == "Sabre") {
+                    updatedData = updatedData.map((item) => {
+                        return {
+                            ...item,
+                            avgCost: item.avgCostSabre
+                        }
+                    })
+                }
+            }
+            else if (selectedCompanies.length == 0) {
+                updatedData = updatedData.map((item) => {
+                    return {
+                        ...item,
+                        avgCost: null
+                    }
+                })
+            } else if (selectedCompanies.length == 2) {
+                updatedData = updatedData.map((item) => {
+                    return {
+                        ...item,
+                        avgCost: item.avgCostAll
+                    }
+                })
+            }
             setExcelData(updatedData);
         } else if (state == "NONE") {
             let updatedData = mainExcelData.filter((item) => item.qtyOH == undefined || Number(item.qtyOH) == 0 || item.qtyOH == null);
             updatedData = updatedData.filter((item) => selectedVendors.includes(item.vname));
             updatedData = updatedData.filter((item) => selectedPlines.includes(item.prLine));
+            if (selectedCompanies.length == 1) {
+                if (selectedCompanies[0] == "FHI") {
+                    updatedData = updatedData.map((item) => {
+                        return {
+                            ...item,
+                            avgCost: item.avgCostFhi
+                        }
+                    })
+                }
+                else if (selectedCompanies[0] == "Sabre") {
+                    updatedData = updatedData.map((item) => {
+                        return {
+                            ...item,
+                            avgCost: item.avgCostSabre
+                        }
+                    })
+                }
+            }
+            else if (selectedCompanies.length == 0) {
+                updatedData = updatedData.map((item) => {
+                    return {
+                        ...item,
+                        avgCost: null
+                    }
+                })
+            } else if (selectedCompanies.length == 2) {
+                updatedData = updatedData.map((item) => {
+                    return {
+                        ...item,
+                        avgCost: item.avgCostAll
+                    }
+                })
+            }
             setExcelData(updatedData);
         } else if (state == "ALL") {
             let updatedData = mainExcelData.filter((item) => selectedVendors.includes(item.vname));
             updatedData = updatedData.filter((item) => selectedPlines.includes(item.prLine));
+            if (selectedCompanies.length == 1) {
+                if (selectedCompanies[0] == "FHI") {
+                    updatedData = updatedData.map((item) => {
+                        return {
+                            ...item,
+                            avgCost: item.avgCostFhi
+                        }
+                    })
+                }
+                else if (selectedCompanies[0] == "Sabre") {
+                    updatedData = updatedData.map((item) => {
+                        return {
+                            ...item,
+                            avgCost: item.avgCostSabre
+                        }
+                    })
+                }
+            }
+            else if (selectedCompanies.length == 0) {
+                updatedData = updatedData.map((item) => {
+                    return {
+                        ...item,
+                        avgCost: null
+                    }
+                })
+            } else {
+                updatedData = updatedData.map((item) => {
+                    return {
+                        ...item,
+                        avgCost: item.avgCostAll
+                    }
+                })
+            }
             setExcelData(updatedData);
         }
     }
@@ -458,10 +568,10 @@ export default function WorkFile() {
                 <div className="flex justify-between items-center font-inter mt-3">
                     <div className="flex gap-10 items-center">
                         <div>
-                            <Dropdown mainData={mainExcelData} label="Pr. Lines" type="prdline" initialData={mainExcelData} setInitialData={setExcelData} data={lines} display={linesFlag} setDisplay={setLinesFlag} selectedPlines={selectedPlines} setSelectedPlines={setSelectedPlines} selectedVendors={selectedVendors} setSelectedVendors={setSelectedVendors} selectedStock={selectedStock} />
+                            <Dropdown selectedCompanies={selectedCompanies} setSelectedCompanies={setSelectedCompanies} mainData={mainExcelData} label="Pr. Lines" type="prdline" initialData={mainExcelData} setInitialData={setExcelData} data={lines} display={linesFlag} setDisplay={setLinesFlag} selectedPlines={selectedPlines} setSelectedPlines={setSelectedPlines} selectedVendors={selectedVendors} setSelectedVendors={setSelectedVendors} selectedStock={selectedStock} />
                         </div>
                         <div>
-                            <Dropdown mainData={mainExcelData} label="Vendors" type="vline" initialData={mainExcelData} setInitialData={setExcelData} data={vendors} display={vendorsFlag} setDisplay={setVendorsFlag} selectedPlines={selectedPlines} setSelectedPlines={setSelectedPlines} selectedVendors={selectedVendors} setSelectedVendors={setSelectedVendors} selectedStock={selectedStock} />
+                            <Dropdown selectedCompanies={selectedCompanies} setSelectedCompanies={setSelectedCompanies} mainData={mainExcelData} label="Vendors" type="vline" initialData={mainExcelData} setInitialData={setExcelData} data={vendors} display={vendorsFlag} setDisplay={setVendorsFlag} selectedPlines={selectedPlines} setSelectedPlines={setSelectedPlines} selectedVendors={selectedVendors} setSelectedVendors={setSelectedVendors} selectedStock={selectedStock} />
                         </div>
                         {
                             tab == 0 ? <DropdownMeasure visibleColumns={visibleColumns} setVisibleColumns={setVisibleColumns} label="Measures" display={measuresFlag} setDisplay={setMeasuresFlag} />
@@ -472,7 +582,7 @@ export default function WorkFile() {
                                                 : tab == 7 ? <DropdownMeasure visibleColumns={visibleColumnsO} setVisibleColumns={setVisibleColumnsO} label="Measures" data={columns} display={measuresFlag} setDisplay={setMeasuresFlag} />
                                                     : null
                         }
-                        <Dropdown label="Company" type="company" data={companies} display={companyFlag} setDisplay={setCompanyFlag} initialData={mainExcelData} setInitialData={setExcelData} />
+                        <Dropdown selectedCompanies={selectedCompanies} setSelectedCompanies={setSelectedCompanies} label="Company" type="company" mainData={mainExcelData} data={companies} display={companyFlag} setDisplay={setCompanyFlag} initialData={mainExcelData} setInitialData={setExcelData} selectedPlines={selectedPlines} setSelectedPlines={setSelectedPlines} selectedVendors={selectedVendors} setSelectedVendors={setSelectedVendors} selectedStock={selectedStock} />
                         <Dropdown label="Database" type="database" data={databases} display={databaseFlag} setDisplay={setDatabaseFlag} initialData={mainExcelData} setInitialData={setExcelData} />
                         <button onClick={() => setExcelData(mainExcelData)} className="underline py-1 text-[#614d87]">Remove Filters</button>
                     </div>

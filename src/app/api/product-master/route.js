@@ -86,14 +86,24 @@ export const GET = async (request) => {
                 where: {
                     PRDLIN: prdmaster[i].PRDLIN,
                     PRODNO: prdmaster[i].PRODNO
-                },
-                orderBy: {
-                    AVGCST: "desc"
                 }
             })
             // console.log(warehouse[0], "warehouse");
             if (warehouse.length > 0) {
-                prdmaster[i].AVGCST = warehouse[0].AVGCST
+                let avgCostAll = 0
+                let avgCostFhi = 0
+                let avgCostSabre = 0
+                for (let j = 0; j < warehouse.length; j++) {
+                    if (warehouse[j].WHSCOD == 3 || warehouse[j].WHSCOD == 7 || warehouse[j].WHSCOD == 10 || warehouse[j].WHSCOD == 11 || warehouse[j].WHSCOD == 12) {
+                        avgCostFhi += warehouse[j].AVGCST
+                    } else {
+                        avgCostSabre += warehouse[j].AVGCST
+                    }
+                    avgCostAll += warehouse[j].AVGCST
+                }
+                prdmaster[i].AVGCST = avgCostAll
+                prdmaster[i].AVGCSTFHI = avgCostFhi
+                prdmaster[i].AVGCSTSABRE = avgCostSabre
                 prdmaster[i].BRANCH = warehouse[0].WHSCOD ? warehouse[0].WHSCOD : 0
                 if (prdmaster[i].BRANCH == 50n) {
                     prdmaster[i].BRANCH = 50

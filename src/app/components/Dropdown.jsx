@@ -13,6 +13,8 @@ export default function Dropdown({
   selectedPlines,
   setSelectedPlines,
   selectedVendors,
+  selectedCompanies,
+  setSelectedCompanies,
   setSelectedVendors,
   selectedStock,
   type,
@@ -35,14 +37,16 @@ export default function Dropdown({
       const updatedItems = prevSelectedItems.includes(key)
         ? prevSelectedItems.filter((item) => item !== key)
         : [...prevSelectedItems, key];
-
       if (type == "prdline") {
         setSelectedPlines(updatedItems);
       }
       if (type == "vline") {
         setSelectedVendors(updatedItems);
       }
-
+      if (type == "company") {
+        setSelectedCompanies(updatedItems);
+      }
+      console.log(updatedItems, "updatedItems");
       let dataH = [];
       if (type == "prdline") {
         dataH = mainData.filter((item) => updatedItems.includes(item.prLine));
@@ -53,6 +57,43 @@ export default function Dropdown({
         dataH = dataH.filter((item) => selectedPlines.includes(item.prLine));
       }
       if (type == "company") {
+        console.log(updatedItems, "updatedItems");
+        if (updatedItems.length == 1) {
+          if (updatedItems[0] == "FHI") {
+            dataH = mainData.map((item) => {
+              return {
+                ...item,
+                avgCost: item.avgCostFhi,
+              };
+            });
+          } else if (updatedItems[0] == "Sabre") {
+            dataH = mainData.map((item) => {
+              return {
+                ...item,
+                avgCost: item.avgCostSabre,
+              };
+            });
+          }
+        } else if (updatedItems.length == 0) {
+          dataH = mainData.map((item) => {
+            return {
+              ...item,
+              avgCost: null,
+            };
+          });
+        } else if (updatedItems.length == 2) {
+          dataH = mainData.map((item) => {
+            return {
+              ...item,
+              avgCost: item.avgCostAll,
+            };
+          });
+        }
+        console.log(selectedVendors, "selectedVendors");
+        console.log(selectedPlines, "selectedPlines");
+        dataH = dataH.filter((item) => selectedVendors.includes(item.vname));
+        dataH = dataH.filter((item) => selectedPlines.includes(item.prLine));
+        console.log(selectedStock, "selectedStock");
       }
       if (selectedStock == "OH") {
         dataH = dataH.filter(
@@ -76,7 +117,7 @@ export default function Dropdown({
   };
   const selectAll = () => {
     setSelectedItems(data); // Set all items as selected
-    if (type != "database" && type != "company") {
+    if (type != "database") {
       fileringOfData();
     }
     if (type == "prdline") {
@@ -84,6 +125,16 @@ export default function Dropdown({
     }
     if (type == "vline") {
       setSelectedVendors(data);
+    }
+    if (type == "company") {
+      setSelectedCompanies(data);
+      let upddatedData = mainData.map((item) => {
+        return {
+          ...item,
+          avgCost: item.avgCostAll,
+        };
+      });
+      setInitialData(upddatedData);
     }
   };
 
@@ -101,10 +152,39 @@ export default function Dropdown({
       // console.log(dataH, "dataH");
     }
     if (type == "company") {
-      // console.log(data, "data");
-      // console.log(initialData, "initialData");
-      // dataH = initialData.filter((item) => data.includes(item.company));
-      // console.log(dataH, "dataH");
+      if (selectedCompanies.length == 1) {
+        if (selectedCompanies[0] == "FHI") {
+          dataH = mainData.map((item) => {
+            return {
+              ...item,
+              avgCost: item.avgCostFhi,
+            };
+          });
+        } else if (selectedCompanies[0] == "Sabre") {
+          dataH = mainData.map((item) => {
+            return {
+              ...item,
+              avgCost: item.avgCostSabre,
+            };
+          });
+        }
+      } else if (selectedCompanies.length == 0) {
+        dataH = mainData.map((item) => {
+          return {
+            ...item,
+            avgCost: null,
+          };
+        });
+      } else if (selectedCompanies.length == 2) {
+        dataH = mainData.map((item) => {
+          return {
+            ...item,
+            avgCost: item.avgCostAll,
+          };
+        });
+      }
+      dataH = dataH.filter((item) => selectedVendors.includes(item.vname));
+      dataH = dataH.filter((item) => selectedPlines.includes(item.prLine));
     }
     if (selectedStock == "OH") {
       dataH = dataH.filter(
@@ -136,6 +216,16 @@ export default function Dropdown({
     }
     if (type == "vline") {
       setSelectedVendors([]);
+    }
+    if (type == "company") {
+      let upddatedData = mainData.map((item) => {
+        return {
+          ...item,
+          avgCost: null,
+        };
+      });
+      setSelectedCompanies([]);
+      setInitialData(upddatedData);
     }
   };
   return (
