@@ -20,7 +20,7 @@ export default function Sidebar() {
             </button> */}
       <aside
         id="sidebar-multi-level-sidebar"
-        className="w-64 h-[100vh] transition-transform -translate-x-full sm:translate-x-0"
+        className="w-64 h-full transition-transform -translate-x-full sm:translate-x-0"
         aria-label="Sidebar"
       >
         <div className="h-full px-6 py-4 flex flex-col justify-between bg-[#624e8a]">
@@ -32,11 +32,10 @@ export default function Sidebar() {
               <li>
                 <Link
                   href="/dashboard"
-                  className={`flex items-center w-full p-2 text-base transition duration-75 rounded-lg group hover:text-black hover:bg-gray-100 ${
-                    pathname === "/dashboard"
+                  className={`flex items-center w-full p-2 text-base transition duration-75 rounded-lg group hover:text-black hover:bg-gray-100 ${pathname === "/dashboard"
                       ? "bg-gray-100 text-black"
                       : "text-white"
-                  }`}
+                    }`}
                 >
                   <svg
                     width="20"
@@ -60,11 +59,10 @@ export default function Sidebar() {
               <li>
                 <button
                   type="button"
-                  className={`flex items-center w-full p-2 text-base transition duration-75 rounded-lg group hover:bg-gray-100 hover:text-black ${
-                    pathname.includes("/pim")
+                  className={`flex items-center w-full p-2 text-base transition duration-75 rounded-lg group hover:bg-gray-100 hover:text-black ${pathname.includes("/pim")
                       ? "bg-gray-100 text-black"
                       : "text-white"
-                  }`}
+                    }`}
                   aria-controls="dropdown-example"
                   data-collapse-toggle="dropdown-example"
                   onClick={() => setPimDropdown(!pimDropdown)}
@@ -74,9 +72,8 @@ export default function Sidebar() {
                     height="19"
                     viewBox="0 0 14 19"
                     fill="currentColor" /* Keep fill none if you're using stroke for outlines */
-                    className={`flex-shrink-0 w-5 h-5 ${
-                      pathname.includes("/pim") ? "text-black" : "text-white"
-                    } transition duration-75 group-hover:text-black `}
+                    className={`flex-shrink-0 w-5 h-5 ${pathname.includes("/pim") ? "text-black" : "text-white"
+                      } transition duration-75 group-hover:text-black `}
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
@@ -127,20 +124,18 @@ export default function Sidebar() {
                 </button>
                 <ul
                   id="dropdown-example"
-                  className={`mt-2 ${
-                    pimDropdown
+                  className={`mt-2 ${pimDropdown
                       ? "max-h-60 opacity-100"
                       : "max-h-0 opacity-0 invisible"
-                  } transition-max-h duration-300 ease-in-out`}
+                    } transition-max-h duration-300 ease-in-out`}
                 >
                   <li>
                     <Link
                       href="/pim/update-menu"
-                      className={`flex items-center w-full p-2 transition duration-75 rounded-lg pl-11 group hover:bg-gray-700 ${
-                        pathname === "/pim/update-menu"
+                      className={`flex items-center w-full p-2 transition duration-75 rounded-lg pl-11 group hover:bg-gray-700 ${pathname === "/pim/update-menu"
                           ? "bg-gray-700 text-white"
                           : "text-white"
-                      }`}
+                        }`}
                     >
                       Update Menu
                     </Link>
@@ -148,11 +143,10 @@ export default function Sidebar() {
                   <li>
                     <Link
                       href="/pim/price-tracker"
-                      className={`flex items-center w-full p-2 transition duration-75 rounded-lg pl-11 group hover:bg-gray-700 ${
-                        pathname === "/pim/price-tracker"
+                      className={`flex items-center w-full p-2 transition duration-75 rounded-lg pl-11 group hover:bg-gray-700 ${pathname === "/pim/price-tracker"
                           ? "bg-gray-700 text-white"
                           : "text-white"
-                      }`}
+                        }`}
                     >
                       Price Tracker
                     </Link>
@@ -303,11 +297,10 @@ export default function Sidebar() {
                 </button>
                 <ul
                   id="dropdown-example"
-                  className={`${
-                    reportsDropdown
+                  className={`${reportsDropdown
                       ? "max-h-60 opacity-100"
                       : "max-h-0 opacity-0 invisible"
-                  } transition-max-h duration-300 ease-in-out`}
+                    } transition-max-h duration-300 ease-in-out`}
                 >
                   <li>
                     <a
@@ -419,11 +412,10 @@ export default function Sidebar() {
                 </button>
                 <ul
                   id="dropdown-example"
-                  className={`${
-                    categoriesDropdown
+                  className={`${categoriesDropdown
                       ? "max-h-60 opacity-100 overflow-y-scroll hidden-scrollbar"
                       : "max-h-0 opacity-0 invisible"
-                  } transition-max-h duration-300 ease-in-out`}
+                    } transition-max-h duration-300 ease-in-out`}
                 >
                   <li>
                     <a

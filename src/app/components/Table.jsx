@@ -6,10 +6,10 @@ export default function Table({ children }) {
   // console.log(children);
   const router = useRouter();
   return (
-    <section className="container px-4 mx-auto">
+    <section className="">
       <div className="flex flex-col">
-        <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+        <div className=" -my-2 overflow-x-auto">
+          <div className="inline-block min-w-full py-2">
             <div className="overflow-hidden border border-gray-200 md:rounded-lg">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-[#F9FAFB]">
@@ -40,7 +40,7 @@ export default function Table({ children }) {
                     >
                       <div className="flex items-center gap-x-2">
                         Last Updated Date
-                        <svg
+                        {/* <svg
                           width="12"
                           height="12"
                           viewBox="0 0 12 12"
@@ -54,7 +54,7 @@ export default function Table({ children }) {
                             stroke-linecap="round"
                             stroke-linejoin="round"
                           />
-                        </svg>
+                        </svg> */}
                       </div>
                     </th>
                     <th
@@ -69,7 +69,7 @@ export default function Table({ children }) {
                     >
                       <div className="flex items-center gap-x-2">
                         Follow up Date
-                        <svg
+                        {/* <svg
                           width="12"
                           height="12"
                           viewBox="0 0 12 12"
@@ -83,7 +83,7 @@ export default function Table({ children }) {
                             stroke-linecap="round"
                             stroke-linejoin="round"
                           />
-                        </svg>
+                        </svg> */}
                       </div>
                     </th>
                     <th
@@ -98,7 +98,7 @@ export default function Table({ children }) {
                     >
                       <div className="flex items-center gap-x-2">
                         Update Required Date
-                        <svg
+                        {/* <svg
                           width="12"
                           height="12"
                           viewBox="0 0 12 12"
@@ -112,7 +112,7 @@ export default function Table({ children }) {
                             stroke-linecap="round"
                             stroke-linejoin="round"
                           />
-                        </svg>
+                        </svg> */}
                       </div>
                     </th>
                   </tr>
