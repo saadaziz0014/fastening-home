@@ -1,16 +1,11 @@
-'use client';
+'use client'
+import dynamic from "next/dynamic";
 import React, { useEffect, useState } from "react";
 import Dropdown from "../../components/Dropdown";
-import SpreadSheetData from "../../components/SpreadSheetData";
-import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import axios from "axios";
-import TableComponent from "@/app/components/TableComponent";
 import DropdownMeasure from "@/app/components/DropdownMeasure";
 import Modal from "@/app/components/Modal";
-import Handontable from "@/app/components/Handontable";
-import HandsontableExample from "@/app/components/Example";
-import dynamic from 'next/dynamic'
 import { useSearchParams } from "next/navigation";
 import Loading from "@/app/components/Loading";
 
@@ -237,6 +232,7 @@ export default function WorkFile() {
     const [databases, setDatabases] = useState(["Quote File", "Promo File", "Volume", "Search Keys", "Vendor Cross", "Product Cross", "Branch Pricing", "Code2"]);
     const [vendorsFlag, setVendorsFlag] = useState("hidden");
     const [linesFlag, setLinesFlag] = useState("hidden");
+    const [addColFlag, setAddColFlag] = useState(false);
     const [measuresFlag, setMeasuresFlag] = useState("hidden");
     const [databaseFlag, setDatabaseFlag] = useState("hidden");
     const [companyFlag, setCompanyFlag] = useState("hidden");
@@ -354,38 +350,6 @@ export default function WorkFile() {
             toast.error("Something went wrong in generating file")
         }
     }
-    useEffect(() => {
-        setPlines([])
-        setVlines([])
-        selectedPlines.length > 0 || selectedVendors.length > 0 ? handleStock() : null
-        if (name) {
-            // setTab(3);
-            setName(name);
-            mainExcelData.length == 0 ? fetchData() : setLoading(false);
-        }
-        if (!flagPrdline && pline.length > 2) {
-            fetchPlines();
-        }
-        if (!flagVline && vline.length > 2) {
-            fetchVlines();
-        }
-        // if (prdline.length > 0 || vcode != 0) {
-        //     generateFile();
-        // }
-    }, [pline, vline, loading, state]);
-
-    const plineSelected = (item) => {
-        setPrdline(item);
-        setPline(item);
-        setFlagPrdline(true);
-        setPlines([]);
-    }
-    const vlineSelected = (item, item2) => {
-        setVcode(item);
-        setFlagVline(true);
-        setVline(item2);
-        setVlines([]);
-    }
     const fetchData = async () => {
         try {
             setLoading(true);
@@ -425,6 +389,19 @@ export default function WorkFile() {
             console.log(error, "hj")
             toast.error("Something went wrong in fetching data")
         }
+    }
+
+    const plineSelected = (item) => {
+        setPrdline(item);
+        setPline(item);
+        setFlagPrdline(true);
+        setPlines([]);
+    }
+    const vlineSelected = (item, item2) => {
+        setVcode(item);
+        setFlagVline(true);
+        setVline(item2);
+        setVlines([]);
     }
     const workFileAdd = async () => {
         try {
@@ -562,6 +539,25 @@ export default function WorkFile() {
             setExcelData(updatedData);
         }
     }
+    useEffect(() => {
+        setPlines([])
+        setVlines([])
+        selectedPlines.length > 0 || selectedVendors.length > 0 ? handleStock() : null
+        if (name) {
+            // setTab(3);
+            setName(name);
+            mainExcelData.length == 0 ? fetchData() : setLoading(false);
+        }
+        if (!flagPrdline && pline.length > 2) {
+            fetchPlines();
+        }
+        if (!flagVline && vline.length > 2) {
+            fetchVlines();
+        }
+        // if (prdline.length > 0 || vcode != 0) {
+        //     generateFile();
+        // }
+    }, [pline, vline, loading, state]);
     if (!loading) {
         return (
             <div>
@@ -604,18 +600,18 @@ export default function WorkFile() {
                         >
                             {/* The slider */}
                             <div
-                                className={`absolute w-10 h-10 rounded-full transition-all duration-300 ${state === 'ALL'
-                                    ? 'bg-green-500 left-2'
+                                className={`absolute w-10 h-10 p-2 rounded-full transition-all duration-300 ${state === 'ALL'
+                                    ? 'bg-white text-black font-bold left-2 p-1'
                                     : state === 'NONE'
-                                        ? 'bg-red-500 right-2'
-                                        : 'bg-gray-500 left-1/2 transform -translate-x-1/2'
+                                        ? 'bg-black text-white font-bold right-2 p-1'
+                                        : 'bg-gray-500 p-1 font-bold left-1/2 transform -translate-x-1/2'
                                     }`}
                             ></div>
 
                             {/* Labels */}
-                            <div className="absolute left-3 text-xs text-gray-600">ALL</div>
-                            <div className="absolute right-3 text-xs text-gray-600">NONE</div>
-                            <div className="absolute left-1/2 transform -translate-x-1/2 text-xs text-gray-600">
+                            <div className="absolute left-3 text-xs text-black">ALL</div>
+                            <div className="absolute right-3 text-xs text-white">NONE</div>
+                            <div className="absolute left-1/2 transform -translate-x-1/2 text-xs text-black">
                                 OH
                             </div>
                         </div>
@@ -638,7 +634,7 @@ export default function WorkFile() {
                         </div>
                     </div>
                 </div>
-                <div className="flex justify-between mt-5 items-center">
+                <div className="flex justify-between mt-2 items-center">
                     <div className="flex gap-3 items-center">
                         <label className="text-gray-900 text-sm">Pr. Lines</label>
                         <div>
@@ -647,7 +643,7 @@ export default function WorkFile() {
                                 <div className="shadow-lg p-2 bg-white text-black rounded-lg absolute mt-1 z-50">
                                     {plines.map((item) => {
                                         return (
-                                            <div>
+                                            <div key={item.id}>
                                                 <option value={item.id} onClick={() => { plineSelected(item.PRDLIN) }} className="text-black mt-1 text-xs cursor-pointer px-2 py-1 hover:bg-gray-100">{item.PRDLIN}</option>
                                                 <hr className="border-gray-300" />
                                             </div>
@@ -663,7 +659,7 @@ export default function WorkFile() {
                                 <div className="shadow-lg p-2 bg-white text-black rounded-lg absolute mt-1 z-50">
                                     {vlines.map((item) => {
                                         return (
-                                            <div>
+                                            <div key={item.id}>
                                                 <option value={item.id} onClick={() => { vlineSelected(item.VENDOR, item.VNAME) }} className="text-black mt-1 text-xs cursor-pointer px-2 py-1 hover:bg-gray-100">{item.VNAME} {item.VCODE}</option>
                                                 <hr className="border-gray-300" />
                                             </div>
@@ -681,7 +677,7 @@ export default function WorkFile() {
                         <button onClick={() => setModalDisplay(true)} className="bg-[#614d87] text-white px-2 py-1 text-md rounded-lg">Save</button>
                     </div>
                 </div>
-                <div className="mt-5">
+                <div className="mt-3">
                     <ul className="flex gap-4">
                         <li onClick={() => { setTab(0); setBaseMeasures(measures) }}><h1 className={`${tab == 0 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer`}>Pricing</h1></li>
                         <li onClick={() => { setTab(1); setBaseMeasures(measures) }}><h1 className={`${tab == 1 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer`}>Code/Class</h1></li>
@@ -691,16 +687,17 @@ export default function WorkFile() {
                         <li onClick={() => { setTab(5); setBaseMeasures(measures) }}><h1 className={`${tab == 5 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer'} px-3 py-2 cursor-pointer`}>ISC</h1></li>
                         <li><h1 className={`${tab == 6 && 'bg-[#9843D0] text-white rounded-lg'} px-3 py-2 cursor-pointer`}>Database</h1></li>
                         <li onClick={() => { setTab(7); setBaseMeasures(measures) }}><h1 className={`${tab == 7 && 'bg-[#efedf2] text-[#8576a3] border-b-2 border-[#8576a3]'} px-3 py-2 cursor-pointer`}>Other</h1></li>
+                        <button onClick={(e) => setAddColFlag(!addColFlag)} className="bg-[#614d87] mb-1 text-white px-2 py-1 text-md rounded-lg">Add Column</button>
                     </ul>
                     <hr className="border-gray-300" />
                 </div>
-                <div className="mt-5">
-                    {tab == 0 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumns} search={search} columns={spreadsheetColumns} name={namef} />
-                        : tab == 1 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumnsC} search={search} columns={spreadsheetColumns} name={namef} />
-                            : tab == 2 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumnsU} search={search} columns={spreadsheetColumns} name={namef} />
-                                : tab == 3 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumnsV} search={search} columns={columnV} name={namef} />
-                                    : tab == 5 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumnsI} search={search} columns={spreadsheetColumns} name={namef} /> :
-                                        tab == 7 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumnsO} search={search} columns={spreadsheetColumns} name={namef} /> : null}
+                <div className="mt-3">
+                    {tab == 0 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumns} search={search} columns={spreadsheetColumns} name={namef} addColFlag={addColFlag} setAddColFlag={setAddColFlag} />
+                        : tab == 1 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumnsC} search={search} columns={spreadsheetColumns} name={namef} addColFlag={addColFlag} setAddColFlag={setAddColFlag} />
+                            : tab == 2 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumnsU} search={search} columns={spreadsheetColumns} name={namef} addColFlag={addColFlag} setAddColFlag={setAddColFlag} />
+                                : tab == 3 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumnsV} search={search} columns={columnV} name={namef} addColFlag={addColFlag} setAddColFlag={setAddColFlag} />
+                                    : tab == 5 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumnsI} search={search} columns={spreadsheetColumns} name={namef} addColFlag={addColFlag} setAddColFlag={setAddColFlag} /> :
+                                        tab == 7 ? <Datagrid data={excelData} setData={setExcelData} visibleColumns={visibleColumnsO} search={search} columns={spreadsheetColumns} name={namef} addColFlag={addColFlag} setAddColFlag={setAddColFlag} /> : null}
                     {/* <Handontable cols={dataCols} data={excelData} /> */}
                     {/* <HandsontableExample /> */}
                     {/* {tab == 0 ? <SpreadSheetData data={data} setData={setData} /> : tab == 2 ? <SpreadSheetData data={dataU} setData={setDataU} /> : null} */}

@@ -171,7 +171,7 @@ export default function TabProduction() {
                             <div className="shadow-lg p-2 bg-white text-black rounded-lg absolute mt-1 z-50">
                                 {plines.map((item) => {
                                     return (
-                                        <div>
+                                        <div key={item.id}>
                                             <option value={item.id} onClick={() => { plineSelected(item.prdline) }} className="text-black mt-1 text-xs cursor-pointer px-2 py-1 hover:bg-gray-100">{item.prdline}</option>
                                             <hr className="border-gray-300" />
                                         </div>

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-export default function Table({ children }) {
+export default function Table({ data }) {
   // console.log(children);
   const router = useRouter();
   return (
@@ -118,8 +118,8 @@ export default function Table({ children }) {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {children &&
-                    children.map((item) => (
+                  {data &&
+                    data.map((item) => (
                       <tr
                         key={item.id}
                         className="cursor-pointer"

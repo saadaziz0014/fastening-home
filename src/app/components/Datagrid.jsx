@@ -10,6 +10,8 @@ export default function Datagrid({
   columns,
   visibleColumns,
   name,
+  addColFlag,
+  setAddColFlag,
   search,
 }) {
   const [rowData, setRowData] = useState([...data]); // Grid row data
@@ -17,6 +19,7 @@ export default function Datagrid({
   const [newColumnName, setNewColumnName] = useState("");
   const [newColumnType, setNewColumnType] = useState("text");
   const [selectedColumn, setSelectedColumn] = useState("");
+  const [gridHeight, setGridHeight] = useState(300);
   const gridApiRef = useRef(null);
   const changedCells = useRef(new Set());
 
@@ -39,15 +42,18 @@ export default function Datagrid({
     cellClassRules: cellClassRules, // Attach class rules for dynamic styling
     cellStyle: (params) =>
       search &&
-      search.length > 2 &&
-      params.value?.toString().toLowerCase().includes(search.toLowerCase())
+        search.length > 2 &&
+        params.value?.toString().toLowerCase().includes(search.toLowerCase())
         ? { backgroundColor: "yellow" }
         : {}, // Highlight cells based on search
   };
 
   // Add a New Column
   const addColumn = () => {
-    if (!newColumnName) return;
+    if (!newColumnName) {
+      setAddColFlag(false);
+      return;
+    };
 
     const newColumn = {
       field: newColumnName.toLowerCase().replace(/\s+/g, "_"),
@@ -72,10 +78,10 @@ export default function Datagrid({
     const updatedColumns =
       position >= 0
         ? [
-            ...columnData.slice(0, position + 1),
-            newColumn,
-            ...columnData.slice(position + 1),
-          ]
+          ...columnData.slice(0, position + 1),
+          newColumn,
+          ...columnData.slice(position + 1),
+        ]
         : [...columnData, newColumn];
 
     setColumnData(updatedColumns);
@@ -98,6 +104,7 @@ export default function Datagrid({
 
     setNewColumnName("");
     setSelectedColumn("");
+    setAddColFlag(false)
   };
 
   // Handle Cell Value Change with Calculations
@@ -195,82 +202,96 @@ export default function Datagrid({
 
   useEffect(() => {
     setRowData([...data]); // Update grid rows when data prop changes
+    const rowHeight = 25; // Default row height
+    const headerHeight = 50; // Adjust based on your header size
+    const bufferHeight = 20; // Additional padding
+    const calculatedHeight = data.length * rowHeight + headerHeight + bufferHeight;
+
+    setGridHeight(calculatedHeight < 300 ? 300 : calculatedHeight);
   }, [data]);
 
-  return (
-    <>
-      <div className="flex justify-between">
-        <div className="flex gap-4 items-end mb-4">
-          <div className="flex flex-col">
-            <label className="text-sm text-gray-600 mb-1">Column Name</label>
-            <input
-              type="text"
-              value={newColumnName}
-              onChange={(e) => setNewColumnName(e.target.value)}
-              className="px-3 py-2 border rounded"
-              placeholder="Enter column name"
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label className="text-sm text-gray-600 mb-1">Column Type</label>
-            <select
-              value={newColumnType}
-              onChange={(e) => setNewColumnType(e.target.value)}
-              className="px-3 py-2 border rounded"
-            >
-              <option value="text">Text</option>
-              <option value="number">Number</option>
-              <option value="date">Date</option>
-            </select>
-          </div>
-
-          <div className="flex flex-col">
-            <label className="text-sm text-gray-600 mb-1">
-              Add After Column
-            </label>
-            <select
-              value={selectedColumn}
-              onChange={(e) => setSelectedColumn(e.target.value)}
-              className="px-3 py-2 border rounded"
-            >
-              <option value="">Select Column</option>
-              {columns.map(
-                (col) =>
-                  col.field != "id" && (
-                    <option key={col.field} value={col.field}>
-                      {col.field}
-                    </option>
-                  )
-              )}
-            </select>
-          </div>
-
-          <button
-            onClick={addColumn}
-            className="px-4 py-2 bg-[#614d87] text-white rounded hover:bg-purple-900"
-          >
-            Add Column
-          </button>
+  if (!addColFlag) {
+    return (
+      <>
+        <div className={`ag-theme-alpine  w-full`} style={{ height: `900px` }}>
+          <AgGridReact
+            onGridReady={(params) => {
+              gridApiRef.current = params.api;
+            }}
+            rowData={rowData}
+            columnDefs={columnData}
+            defaultColDef={defaultColDef}
+            animateRows={true}
+            onCellValueChanged={handleCellValueChanged}
+            pagination={true}
+            paginationPageSize={30}
+          />
         </div>
-        <div className="flex items-end mb-4">
-          {name && <h1 className="font-bold text-[#614d87]">File: {name}</h1>}
+      </>
+    );
+  }
+  else {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-60">
+        <div className="flex justify-between">
+          <div className="flex gap-4 items-end mb-4">
+            <div className="flex flex-col">
+              <label className="text-sm text-black mb-1">Column Name</label>
+              <input
+                type="text"
+                value={newColumnName}
+                onChange={(e) => setNewColumnName(e.target.value)}
+                className="px-3 py-2 border rounded"
+                placeholder="Enter column name"
+              />
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-sm text-black mb-1">Column Type</label>
+              <select
+                value={newColumnType}
+                onChange={(e) => setNewColumnType(e.target.value)}
+                className="px-3 py-2 border rounded"
+              >
+                <option value="text">Text</option>
+                <option value="number">Number</option>
+                <option value="date">Date</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-sm text-black mb-1">
+                Add After Column
+              </label>
+              <select
+                value={selectedColumn}
+                onChange={(e) => setSelectedColumn(e.target.value)}
+                className="px-3 py-2 border rounded"
+              >
+                <option value="">Select Column</option>
+                {columns.map(
+                  (col) =>
+                    col.field != "id" && (
+                      <option key={col.field} value={col.field}>
+                        {col.field}
+                      </option>
+                    )
+                )}
+              </select>
+            </div>
+
+            <button
+              onClick={addColumn}
+              className="px-4 py-2 bg-[#614d87] text-white rounded hover:bg-purple-900"
+            >
+              Add Column
+            </button>
+          </div>
+          {/* <div className="flex items-end mb-4">
+            {name && <h1 className="font-bold text-[#614d87]">File: {name}</h1>}
+          </div> */}
         </div>
       </div>
-      <div className="ag-theme-alpine w-full h-[100vh]">
-        <AgGridReact
-          onGridReady={(params) => {
-            gridApiRef.current = params.api;
-          }}
-          rowData={rowData}
-          columnDefs={columnData}
-          defaultColDef={defaultColDef}
-          animateRows={true}
-          onCellValueChanged={handleCellValueChanged}
-          pagination={true}
-          paginationPageSize={30}
-        />
-      </div>
-    </>
-  );
+    )
+  }
 }

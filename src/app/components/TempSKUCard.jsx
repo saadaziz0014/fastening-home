@@ -20,7 +20,7 @@ export default function TempSKUCard() {
     <div className="w-[30%] bg-white p-4 rounded-lg shadow-custom-lg">
       <div className="mb-2">
         <div className="flex justify-between">
-          <h1 className="text-lg font-bold">Temp SKU's</h1>
+          <h1 className="text-lg font-bold">Temp SKUs</h1>
           <button className="px-3 py-1 border border-gray-300 rounded-lg">
             View all
           </button>

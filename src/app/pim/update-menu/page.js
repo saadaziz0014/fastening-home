@@ -56,7 +56,7 @@ export default function UpdateMenu() {
                     <hr className="border-gray-300" />
                 </div>
                 <div className="mt-3">
-                    <Table children={data} />
+                    <Table data={data} />
                     <ReactPaginate
                         breakLabel="..."
                         nextLabel="Next"

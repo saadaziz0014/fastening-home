@@ -3,9 +3,18 @@ import { NextResponse } from "next/server";
 
 export const GET = async (request) => {
     try {
-        const { searchParams } = new URL(request.url);
-        const pline = searchParams.get("pline");
-        const vendor = searchParams.get("vendor");
+        let url = request.url;
+        let key = url.split("?")[1];
+        key = key.split("=")[0];
+        let value = url.split("=")[1];
+        console.log(key, value)
+        let pline = null;
+        let vendor = null;
+        if (key == "pline") {
+            pline = value;
+        } else if (key == "vendor") {
+            vendor = value;
+        }
         let prdmaster = [];
         if (!pline && !vendor) {
             return NextResponse.json({ error: "Please enter a search term", status: 400 })
@@ -28,7 +37,7 @@ export const GET = async (request) => {
                 orderBy: {
                     id: "asc"
                 },
-                take: 5
+                // take: 5
             })
         }
         for (let i = 0; i < prdmaster.length; i++) {
@@ -82,32 +91,28 @@ export const GET = async (request) => {
             if (vendor) {
                 prdmaster[i].VNAME = vendor.VNAME
             }
-            let warehouse = await prisma.phocas_Whsprd.findMany({
+            let warehouse = await prisma.phocas_Whsprd.findFirst({
                 where: {
                     PRDLIN: prdmaster[i].PRDLIN,
                     PRODNO: prdmaster[i].PRODNO
                 }
             })
             // console.log(warehouse[0], "warehouse");
-            if (warehouse.length > 0) {
+            if (warehouse) {
                 let avgCostAll = 0
                 let avgCostFhi = 0
                 let avgCostSabre = 0
-                for (let j = 0; j < warehouse.length; j++) {
-                    if (warehouse[j].WHSCOD == 3 || warehouse[j].WHSCOD == 7 || warehouse[j].WHSCOD == 10 || warehouse[j].WHSCOD == 11 || warehouse[j].WHSCOD == 12) {
-                        avgCostFhi += warehouse[j].AVGCST
-                    } else {
-                        avgCostSabre += warehouse[j].AVGCST
-                    }
-                    avgCostAll += warehouse[j].AVGCST
+                if (Number(warehouse.WHSCOD) == 3 || Number(warehouse.WHSCOD) == 7 || Number(warehouse.WHSCOD) == 10 || Number(warehouse.WHSCOD) == 11 || Number(warehouse.WHSCOD) == 12) {
+                    avgCostFhi += warehouse.AVGCST
+                } else if (Number(warehouse.WHSCOD) == 50 || Number(warehouse.WHSCOD) == 51) {
+                    avgCostSabre += warehouse.AVGCST
                 }
+                avgCostAll += warehouse.AVGCST
                 prdmaster[i].AVGCST = avgCostAll
                 prdmaster[i].AVGCSTFHI = avgCostFhi
                 prdmaster[i].AVGCSTSABRE = avgCostSabre
-                prdmaster[i].BRANCH = warehouse[0].WHSCOD ? warehouse[0].WHSCOD : 0
-                if (prdmaster[i].BRANCH == 50n) {
-                    prdmaster[i].BRANCH = 50
-                }
+                // console.log(Number(warehouse.WHSCOD), "warehouse.WHSCOD", warehouse.id, "warehouse.id");
+                prdmaster[i].BRANCH = warehouse.WHSCOD ? Number(warehouse.WHSCOD) : 0
                 if (prdmaster[i].BRANCH == 3 || prdmaster[i].BRANCH == 7 || prdmaster[i].BRANCH == 10 || prdmaster[i].BRANCH == 11 || prdmaster[i].BRANCH == 12) {
                     prdmaster[i].COMPANY = "FHI"
                 } else {
@@ -130,7 +135,7 @@ export const GET = async (request) => {
                 })
                 prdmaster[i].salesFHI = fhi._sum.QS
             }
-            else {
+            else if (prdmaster[i].BRANCH == 50 || prdmaster[i].BRANCH == 51) {
                 let sabre = await prisma.phocas_Split_Ordhst_2025_SABRE.aggregate({
                     where: {
                         BRANCH: prdmaster[i].BRANCH,
@@ -141,7 +146,7 @@ export const GET = async (request) => {
                 })
                 prdmaster[i].salesSabre = sabre._sum.QS
             }
-            let oh = await prisma.phocas_Whsprd.findMany({
+            let oh = await prisma.phocas_Whsprd.findFirst({
                 where: {
                     PRDLIN: prdmaster[i].PRDLIN,
                     PRODNO: prdmaster[i].PRODNO
@@ -149,14 +154,11 @@ export const GET = async (request) => {
                 orderBy: {
                     QTYOHD: "desc"
                 },
-                take: 1
             })
-            if (oh.length > 0) {
-                prdmaster[i].QTYOHD = oh[0].QTYOHD
-            } else {
-                prdmaster[i].QTYOHD = 0
+            if (oh) {
+                prdmaster[i].QTYOHD = oh.QTYOHD
             }
-            let qtyCom = await prisma.phocas_Whsprd.findMany({
+            let qtyCom = await prisma.phocas_Whsprd.findFirst({
                 where: {
                     PRDLIN: prdmaster[i].PRDLIN,
                     PRODNO: prdmaster[i].PRODNO
@@ -164,12 +166,9 @@ export const GET = async (request) => {
                 orderBy: {
                     QTYCOM: "desc"
                 },
-                take: 1
             })
-            if (qtyCom.length > 0) {
-                prdmaster[i].QTYCOM = qtyCom[0].QTYCOM
-            } else {
-                prdmaster[i].QTYCOM = 0
+            if (qtyCom) {
+                prdmaster[i].QTYCOM = qtyCom.QTYCOM
             }
         }
         for (let i = 0; i < prdmaster.length; i++) {
