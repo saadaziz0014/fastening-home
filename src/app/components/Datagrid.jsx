@@ -42,8 +42,8 @@ export default function Datagrid({
     cellClassRules: cellClassRules, // Attach class rules for dynamic styling
     cellStyle: (params) =>
       search &&
-        search.length > 2 &&
-        params.value?.toString().toLowerCase().includes(search.toLowerCase())
+      search.length > 2 &&
+      params.value?.toString().toLowerCase().includes(search.toLowerCase())
         ? { backgroundColor: "yellow" }
         : {}, // Highlight cells based on search
   };
@@ -53,7 +53,7 @@ export default function Datagrid({
     if (!newColumnName) {
       setAddColFlag(false);
       return;
-    };
+    }
 
     const newColumn = {
       field: newColumnName.toLowerCase().replace(/\s+/g, "_"),
@@ -78,10 +78,10 @@ export default function Datagrid({
     const updatedColumns =
       position >= 0
         ? [
-          ...columnData.slice(0, position + 1),
-          newColumn,
-          ...columnData.slice(position + 1),
-        ]
+            ...columnData.slice(0, position + 1),
+            newColumn,
+            ...columnData.slice(position + 1),
+          ]
         : [...columnData, newColumn];
 
     setColumnData(updatedColumns);
@@ -104,7 +104,7 @@ export default function Datagrid({
 
     setNewColumnName("");
     setSelectedColumn("");
-    setAddColFlag(false)
+    setAddColFlag(false);
   };
 
   // Handle Cell Value Change with Calculations
@@ -205,7 +205,8 @@ export default function Datagrid({
     const rowHeight = 25; // Default row height
     const headerHeight = 50; // Adjust based on your header size
     const bufferHeight = 20; // Additional padding
-    const calculatedHeight = data.length * rowHeight + headerHeight + bufferHeight;
+    const calculatedHeight =
+      data.length * rowHeight + headerHeight + bufferHeight;
 
     setGridHeight(calculatedHeight < 300 ? 300 : calculatedHeight);
   }, [data]);
@@ -213,7 +214,7 @@ export default function Datagrid({
   if (!addColFlag) {
     return (
       <>
-        <div className={`ag-theme-alpine  w-full`} style={{ height: `900px` }}>
+        <div className={`ag-theme-alpine  w-full`} style={{ height: "80vh" }}>
           <AgGridReact
             onGridReady={(params) => {
               gridApiRef.current = params.api;
@@ -229,8 +230,7 @@ export default function Datagrid({
         </div>
       </>
     );
-  }
-  else {
+  } else {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-60">
         <div className="flex justify-between">
@@ -292,6 +292,6 @@ export default function Datagrid({
           </div> */}
         </div>
       </div>
-    )
+    );
   }
 }

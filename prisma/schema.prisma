@@ -89,7 +89,7 @@ model Phocas_Split_Ordhst_2025_FHI {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model Phocas_Whsprd {
-  PRDLIN String?
+  PRDLIN String? 
   PRODNO String?
   PRDSCE String?
   QTYOHD BigInt?

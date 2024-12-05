@@ -26,7 +26,7 @@ export const GET = async (request) => {
                 orderBy: {
                     id: "asc"
                 },
-                take: 5
+                take: 100
             }
             )
         } else if (!pline && vendor) {
@@ -37,7 +37,7 @@ export const GET = async (request) => {
                 orderBy: {
                     id: "asc"
                 },
-                // take: 5
+                take: 100
             })
         }
         for (let i = 0; i < prdmaster.length; i++) {
