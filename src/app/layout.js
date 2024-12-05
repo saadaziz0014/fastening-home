@@ -4,6 +4,7 @@ import "./globals.css";
 import Layout from "./components/Layout";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Suspense } from "react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,7 +29,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Layout>
-          {children}
+          <Suspense>{children}</Suspense>
           <ToastContainer
             position="top-right"
             autoClose={3000}
