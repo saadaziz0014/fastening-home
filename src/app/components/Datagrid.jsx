@@ -214,7 +214,7 @@ export default function Datagrid({
   if (!addColFlag) {
     return (
       <>
-        <div className={`ag-theme-alpine  w-full`} style={{ height: "80vh" }}>
+        <div className={`ag-theme-alpine  w-full`} style={{ height: "78vh" }}>
           <AgGridReact
             onGridReady={(params) => {
               gridApiRef.current = params.api;
