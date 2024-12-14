@@ -61,7 +61,7 @@ export default function UpdateMenu() {
                         breakLabel="..."
                         nextLabel="Next"
                         onPageChange={handlePageChange}
-                        pageRangeDisplayed={5}
+                        pageRangeDisplayed={8}
                         pageCount={totalPages}
                         previousLabel="Previous"
                         renderOnZeroPageCount={null}
