@@ -33,6 +33,7 @@ export default function Dropdown({
     }
   };
   const toggleColumn = (key) => {
+    // console.log("key", key);
     setSelectedItems((prevSelectedItems) => {
       const updatedItems = prevSelectedItems.includes(key)
         ? prevSelectedItems.filter((item) => item !== key)
@@ -93,8 +94,8 @@ export default function Dropdown({
       if (selectedStock == "OH") {
         dataH = dataH.filter(
           (item) =>
-            item.qtyOH != undefined ||
-            Number(item.qtyOH) != 0 ||
+            item.qtyOH != undefined &&
+            Number(item.qtyOH) != 0 &&
             item.qtyOH != null
         );
       }
@@ -184,9 +185,9 @@ export default function Dropdown({
     if (selectedStock == "OH") {
       dataH = dataH.filter(
         (item) =>
-          item.qtyOH == undefined ||
-          Number(item.qtyOH) == 0 ||
-          item.qtyOH == null
+          item.qtyOH != undefined &&
+          Number(item.qtyOH) != 0 &&
+          item.qtyOH != null
       );
     }
     if (selectedStock == "NONE") {
@@ -255,10 +256,11 @@ export default function Dropdown({
         </span>
       </button>
       <ul
-        className={`absolute min-w-0 max-w-auto hidden-scrollbar ${display === "visible"
-          ? "shadow-lg z-[3] rounded-lg px-3 py-2 space-y-4 bg-white max-h-96 overflow-y-scroll"
-          : "p-0 space-y-0 bg-transparent max-h-0 overflow-hidden"
-          }`}
+        className={`absolute min-w-0 max-w-auto hidden-scrollbar ${
+          display === "visible"
+            ? "shadow-lg z-[3] rounded-lg px-3 py-2 space-y-4 bg-white max-h-96 overflow-y-scroll"
+            : "p-0 space-y-0 bg-transparent max-h-0 overflow-hidden"
+        }`}
         aria-labelledby="dropdownCheckboxButton"
       >
         {display === "visible" && (
@@ -266,8 +268,9 @@ export default function Dropdown({
             {/* Add "All" and "None" options */}
             <li>
               <div
-                className={`flex items-center ${type == "vendor" ? "w-32" : "w-24"
-                  }`}
+                className={`flex items-center ${
+                  type == "vendor" ? "w-32" : "w-24"
+                }`}
               >
                 <label
                   htmlFor="checkbox-all"

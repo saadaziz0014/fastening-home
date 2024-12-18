@@ -170,8 +170,6 @@ export const GET = async (request) => {
             if (qtyCom) {
                 prdmaster[i].QTYCOM = qtyCom.QTYCOM
             }
-        }
-        for (let i = 0; i < prdmaster.length; i++) {
             let keys = Object.keys(prdmaster[i])
             for (let j = 0; j < keys.length; j++) {
                 prdmaster[i][keys[j]] = prdmaster[i][keys[j]] && prdmaster[i][keys[j]] != null && prdmaster[i][keys[j]] != undefined ? prdmaster[i][keys[j]].toString() : null
