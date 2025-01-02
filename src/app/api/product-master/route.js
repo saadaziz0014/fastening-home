@@ -3,18 +3,12 @@ import { NextResponse } from "next/server";
 
 export const GET = async (request) => {
     try {
-        let url = request.url;
-        let key = url.split("?")[1];
-        key = key.split("=")[0];
-        let value = url.split("=")[1];
-        console.log(key, value)
-        let pline = null;
-        let vendor = null;
-        if (key == "pline") {
-            pline = value;
-        } else if (key == "vendor") {
-            vendor = value;
-        }
+        const { searchParams } = new URL(request.url);
+        const pline = searchParams.get("pline");
+        const vendor = searchParams.get("vendor");
+        const page = searchParams.get("page")
+        const limit = 200
+        const skip = (page - 1) * limit
         let prdmaster = [];
         if (!pline && !vendor) {
             return NextResponse.json({ error: "Please enter a search term", status: 400 })
@@ -26,7 +20,8 @@ export const GET = async (request) => {
                 orderBy: {
                     id: "asc"
                 },
-                // take: 100
+                skip: skip,
+                take: limit
             }
             )
         } else if (!pline && vendor) {
@@ -37,11 +32,11 @@ export const GET = async (request) => {
                 orderBy: {
                     id: "asc"
                 },
-                // take: 100
+                skip: skip,
+                take: limit
             })
         }
         for (let i = 0; i < prdmaster.length; i++) {
-            prdmaster[i].srNo = i + 1
             let prdCls = await prisma.phocas_Prdcls.findFirst({
                 where: {
                     PTCLAS: String(prdmaster[i].PMCLAS)

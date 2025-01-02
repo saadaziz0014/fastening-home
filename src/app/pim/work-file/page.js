@@ -289,63 +289,138 @@ export default function WorkFile() {
             setLoading(true);
             if (prdline.length > 0 || vcode != 0) {
                 if (prdline.length > 0) {
-                    let resp = await axios.get("/api/product-master?pline=" + prdline);
-                    if (resp.data.status === 200) {
-                        let length = resp.data.prdmaster.length;
-                        let data = [];
-                        for (let i = 0; i < length; i++) {
-                            data.push({ id: resp.data.prdmaster[i].id, prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, branch: resp.data.prdmaster[i].BRANCH, code: resp.data.prdmaster[i].PRDCDE, class: resp.data.prdmaster[i].PMCLAS, group: resp.data.prdmaster[i].PMGRP, classDesc: resp.data.prdmaster[i].PMCLSDESC, groupDesc: resp.data.prdmaster[i].PMGRPDESC, stock: resp.data.prdmaster[i].QBRKCD, vcode: resp.data.prdmaster[i].VELCOD, company: resp.data.prdmaster[i].COMPANY, qtyCOM: resp.data.prdmaster[i].QTYCOM, salesFHI: resp.data.prdmaster[i].salesFHI, salesSabre: resp.data.prdmaster[i].salesSabre, srNo: resp.data.prdmaster[i].srNo, avgCostFhi: resp.data.prdmaster[i].AVGCSTFHI, avgCostSabre: resp.data.prdmaster[i].AVGCSTSABRE, avgCostAll: resp.data.prdmaster[i].AVGCST });
+                    let respCount = await axios.get("/api/product-master-count?pline=" + prdline);
+                    if (respCount.data.status === 200) {
+                        let count = respCount.data.prdmaster;
+                        if (count > 0) {
+                            let limit = 200;
+                            let totalPages = Math.ceil(count / limit);
+                            let promises = [];
+                            for (let i = 0; i < totalPages; i++) {
+                                promises.push(
+                                    axios.get(`/api/product-master?pline=${prdline}&page=${i + 1}&limit=${limit}`)
+                                );
+                            }
+                            const responses = await Promise.all(promises);
+                            // console.log(responses, "responses");
+                            let dataDB = [];
+                            dataDB = responses.flatMap((response) => response.data.prdmaster);
+                            // console.log(dataDB, "dataDB");
+                            let data = [];
+                            for (let i = 0; i < dataDB.length; i++) {
+                                data.push({ srNo: i + 1, id: dataDB[i].id, prLine: dataDB[i].PRDLIN, partNumber: dataDB[i].PRODNO, description: dataDB[i].PRDSCE, cost: dataDB[i].VEVCST, newCost: dataDB[i].NEWCST, dollarChange: dataDB[i].VRD, percentChange: dataDB[i].VRDPER, avgCost: dataDB[i].AVGCST, productCode: dataDB[i].PRDCDE, qtyOH: dataDB[i].QTYOHD, list: dataDB[i].LISTPR, isc: dataDB[i].PMINVC, stockPer: dataDB[i].QBRKCD, purchPer: dataDB[i].PMPPER, pMult: dataDB[i].PMPMLT, sMult: dataDB[i].PMSMLT, pToStock: dataDB[i].PMCONV, sellUnit: dataDB[i].SELUNT, stkUnit: dataDB[i].STKUNT, purUnit: dataDB[i].PURUNT, boxQty: dataDB[i].PMQCAR, vname: dataDB[i].VNAME, branch: dataDB[i].BRANCH, code: dataDB[i].PRDCDE, class: dataDB[i].PMCLAS, group: dataDB[i].PMGRP, classDesc: dataDB[i].PMCLSDESC, groupDesc: dataDB[i].PMGRPDESC, stock: dataDB[i].QBRKCD, vcode: dataDB[i].VELCOD, company: dataDB[i].COMPANY, qtyCOM: dataDB[i].QTYCOM, salesFHI: dataDB[i].salesFHI, salesSabre: dataDB[i].salesSabre, avgCostFhi: dataDB[i].AVGCSTFHI, avgCostSabre: dataDB[i].AVGCSTSABRE, avgCostAll: dataDB[i].AVGCST });
+                            }
+                            // console.log(data[0], "this is data");
+                            if (data.length > 0) {
+                                setMainExcelData(data);
+                                setExcelData(data);
+                                setStockData(data);
+                            }
+                            let allVendorsResp = await axios.get("/api/all-vendors?PRDLIN=" + prdline);
+                            if (allVendorsResp.data.status === 200) {
+                                setVendors(allVendorsResp.data.vendors);
+                                setSelectedVendors(allVendorsResp.data.vendors);
+                            }
+                            setCompanies(["FHI", "Sabre"])
+                            setLines([prdline]);
+                            setSelectedPlines([prdline]);
+                            setSelectedCompanies(["FHI", "Sabre"]);
                         }
-                        if (length > 0) {
-                            setMainExcelData(data);
-                            setExcelData(data);
-                            setStockData(data);
-                        }
-                        let allVendorsResp = await axios.get("/api/all-vendors?PRDLIN=" + prdline);
-                        if (allVendorsResp.data.status === 200) {
-                            setVendors(allVendorsResp.data.vendors);
-                            setSelectedVendors(allVendorsResp.data.vendors);
-                        }
-                        setCompanies(["FHI", "Sabre"])
-                        setLines([prdline]);
-                        setSelectedPlines([prdline]);
-                        setSelectedCompanies(["FHI", "Sabre"]);
-                    } else {
-                        toast.error("Something went wrong in generating file")
                     }
+                    // let resp = await axios.get("/api/product-master?pline=" + prdline);
+                    // if (resp.data.status === 200) {
+                    //     let length = resp.data.prdmaster.length;
+                    //     let data = [];
+                    //     for (let i = 0; i < length; i++) {
+                    //         data.push({ id: resp.data.prdmaster[i].id, prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, branch: resp.data.prdmaster[i].BRANCH, code: resp.data.prdmaster[i].PRDCDE, class: resp.data.prdmaster[i].PMCLAS, group: resp.data.prdmaster[i].PMGRP, classDesc: resp.data.prdmaster[i].PMCLSDESC, groupDesc: resp.data.prdmaster[i].PMGRPDESC, stock: resp.data.prdmaster[i].QBRKCD, vcode: resp.data.prdmaster[i].VELCOD, company: resp.data.prdmaster[i].COMPANY, qtyCOM: resp.data.prdmaster[i].QTYCOM, salesFHI: resp.data.prdmaster[i].salesFHI, salesSabre: resp.data.prdmaster[i].salesSabre, srNo: resp.data.prdmaster[i].srNo, avgCostFhi: resp.data.prdmaster[i].AVGCSTFHI, avgCostSabre: resp.data.prdmaster[i].AVGCSTSABRE, avgCostAll: resp.data.prdmaster[i].AVGCST });
+                    //     }
+                    //     if (length > 0) {
+                    //         setMainExcelData(data);
+                    //         setExcelData(data);
+                    //         setStockData(data);
+                    //     }
+                    //     let allVendorsResp = await axios.get("/api/all-vendors?PRDLIN=" + prdline);
+                    //     if (allVendorsResp.data.status === 200) {
+                    //         setVendors(allVendorsResp.data.vendors);
+                    //         setSelectedVendors(allVendorsResp.data.vendors);
+                    //     }
+                    //     setCompanies(["FHI", "Sabre"])
+                    //     setLines([prdline]);
+                    //     setSelectedPlines([prdline]);
+                    //     setSelectedCompanies(["FHI", "Sabre"]);
+                    // } else {
+                    //     toast.error("Something went wrong in generating file")
+                    // }
                 }
                 else if (vcode != 0) {
-                    let resp = await axios.get("/api/product-master?vendor=" + String(vcode));
-                    if (resp.data.status === 200) {
-                        let length = resp.data.prdmaster.length;
-                        let data = [];
-                        for (let i = 0; i < length; i++) {
-                            data.push({ id: resp.data.prdmaster[i].id, prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, branch: resp.data.prdmaster[i].BRANCH, code: resp.data.prdmaster[i].PRDCDE, class: resp.data.prdmaster[i].PMCLAS, group: resp.data.prdmaster[i].PMGRP, classDesc: resp.data.prdmaster[i].PMCLSDESC, groupDesc: resp.data.prdmaster[i].PMGRPDESC, stock: resp.data.prdmaster[i].QBRKCD, vcode: resp.data.prdmaster[i].VELCOD, company: resp.data.prdmaster[i].COMPANY, qtyCOM: resp.data.prdmaster[i].QTYCOM, salesFHI: resp.data.prdmaster[i].salesFHI, salesSabre: resp.data.prdmaster[i].salesSabre, srNo: resp.data.prdmaster[i].srNo, avgCostFhi: resp.data.prdmaster[i].AVGCSTFHI, avgCostSabre: resp.data.prdmaster[i].AVGCSTSABRE, avgCostAll: resp.data.prdmaster[i].AVGCST });
+                    let respCount = await axios.get("/api/product-master-count?vendor=" + vcode);
+                    if (respCount.data.status === 200) {
+                        let count = respCount.data.prdmaster;
+                        if (count > 0) {
+                            let limit = 200;
+                            let totalPages = Math.ceil(count / limit);
+                            let promises = [];
+                            for (let i = 0; i < totalPages; i++) {
+                                promises.push(
+                                    axios.get(`/api/product-master?vendor=${vcode}&page=${i + 1}&limit=${limit}`)
+                                );
+                            }
+                            const responses = await Promise.all(promises);
+                            // console.log(responses, "responses");
+                            let dataDB = [];
+                            dataDB = responses.flatMap((response) => response.data.prdmaster);
+                            // console.log(dataDB, "dataDB");
+                            let data = [];
+                            for (let i = 0; i < dataDB.length; i++) {
+                                data.push({ srNo: i + 1, id: dataDB[i].id, prLine: dataDB[i].PRDLIN, partNumber: dataDB[i].PRODNO, description: dataDB[i].PRDSCE, cost: dataDB[i].VEVCST, newCost: dataDB[i].NEWCST, dollarChange: dataDB[i].VRD, percentChange: dataDB[i].VRDPER, avgCost: dataDB[i].AVGCST, productCode: dataDB[i].PRDCDE, qtyOH: dataDB[i].QTYOHD, list: dataDB[i].LISTPR, isc: dataDB[i].PMINVC, stockPer: dataDB[i].QBRKCD, purchPer: dataDB[i].PMPPER, pMult: dataDB[i].PMPMLT, sMult: dataDB[i].PMSMLT, pToStock: dataDB[i].PMCONV, sellUnit: dataDB[i].SELUNT, stkUnit: dataDB[i].STKUNT, purUnit: dataDB[i].PURUNT, boxQty: dataDB[i].PMQCAR, vname: dataDB[i].VNAME, branch: dataDB[i].BRANCH, code: dataDB[i].PRDCDE, class: dataDB[i].PMCLAS, group: dataDB[i].PMGRP, classDesc: dataDB[i].PMCLSDESC, groupDesc: dataDB[i].PMGRPDESC, stock: dataDB[i].QBRKCD, vcode: dataDB[i].VELCOD, company: dataDB[i].COMPANY, qtyCOM: dataDB[i].QTYCOM, salesFHI: dataDB[i].salesFHI, salesSabre: dataDB[i].salesSabre, avgCostFhi: dataDB[i].AVGCSTFHI, avgCostSabre: dataDB[i].AVGCSTSABRE, avgCostAll: dataDB[i].AVGCST });
+                            }
+                            if (data.length > 0) {
+                                setMainExcelData(data);
+                                setExcelData(data);
+                                setStockData(data);
+                            }
+                            let allPlinesResp = await axios.get("/api/all-productlines?VENDNO=" + vcode);
+                            if (allPlinesResp.data.status === 200) {
+                                setLines(allPlinesResp.data.plines);
+                                setSelectedPlines(allPlinesResp.data.plines);
+                            }
+                            setCompanies(["FHI", "Sabre"])
+                            setLines([prdline]);
+                            setSelectedPlines([prdline]);
+                            setSelectedCompanies(["FHI", "Sabre"]);
                         }
-                        if (length > 0) {
-                            setExcelData(data);
-                            setMainExcelData(data);
-                            setStockData(data);
-                        }
-                        let allPlinesResp = await axios.get("/api/all-productlines?VENDNO=" + vcode);
-                        if (allPlinesResp.data.status === 200) {
-                            setLines(allPlinesResp.data.plines);
-                            setSelectedPlines(allPlinesResp.data.plines);
-                        }
-                        setCompanies(["FHI", "Sabre"])
-                        setVendors([vline]);
-                        setSelectedVendors([vline]);
-                        setSelectedCompanies(["FHI", "Sabre"]);
-                    } else {
-                        toast.error("Something went wrong in generating file")
                     }
+                    // let resp = await axios.get("/api/product-master?vendor=" + String(vcode));
+                    // if (resp.data.status === 200) {
+                    //     let length = resp.data.prdmaster.length;
+                    //     let data = [];
+                    //     for (let i = 0; i < length; i++) {
+                    //         data.push({ id: resp.data.prdmaster[i].id, prLine: resp.data.prdmaster[i].PRDLIN, partNumber: resp.data.prdmaster[i].PRODNO, description: resp.data.prdmaster[i].PRDSCE, cost: resp.data.prdmaster[i].VEVCST, newCost: resp.data.prdmaster[i].NEWCST, dollarChange: resp.data.prdmaster[i].VRD, percentChange: resp.data.prdmaster[i].VRDPER, avgCost: resp.data.prdmaster[i].AVGCST, productCode: resp.data.prdmaster[i].PRDCDE, qtyOH: resp.data.prdmaster[i].QTYOHD, list: resp.data.prdmaster[i].LISTPR, isc: resp.data.prdmaster[i].PMINVC, stockPer: resp.data.prdmaster[i].QBRKCD, purchPer: resp.data.prdmaster[i].PMPPER, pMult: resp.data.prdmaster[i].PMPMLT, sMult: resp.data.prdmaster[i].PMSMLT, pToStock: resp.data.prdmaster[i].PMCONV, sellUnit: resp.data.prdmaster[i].SELUNT, stkUnit: resp.data.prdmaster[i].STKUNT, purUnit: resp.data.prdmaster[i].PURUNT, boxQty: resp.data.prdmaster[i].PMQCAR, vname: resp.data.prdmaster[i].VNAME, branch: resp.data.prdmaster[i].BRANCH, code: resp.data.prdmaster[i].PRDCDE, class: resp.data.prdmaster[i].PMCLAS, group: resp.data.prdmaster[i].PMGRP, classDesc: resp.data.prdmaster[i].PMCLSDESC, groupDesc: resp.data.prdmaster[i].PMGRPDESC, stock: resp.data.prdmaster[i].QBRKCD, vcode: resp.data.prdmaster[i].VELCOD, company: resp.data.prdmaster[i].COMPANY, qtyCOM: resp.data.prdmaster[i].QTYCOM, salesFHI: resp.data.prdmaster[i].salesFHI, salesSabre: resp.data.prdmaster[i].salesSabre, srNo: resp.data.prdmaster[i].srNo, avgCostFhi: resp.data.prdmaster[i].AVGCSTFHI, avgCostSabre: resp.data.prdmaster[i].AVGCSTSABRE, avgCostAll: resp.data.prdmaster[i].AVGCST });
+                    //     }
+                    //     if (length > 0) {
+                    //         setExcelData(data);
+                    //         setMainExcelData(data);
+                    //         setStockData(data);
+                    //     }
+                    //     let allPlinesResp = await axios.get("/api/all-productlines?VENDNO=" + vcode);
+                    //     if (allPlinesResp.data.status === 200) {
+                    //         setLines(allPlinesResp.data.plines);
+                    //         setSelectedPlines(allPlinesResp.data.plines);
+                    //     }
+                    //     setCompanies(["FHI", "Sabre"])
+                    //     setVendors([vline]);
+                    //     setSelectedVendors([vline]);
+                    //     setSelectedCompanies(["FHI", "Sabre"]);
+                    // } else {
+                    //     toast.error("Something went wrong in generating file")
+                    // }
                 }
             } else {
                 toast.error("Please select a product line or a vendor line")
             }
             setLoading(false);
         } catch (error) {
-            // console.log(error)
+            console.log(error)
             toast.error("Something went wrong in generating file")
         }
     }
